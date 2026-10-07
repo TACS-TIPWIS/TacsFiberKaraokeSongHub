@@ -597,7 +597,6 @@ function formatTime(seconds) {
 
 /* PERSISTENT AUTHENTICATION ENGINE */
 function setupAppAuth() {
-  // Check for existing session in localStorage
   const savedSession = localStorage.getItem("khActiveUser");
   if (savedSession) {
     try {
@@ -1140,27 +1139,38 @@ async function loadDriveFolder(folderId, folderName, resetStack=false){
 
 $("search").addEventListener("input", renderFiles);
 
+/* FILE TYPE DETECTOR WITH EXTENSION FALLBACK */
 function fileType(file) {
   const name = (file.name || "").toLowerCase();
   const mime = file.type || file.mimeType || "";
   
   if (name.endsWith(".mid") || name.endsWith(".midi") || name.endsWith(".kar")) return "MIDI";
-  if (mime.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".webm") || name.endsWith(".mov") || name.endsWith(".mkv") || name.endsWith(".avi")) return "VIDEO";
+  
+  // Explicit Video check by mime or file extension
+  if (mime.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".webm") || name.endsWith(".mov") || name.endsWith(".mkv") || name.endsWith(".avi")) {
+    return "VIDEO";
+  }
+  
+  // Explicit Audio check by mime or file extension
+  if (mime.startsWith("audio/") || name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".m4a") || name.endsWith(".aac") || name.endsWith(".flac") || name.endsWith(".ogg")) {
+    return "AUDIO";
+  }
+
   return "AUDIO";
 }
 
-/* STRICT CATEGORY CLASSIFICATION ENGINE */
+/* CATEGORY CLASSIFICATION ENGINE */
 function matchesCategory(file) {
   const type = fileType(file);
   const name = (file.name || "").toLowerCase();
 
   if (currentCategory === "music") {
-    // MP3 MUSIC: Show strictly audio files ONLY
+    // MP3 MUSIC: Pure Audio files
     return type === "AUDIO";
   }
   
   if (currentCategory === "movie") {
-    // MOVIE: Show strictly video files ONLY
+    // MOVIE: Video files
     return type === "VIDEO";
   }
 
