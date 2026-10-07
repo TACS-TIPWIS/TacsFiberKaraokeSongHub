@@ -46,6 +46,68 @@ html, body{
   overflow:hidden;
 }
 
+/* APP ACCESS LOCK SCREEN */
+#appAuthGate {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 30%, #2e102e 0%, #08080c 60%, #020203 100%);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 380px;
+  max-width: 90%;
+  background: rgba(16, 16, 21, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 30px 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 22, 115, 0.2);
+  text-align: center;
+}
+
+.auth-card h1 {
+  margin: 0 0 8px 0;
+  font-size: 26px;
+  color: var(--pink);
+}
+
+.auth-card p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 22px;
+}
+
+.auth-form-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.auth-form-group label {
+  display: block;
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.auth-form-group input {
+  width: 100%;
+  padding: 12px;
+  background: #08080c;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.auth-form-group input:focus {
+  border-color: var(--pink);
+}
+
 /* TV REMOTE FOCUS STYLES */
 *:focus {
   outline: 3px solid var(--pink) !important;
@@ -109,12 +171,14 @@ html, body{
 
 .section-title{ padding:14px 15px 8px; font-size:12px; color:#aaa; text-transform:uppercase; letter-spacing:1px; }
 .search{ margin:8px 12px; padding:11px; border-radius:7px; border:1px solid var(--border); outline:none; background:#08080c; color:#fff; width:calc(100% - 24px); }
-.library-tabs{ display:flex; padding:4px 10px 8px; gap:4px; }
-.library-tabs button{ flex:1; background:#18181f; color:#aaa; border:0; border-radius:5px; padding:7px; cursor:pointer; font-size:11px; }
-.library-tabs button.active{ color:#fff; background:#35202b; }
+
+/* CATEGORY TABS */
+.category-tabs{ display:flex; padding:4px 10px 8px; gap:4px; }
+.category-tabs button{ flex:1; background:#18181f; color:#aaa; border:1px solid var(--border); border-radius:6px; padding:8px 4px; cursor:pointer; font-size:10px; font-weight:bold; }
+.category-tabs button.active{ color:#fff; background:var(--pink); border-color:var(--pink); }
 
 #files{ flex:1; overflow-y:auto; padding:5px 10px 15px; }
-.file{ padding:11px; margin-bottom:5px; border:1px solid transparent; border-radius:7px; cursor:pointer; background:#101015; }
+.file{ padding:11px; margin-bottom:5px; border:1px solid transparent; border-radius:7px; cursor:pointer; background:#101015; display:flex; justify-content:space-between; align-items:center; }
 .file:hover{ background:#19191f; }
 .file.selected{ background:#351325; border-color:#8b2850; }
 .file-title{ font-size:13px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -206,11 +270,17 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 .file.local-file .file-meta{color:#6f9dff}
 .library-heading{padding:7px 10px 4px;font-size:9px;font-weight:900;letter-spacing:.8px;color:#777}
 
-.queue-panel-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.queue-panel-title .reserve-badge{font-size:9px;padding:4px 7px;border:1px solid rgba(24,191,255,.55);border-radius:5px;color:#55d8ff;background:rgba(24,191,255,.08);letter-spacing:.5px}
-.queue-item.reserved{border-left:3px solid #18bfff}
-.queue-item.active{border-left:3px solid #ff334f}
-.queue-status{font-size:9px;color:#777;margin:4px 10px 8px}
+/* ADMIN CONTROLS HIDING */
+.admin-only { display: none !important; }
+body.is-admin .admin-only { display: block !important; }
+body.is-admin .admin-only-flex { display: flex !important; }
+
+/* USER MANAGEMENT STYLES */
+.user-list { max-height: 180px; overflow-y: auto; margin: 10px 0; background: #08080c; border: 1px solid var(--border); border-radius: 6px; padding: 6px; }
+.user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #1f1f28; font-size: 12px; }
+.user-item:last-child { border-bottom: none; }
+.user-item span { font-weight: bold; }
+.user-item em { font-size: 10px; color: #777; margin-left: 6px; }
 
 /* FULL-SCREEN SMART TV STAGE */
 #tvStageOverlay { position: fixed; inset: 0; background: #020306; z-index: 1000; display: none; flex-direction: column; justify-content: space-between; overflow: hidden; isolation: isolate; }
@@ -244,6 +314,23 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 
 <body>
 
+<!-- APP ACCESS AUTHENTICATION GATE -->
+<div id="appAuthGate">
+  <div class="auth-card">
+    <h1>🎤 KaraokeHub PRO</h1>
+    <p>Enter your account credentials to access the app</p>
+    <div class="auth-form-group">
+      <label>Username</label>
+      <input type="text" id="appUsernameInput" placeholder="Enter Username">
+    </div>
+    <div class="auth-form-group">
+      <label>Password</label>
+      <input type="password" id="appPasswordInput" placeholder="Enter Password">
+    </div>
+    <button class="btn primary" style="width: 100%; margin-top: 10px; padding: 12px;" id="loginAppBtn">Unlock App</button>
+  </div>
+</div>
+
 <div id="app">
 
 <header id="topbar">
@@ -252,43 +339,49 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
     <div class="status" id="driveStatus">Not logged in</div>
   </div>
   <div class="top-actions">
-    <button class="btn primary" id="loginButton">☁ Log in with Google</button>
+    <button class="btn primary admin-only-flex" id="loginButton">☁ Log in with Google</button>
+    <button class="btn admin-only-flex" id="manageUsersBtn">👥 Manage Users</button>
+    <button class="btn" id="logoutAppBtn">🚪 Logout (<span id="activeUserLabel">Singer</span>)</button>
     <button class="btn" id="fullscreenButton">⛶ TV Stage</button>
     <button class="btn" id="settingsButton">⚙ Profile</button>
   </div>
 </header>
 
 <aside id="songbook">
-  <div class="section-title">SONGBOOK</div>
+  <div class="section-title">MEDIA LIBRARY</div>
   <div class="local-library">
     <div class="local-library-title">💻 LOCAL SONG LIBRARY</div>
-    <div class="local-library-buttons">
-      <button class="btn small" type="button" id="openLocalFolder">📁 Select Persistent Folder</button>
-      <button class="btn small" type="button" id="selectLocalFiles">🎵 Select Songs</button>
+    
+    <!-- ADMIN ONLY UPLOAD BUTTONS -->
+    <div class="local-library-buttons admin-only-flex admin-only">
+      <button class="btn small" type="button" id="openLocalFolder">📁 Add Folder Handle</button>
+      <button class="btn small" type="button" id="selectLocalFiles">🎵 Add Songs</button>
       <button class="btn small" type="button" id="selectLrcFiles" style="grid-column: 1/3; margin-top:4px;">📝 Load .LRC Lyrics</button>
-      <button class="btn red small" type="button" id="clearStoredLibrary" style="grid-column: 1/3; margin-top:4px;">🗑 Clear Saved Handle</button>
+      <button class="btn red small" type="button" id="clearStoredLibrary" style="grid-column: 1/3; margin-top:4px;">🗑 Clear Saved Library</button>
     </div>
-    <div class="local-folder-name" id="localStatus">Checking saved library...</div>
-    <div class="local-picker-help">
-      Click <b>"📁 Select Persistent Folder"</b> to link your songs directory.
+
+    <div class="local-folder-name" id="localStatus">Library ready for singers</div>
+    <div class="local-picker-help admin-only">
+      Admin Mode Active: Add or delete tracks across folders.
     </div>
     <input id="localFolderInput" type="file" webkitdirectory multiple hidden>
-    <input id="localFilesInput" type="file" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mid,.midi,.kar" multiple hidden>
+    <input id="localFilesInput" type="file" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mkv,.avi,.mid,.midi,.kar" multiple hidden>
     <input id="lrcFileInput" type="file" accept=".lrc,.txt" multiple hidden>
   </div>
 
   <div id="driveFolders" style="padding:0 10px 6px;"></div>
   <input class="search" id="search" placeholder="🔎 Search title or artist...">
 
-  <div class="library-tabs">
-    <button class="active">All</button>
-    <button>⭐ Favorites</button>
-    <button>🕘 Recent</button>
+  <!-- MEDIA CATEGORY FILTER BUTTONS -->
+  <div class="category-tabs">
+    <button id="catKtv" class="active" onclick="setCategory('ktv')">🎤 KTV Songs</button>
+    <button id="catMusic" onclick="setCategory('music')">🎵 MP3 MUSIC</button>
+    <button id="catMovie" onclick="setCategory('movie')">🎬 MOVIE</button>
   </div>
 
   <div id="files">
-    <div style="padding:20px;color:#555;text-align:center;">
-      Use 📁 Select Persistent Folder to link your songs directory.
+    <div style="padding:20px;text-align:center;color:#555;">
+      Search for songs above or select from rotation.
     </div>
   </div>
 </aside>
@@ -382,6 +475,7 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 
 </div>
 
+<!-- SINGER PROFILE MODAL -->
 <div class="modal" id="settingsModal">
   <div class="modal-box">
     <h2>⚙ Singer Profile</h2>
@@ -392,6 +486,29 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
     <div style="text-align:right;">
       <button class="btn" id="closeSettings">Cancel</button>
       <button class="btn primary" id="saveSettings">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN USER MANAGEMENT MODAL -->
+<div class="modal" id="userManageModal">
+  <div class="modal-box" style="width: 480px;">
+    <h2>👥 Manage User Accounts</h2>
+    
+    <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+      <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: var(--pink);">➕ Create New Account</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <input id="newUsernameInput" placeholder="Username" style="padding: 8px; background: #08080c; border: 1px solid #333; border-radius: 6px; color: white;">
+        <input id="newPasswordInput" type="password" placeholder="Password" style="padding: 8px; background: #08080c; border: 1px solid #333; border-radius: 6px; color: white;">
+      </div>
+      <button class="btn green small" id="createUserBtn" style="width: 100%; margin-top: 8px; padding: 8px;">Add User Account</button>
+    </div>
+
+    <div style="font-size: 12px; font-weight: bold; margin-bottom: 6px;">Existing Accounts</div>
+    <div class="user-list" id="userListContainer"></div>
+
+    <div style="text-align:right; margin-top: 15px;">
+      <button class="btn" id="closeUserManageModal">Close</button>
     </div>
   </div>
 </div>
@@ -422,6 +539,19 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 <script>
 const GOOGLE_CLIENT_ID = "57045846413-tgddgirr6b5cjskf3k5jf9g4rkagn8p0.apps.googleusercontent.com";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly";
+
+/* DEFAULT ADMIN AND INITIAL USERS */
+const ADMIN_USER = "Ronel";
+const ADMIN_PASS = "gege@635185";
+
+let usersDatabase = JSON.parse(localStorage.getItem("khUsers")) || [
+  { user: "Ronel", pass: "gege@635185", role: "admin" },
+  { user: "singer", pass: "1234", role: "user" }
+];
+
+let currentUser = null;
+let isAdminMode = false;
+let currentCategory = "ktv";
 
 const state = {
   driveFiles: [],
@@ -465,9 +595,111 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-/* INDEXEDDB FOR PERSISTENT FILE SYSTEM HANDLES & LYRICS */
+/* AUTHENTICATION & USER MANAGEMENT */
+function setupAppAuth() {
+  $("loginAppBtn").onclick = () => {
+    const user = $("appUsernameInput").value.trim();
+    const pass = $("appPasswordInput").value.trim();
+
+    const matched = usersDatabase.find(u => u.user.toLowerCase() === user.toLowerCase() && u.pass === pass);
+
+    if (matched) {
+      currentUser = matched;
+      isAdminMode = matched.role === "admin";
+      $("activeUserLabel").textContent = matched.user;
+      
+      if (isAdminMode) {
+        document.body.classList.add("is-admin");
+      } else {
+        document.body.classList.remove("is-admin");
+      }
+
+      $("appAuthGate").style.display = "none";
+      toast(`Welcome, ${matched.user}!`);
+      renderFiles();
+    } else {
+      toast("Invalid username or password!");
+    }
+  };
+
+  $("logoutAppBtn").onclick = () => {
+    currentUser = null;
+    isAdminMode = false;
+    document.body.classList.remove("is-admin");
+    $("appUsernameInput").value = "";
+    $("appPasswordInput").value = "";
+    $("appAuthGate").style.display = "flex";
+    toast("Logged out successfully.");
+  };
+
+  $("manageUsersBtn").onclick = () => {
+    renderUserList();
+    $("userManageModal").classList.add("show");
+  };
+
+  $("closeUserManageModal").onclick = () => $("userManageModal").classList.remove("show");
+
+  $("createUserBtn").onclick = () => {
+    const u = $("newUsernameInput").value.trim();
+    const p = $("newPasswordInput").value.trim();
+
+    if (!u || !p) return toast("Enter both username and password.");
+    if (usersDatabase.some(user => user.user.toLowerCase() === u.toLowerCase())) {
+      return toast("Username already exists!");
+    }
+
+    usersDatabase.push({ user: u, pass: p, role: "user" });
+    localStorage.setItem("khUsers", JSON.stringify(usersDatabase));
+    
+    $("newUsernameInput").value = "";
+    $("newPasswordInput").value = "";
+    renderUserList();
+    toast(`Account for "${u}" created!`);
+  };
+}
+
+function renderUserList() {
+  const container = $("userListContainer");
+  container.innerHTML = "";
+
+  usersDatabase.forEach((u, i) => {
+    const item = document.createElement("div");
+    item.className = "user-item";
+    
+    let deleteBtnHtml = u.role !== "admin" 
+      ? `<button class="btn red small" onclick="deleteUserAccount(${i})">✕ Remove</button>` 
+      : `<span style="color: var(--pink); font-size: 10px;">ADMIN</span>`;
+
+    item.innerHTML = `
+      <div>
+        <span>${escapeHtml(u.user)}</span>
+        <em>(Pass: ${escapeHtml(u.pass)})</em>
+      </div>
+      ${deleteBtnHtml}
+    `;
+    container.appendChild(item);
+  });
+}
+
+function deleteUserAccount(index) {
+  usersDatabase.splice(index, 1);
+  localStorage.setItem("khUsers", JSON.stringify(usersDatabase));
+  renderUserList();
+  toast(`Removed user account.`);
+}
+
+/* CATEGORY TAB SELECTOR */
+function setCategory(category) {
+  currentCategory = category;
+  $("catKtv").classList.toggle("active", category === "ktv");
+  $("catMusic").classList.toggle("active", category === "music");
+  $("catMovie").classList.toggle("active", category === "movie");
+  renderFiles();
+}
+
+/* MULTI-HANDLE INDEXEDDB ENGINE */
 const DB_NAME = "KaraokeHubFS_DB";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 let db = null;
 
 function initIndexedDB() {
@@ -475,7 +707,7 @@ function initIndexedDB() {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = (e) => {
       const database = e.target.result;
-      if (!database.objectStoreNames.contains("handles")) database.createObjectStore("handles");
+      if (!database.objectStoreNames.contains("handles")) database.createObjectStore("handles", { autoIncrement: true });
       if (!database.objectStoreNames.contains("lyrics")) database.createObjectStore("lyrics", { keyPath: "name" });
     };
     request.onsuccess = (e) => { db = e.target.result; resolve(db); };
@@ -486,16 +718,16 @@ function initIndexedDB() {
 async function saveDirectoryHandle(handle) {
   if (!db) return;
   const tx = db.transaction("handles", "readwrite");
-  tx.objectStore("handles").put(handle, "folderHandle");
+  tx.objectStore("handles").add(handle);
 }
 
-async function getStoredDirectoryHandle() {
-  if (!db) return null;
+async function getAllStoredDirectoryHandles() {
+  if (!db) return [];
   return new Promise((resolve) => {
     const tx = db.transaction("handles", "readonly");
-    const req = tx.objectStore("handles").get("folderHandle");
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror = () => resolve(null);
+    const req = tx.objectStore("handles").getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => resolve([]);
   });
 }
 
@@ -514,10 +746,9 @@ async function clearStoredHandle() {
   lrcStore.clear();
   $("localStatus").textContent = "No persistent folder linked";
   renderFiles();
-  toast("Persistent handle cleared.");
+  toast("Persistent handles cleared.");
 }
 
-/* READ FILE SYSTEM HANDLE RECURSIVELY */
 async function scanDirectoryHandle(dirHandle) {
   const files = [];
   for await (const entry of dirHandle.values()) {
@@ -541,33 +772,40 @@ async function autoLoadPersistentStorage() {
   try {
     await initIndexedDB();
 
-    // 1. Restore Lyrics
     const lyricTx = db.transaction("lyrics", "readonly");
     const lyricsReq = lyricTx.objectStore("lyrics").getAll();
     lyricsReq.onsuccess = () => {
       (lyricsReq.result || []).forEach(r => lrcStore.set(r.name, parseLRC(r.content)));
     };
 
-    // 2. Restore Folder Handle
-    const handle = await getStoredDirectoryHandle();
-    if (handle) {
-      if (typeof handle.queryPermission === "function") {
-        const options = { mode: "read" };
-        let permission = await handle.queryPermission(options);
-        if (permission !== "granted") {
-          permission = await handle.requestPermission(options);
-        }
-        if (permission === "granted") {
-          $("localStatus").textContent = "Re-scanning linked folder...";
-          const files = await scanDirectoryHandle(handle);
-          state.localFiles = files;
-          $("localStatus").textContent = `📁 ${handle.name} • ${files.length} track(s)`;
-          renderFiles();
-          return;
+    const handles = await getAllStoredDirectoryHandles();
+    let accumulatedFiles = [];
+
+    if (handles.length > 0) {
+      for (const handle of handles) {
+        if (typeof handle.queryPermission === "function") {
+          const options = { mode: "read" };
+          let permission = await handle.queryPermission(options);
+          if (permission !== "granted") {
+            permission = await handle.requestPermission(options);
+          }
+          if (permission === "granted") {
+            const files = await scanDirectoryHandle(handle);
+            accumulatedFiles.push(...files);
+          }
         }
       }
+      
+      // Deduplicate files by name
+      const uniqueMap = new Map();
+      accumulatedFiles.forEach(f => uniqueMap.set(f.name, f));
+      state.localFiles = Array.from(uniqueMap.values());
+
+      $("localStatus").textContent = `📁 ${handles.length} folder(s) • ${state.localFiles.length} file(s)`;
+      renderFiles();
+      return;
     }
-    $("localStatus").textContent = "No persistent folder linked";
+    $("localStatus").textContent = "Library ready for singers";
   } catch (err) {
     $("localStatus").textContent = "Select folder to load songs";
   }
@@ -584,6 +822,7 @@ window.addEventListener("load", async () => {
   $("keyValue").textContent = state.key;
   $("singerInput").value = state.singer;
 
+  setupAppAuth();
   renderQueue();
   setupUIEvents();
   setupLocalLibrary();
@@ -658,13 +897,11 @@ function renderLrcContainer() {
         <div class="big">🎤</div>
         <h2>${escapeHtml(songTitle)}</h2>
         <p>${escapeHtml(singerName)}</p>
-        <p style="font-size:12px; color:#ff1673; margin-top:12px;">Load matching .lrc file via "📝 Load .LRC Lyrics" button</p>
       </div>`;
 
     tvStage.innerHTML = `
       <div class="tv-lrc-line active" id="tvMainLyric">${escapeHtml(songTitle)}</div>
-      <div class="tv-lrc-line" style="font-size: 24px; opacity: 0.6;">🎤 ${escapeHtml(singerName)}</div>
-      <div style="font-size: 16px; color: #ff1673; margin-top: 15px;">No .LRC Lyrics file loaded for this song</div>`;
+      <div class="tv-lrc-line" style="font-size: 24px; opacity: 0.6;">🎤 ${escapeHtml(singerName)}</div>`;
     return;
   }
 
@@ -696,7 +933,7 @@ function updateLrcPlayback(currentTime) {
   }
 }
 
-const LOCAL_EXTENSIONS = [".mp3",".wav",".m4a",".aac",".ogg",".flac",".mp4",".webm",".mov",".mid",".midi",".kar"];
+const LOCAL_EXTENSIONS = [".mp3",".wav",".m4a",".aac",".ogg",".flac",".mp4",".webm",".mov",".mkv",".avi",".mid",".midi",".kar"];
 
 function isLocalKaraokeFile(file){
   const name = (file.name || "").toLowerCase();
@@ -704,17 +941,18 @@ function isLocalKaraokeFile(file){
   return LOCAL_EXTENSIONS.some(ext => name.endsWith(ext)) || type.startsWith("audio/") || type.startsWith("video/");
 }
 
-function setLocalFiles(files, folderName){
-  const supported = Array.from(files || []).filter(isLocalKaraokeFile);
-  state.localFiles = supported;
-  state.localFolderName = folderName || "";
+function appendLocalFiles(newFiles){
+  const supported = Array.from(newFiles || []).filter(isLocalKaraokeFile);
+  const combined = [...state.localFiles, ...supported];
+  
+  // Deduplicate
+  const uniqueMap = new Map();
+  combined.forEach(f => uniqueMap.set(f.name, f));
+  state.localFiles = Array.from(uniqueMap.values());
 
-  $("localStatus").textContent = supported.length
-    ? `${folderName ? folderName + " • " : ""}${supported.length} song(s) loaded`
-    : "No supported karaoke files found";
-
+  $("localStatus").textContent = `${state.localFiles.length} song(s) loaded in total`;
   renderFiles();
-  if(supported.length) toast(`Loaded ${supported.length} local song(s).`);
+  if(supported.length) toast(`Added ${supported.length} file(s) to library.`);
 }
 
 function setupLocalLibrary(){
@@ -730,11 +968,8 @@ function setupLocalLibrary(){
         const handle = await window.showDirectoryPicker();
         await saveDirectoryHandle(handle);
         $("localStatus").textContent = "Reading folder...";
-        const files = await scanDirectoryHandle(handle);
-        state.localFiles = files;
-        $("localStatus").textContent = `📁 ${handle.name} • ${files.length} track(s)`;
-        renderFiles();
-        toast(`Linked ${files.length} song(s) permanently.`);
+        const newFiles = await scanDirectoryHandle(handle);
+        appendLocalFiles(newFiles);
       } catch (err) {
         if (err.name !== "AbortError") toast("Could not open folder.");
       }
@@ -748,13 +983,11 @@ function setupLocalLibrary(){
   clearBtn.addEventListener("click", () => clearStoredHandle());
 
   folderInput.addEventListener("change", (e) => {
-    const files = Array.from(e.target.files || []);
-    let folderName = files.length && files[0].webkitRelativePath ? files[0].webkitRelativePath.split("/")[0] : "";
-    setLocalFiles(files, folderName);
+    appendLocalFiles(Array.from(e.target.files || []));
   });
 
   filesInput.addEventListener("change", (e) => {
-    setLocalFiles(Array.from(e.target.files || []), "Selected files");
+    appendLocalFiles(Array.from(e.target.files || []));
   });
 }
 
@@ -890,29 +1123,56 @@ $("search").addEventListener("input", renderFiles);
 function fileType(file) {
   const name = (file.name || "").toLowerCase();
   const mime = file.type || file.mimeType || "";
+  
   if (name.endsWith(".mid") || name.endsWith(".midi") || name.endsWith(".kar")) return "MIDI";
-  if (mime.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".webm")) return "VIDEO";
+  if (mime.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".webm") || name.endsWith(".mov") || name.endsWith(".mkv") || name.endsWith(".avi")) return "VIDEO";
   return "AUDIO";
+}
+
+/* STRICT CATEGORY CLASSIFICATION ENGINE */
+function matchesCategory(file) {
+  const type = fileType(file);
+  const name = (file.name || "").toLowerCase();
+
+  if (currentCategory === "music") {
+    // MP3 MUSIC: Show strictly audio files ONLY
+    return type === "AUDIO";
+  }
+  
+  if (currentCategory === "movie") {
+    // MOVIE: Show strictly video files ONLY
+    return type === "VIDEO";
+  }
+
+  if (currentCategory === "ktv") {
+    // KTV SONGS: Show Karaoke, MIDI, or files with paired .lrc lyrics
+    const titleKey = cleanTitle(file.name).toLowerCase().trim();
+    const hasLyrics = lrcStore.has(titleKey);
+    
+    return type === "MIDI" || hasLyrics || name.includes("karaoke") || name.includes("ktv");
+  }
+
+  return true;
 }
 
 function renderFiles(){
   const search = $("search").value.toLowerCase().trim();
   $("files").innerHTML = "";
 
-  const drive = state.driveFiles.filter(file => file.name.toLowerCase().includes(search));
-  const local = state.localFiles.filter(file => file.name.toLowerCase().includes(search));
+  const drive = state.driveFiles.filter(file => file.name.toLowerCase().includes(search) && matchesCategory(file));
+  const local = state.localFiles.filter(file => file.name.toLowerCase().includes(search) && matchesCategory(file));
 
   if(!local.length && !drive.length){
-    $("files").innerHTML = `<div style="padding:20px;text-align:center;color:#555;">No karaoke files found.</div>`;
+    $("files").innerHTML = `<div style="padding:20px;text-align:center;color:#555;">No files found in this category.</div>`;
     return;
   }
 
   if(local.length){
     const heading = document.createElement("div");
     heading.className = "library-heading";
-    heading.textContent = "💻 LOCAL SONGS";
+    heading.textContent = "💻 LOCAL FILES";
     $("files").appendChild(heading);
-    local.forEach(file => renderSongItem(file, "local"));
+    local.forEach((file, index) => renderSongItem(file, "local", index));
   }
 
   if(drive.length){
@@ -920,17 +1180,39 @@ function renderFiles(){
     heading.className = "library-heading";
     heading.textContent = "☁ GOOGLE DRIVE";
     $("files").appendChild(heading);
-    drive.forEach(file => renderSongItem(file, "drive"));
+    drive.forEach((file, index) => renderSongItem(file, "drive", index));
   }
 }
 
-function renderSongItem(file, source) {
+function renderSongItem(file, source, index) {
   const item = document.createElement("div");
   item.className = `file ${source === "local" ? "local-file" : ""}`;
   const title = cleanTitle(file.name);
-  item.innerHTML = `<div class="file-title">${escapeHtml(title)}</div><div class="file-meta">${fileType(file)} • ${source.toUpperCase()}</div>`;
+  
+  let deleteBtnHtml = isAdminMode ? `<button class="btn red small" style="margin-left: 8px;" onclick="event.stopPropagation(); deleteSongFromLibrary('${source}', ${index})">✕ Remove</button>` : "";
+
+  item.innerHTML = `
+    <div>
+      <div class="file-title">${escapeHtml(title)}</div>
+      <div class="file-meta">${fileType(file)} • ${source.toUpperCase()}</div>
+    </div>
+    ${deleteBtnHtml}
+  `;
+
   item.onclick = () => { addToQueue(file, source); toast(`Added "${title}" to queue.`); };
   $("files").appendChild(item);
+}
+
+function deleteSongFromLibrary(source, index) {
+  if (!isAdminMode) return;
+  if (source === "local") {
+    const deleted = state.localFiles.splice(index, 1);
+    toast(`Removed "${cleanTitle(deleted[0]?.name)}" from library.`);
+  } else if (source === "drive") {
+    const deleted = state.driveFiles.splice(index, 1);
+    toast(`Removed "${cleanTitle(deleted[0]?.name)}" from drive view.`);
+  }
+  renderFiles();
 }
 
 function addToQueue(file, source) {
