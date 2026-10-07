@@ -324,7 +324,6 @@ function applyUserSession(userObj) {
 }
 
 function setupUIEventListeners() {
-  // Modal toggles
   $("settingsButton").onclick = () => { $("singerInput").value = state.singer; $("settingsModal").classList.add("show"); };
   $("closeSettings").onclick = () => $("settingsModal").classList.remove("show");
   $("saveSettings").onclick = () => {
@@ -333,7 +332,6 @@ function setupUIEventListeners() {
     toast(`Singer updated to: ${state.singer}`);
   };
 
-  // Google Auth Button
   $("loginButton").onclick = () => {
     if (tokenClient) {
       tokenClient.requestAccessToken({ prompt: 'consent' });
@@ -342,7 +340,6 @@ function setupUIEventListeners() {
     }
   };
 
-  // Local file uploads
   $("selectLocalFiles").onclick = () => $("localFilesInput").click();
   $("localFilesInput").onchange = (e) => {
     state.localFiles = Array.from(e.target.files);
@@ -351,10 +348,8 @@ function setupUIEventListeners() {
     toast(`Loaded ${state.localFiles.length} local files.`);
   };
 
-  // Search filter
   $("search").oninput = () => renderFiles();
 
-  // Transport controls simulation
   $("playButton").onclick = () => {
     if (state.queue.length === 0) return toast("Queue is empty!");
     state.playing = !state.playing;
@@ -368,7 +363,6 @@ function setupUIEventListeners() {
   };
 }
 
-// Google Drive Initialization
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);
 }
@@ -400,16 +394,20 @@ async function initGoogleAuth(token) {
 
 async function loadDriveFolder(folderId) {
   try {
+    if (!gapi.client || !gapi.client.drive) {
+      throw new Error("GAPI client not initialized");
+    }
     const res = await gapi.client.drive.files.list({
       q: `'${folderId}' in parents and (mimeType contains 'audio/' or mimeType contains 'video/' or mimeType = 'application/vnd.google-apps.folder') and trashed = false`,
       fields: "files(id, name, mimeType)"
     });
     state.driveFiles = res.result.files || [];
-    $("driveStatus").textContent = `Connected • ${state.driveFiles.length} file(s) found`;
+    $("driveStatus").textContent = `Connected • ${state.driveFiles.length} file(s)`;
     renderFiles();
   } catch (err) {
     console.error("Drive load error:", err);
-    $("driveStatus").textContent = "Drive sync error";
+    $("driveStatus").textContent = "Drive sync error - Please log in again";
+    localStorage.removeItem('karaoke_auth_token');
   }
 }
 
