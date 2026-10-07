@@ -1,170 +1,201 @@
-<script>
-    const $ = id => document.getElementById(id);
-    let db = null;
-    let state = { localFiles: [], currentUser: null };
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW registration failed:', err));
-    }
-
-    function initIndexedDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open('KaraokeHubDB', 4);
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-                db = request.result;
-                resolve(db);
-            };
-            request.onupgradeneeded = (event) => {
-                const database = event.target.result;
-                if (!database.objectStoreNames.contains('handles')) {
-                    database.createObjectStore('handles', { keyPath: 'id', autoIncrement: true });
-                }
-                if (!database.objectStoreNames.contains('songs')) {
-                    database.createObjectStore('songs', { keyPath: 'name' });
-                }
-                if (!database.objectStoreNames.contains('lyrics')) {
-                    database.createObjectStore('lyrics', { keyPath: 'name' });
-                }
-            };
-        });
-    }
-
-    function toast(message) {
-        const t = $('toast');
-        t.textContent = message;
-        t.style.display = 'block';
-        setTimeout(() => { t.style.display = 'none'; }, 3000);
-    }
-
-    function handleLogin() {
-        const user = $('usernameInput').value.trim();
-        const pass = $('passwordInput').value.trim();
-
-        if (user === 'Ronel Tacocong' && pass === 'gege@635185') {
-            state.currentUser = { name: user, role: 'admin' };
-            document.body.classList.add('is-admin');
-            $('userBadge').textContent = `Admin: ${user}`;
-            $('loginModal').style.display = 'none';
-            toast('Logged in as Administrator');
-        } else if (user !== '') {
-            state.currentUser = { name: user, role: 'user' };
-            document.body.classList.remove('is-admin');
-            $('userBadge').textContent = `User: ${user}`;
-            $('loginModal').style.display = 'none';
-            toast('Logged in as Standard User');
-        } else {
-            alert('Please enter valid credentials.');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaraokeHub PRO</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --danger: #ef4444;
         }
-    }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-primary); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background-color: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        h1 { font-size: 1.5rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+        
+        .main-layout { display: grid; grid-template-columns: 320px 1fr; flex: 1; height: calc(100vh - 73px); overflow: hidden; }
+        
+        aside { background-color: var(--bg-secondary); border-right: 1px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; }
+        main { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; }
+        
+        .card { background-color: var(--bg-primary); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+        .card h3 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        .btn { background-color: var(--accent); color: white; border: none; padding: 0.65rem 1rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; text-align: center; }
+        .btn:hover { background-color: var(--accent-hover); }
+        .btn.danger { background-color: var(--danger); }
+        .btn.small { padding: 0.4rem 0.75rem; font-size: 0.875rem; }
 
-    function handleLogout() {
-        state.currentUser = null;
-        document.body.classList.remove('is-admin');
-        $('loginModal').style.display = 'flex';
-    }
+        body:not(.is-admin) .admin-only { display: none !important; }
 
-    async function storeDirectoryHandle(handle) {
-        const tx = db.transaction('handles', 'readwrite');
-        tx.objectStore('handles').put({ handle });
-    }
+        .song-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .song-item { background-color: var(--bg-secondary); padding: 0.75rem 1rem; border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; }
 
-    async function autoLoadPersistentStorage() {
-        try {
-            await initIndexedDB();
-            // Instantly restore cached song list from IndexedDB on refresh
-            const tx = db.transaction('songs', 'readonly');
-            const req = tx.objectStore('songs').getAll();
-            req.onsuccess = () => {
-                const savedSongs = req.result || [];
-                if (savedSongs.length > 0) {
-                    state.localFiles = savedSongs;
-                    renderFiles();
-                    $('localStatus').textContent = `📁 Library loaded • ${savedSongs.length} file(s)`;
-                } else {
-                    $('localStatus').textContent = 'Select folder to load songs';
-                }
-            };
-        } catch (err) {
-            $('localStatus').textContent = 'Select folder to load songs';
+        #loginModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--bg-secondary); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border); width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 1rem; }
+        input[type="text"], input[type="password"] { background: var(--bg-primary); border: 1px solid var(--border); padding: 0.75rem; border-radius: 0.5rem; color: white; width: 100%; }
+        
+        #toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--bg-secondary); border: 1px solid var(--accent); padding: 0.75rem 1.25rem; border-radius: 0.5rem; display: none; z-index: 1100; }
+    </style>
+</head>
+<body>
+
+    <!-- Login Modal -->
+    <div id="loginModal">
+        <div class="modal-content">
+            <h2>KaraokeHub PRO Login</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Admin Account: <strong>Ronel Tacocong</strong></p>
+            <input type="text" id="usernameInput" placeholder="Username / Email" value="Ronel Tacocong">
+            <input type="password" id="passwordInput" placeholder="Password" value="gege@635185">
+            <button class="btn" onclick="handleLogin()">Login to System</button>
+        </div>
+    </div>
+
+    <header>
+        <h1>🎤 KaraokeHub PRO</h1>
+        <div id="userInfo" style="display: flex; gap: 1rem; align-items: center;">
+            <span id="userBadge" style="font-size: 0.875rem; color: var(--text-muted);"></span>
+            <button class="btn small danger" onclick="handleLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <aside>
+            <div class="card">
+                <h3>Local Song Library</h3>
+                <p id="localStatus" style="font-size: 0.875rem; color: var(--text-muted);">Select a folder to load songs</p>
+                
+                <!-- Standard Folder Input (Bypasses refresh permission loss) -->
+                <input type="file" id="folderInput" webkitdirectory multiple style="display:none" onchange="handleFolderSelect(this.files)">
+                <button class="btn admin-only" type="button" onclick="$('folderInput').click()">📁 Select Song Folder</button>
+                <button class="btn danger admin-only small" type="button" onclick="clearLibraryStorage()">🗑️ Clear Library Data</button>
+            </div>
+        </aside>
+
+        <main>
+            <div class="card" style="flex: 1;">
+                <h3>Available Songs</h3>
+                <input type="text" id="searchInput" placeholder="Search songs..." oninput="filterSongs()">
+                <div id="songListContainer" class="song-list" style="margin-top: 1rem;">
+                    <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No songs loaded.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const $ = id => document.getElementById(id);
+        let state = { localFiles: [], currentUser: null };
+
+        function toast(message) {
+            const t = $('toast');
+            t.textContent = message;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
         }
-    }
 
-    async function openFolderPicker() {
-        if (!window.showDirectoryPicker) {
-            alert('Directory Picker API not supported in this browser.');
-            return;
-        }
-        try {
-            const handle = await window.showDirectoryPicker();
-            await storeDirectoryHandle(handle);
-            const files = await scanDirectoryHandle(handle);
-            state.localFiles = files;
+        function handleLogin() {
+            const user = $('usernameInput').value.trim();
+            const pass = $('passwordInput').value.trim();
 
-            // Save song names to IndexedDB so they persist across refreshes
-            const tx = db.transaction('songs', 'readwrite');
-            const store = tx.objectStore('songs');
-            store.clear();
-            files.forEach(f => store.put({ name: f.name }));
-
-            $('localStatus').textContent = `📁 1 folder • ${files.length} file(s)`;
-            renderFiles();
-            toast('Folder loaded and saved!');
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function scanDirectoryHandle(dirHandle) {
-        let files = [];
-        for await (const entry of dirHandle.values()) {
-            if (entry.kind === 'file' && (entry.name.endsWith('.mp3') || entry.name.endsWith('.wav') || entry.name.endsWith('.mid'))) {
-                files.push({ name: entry.name });
+            if (user === 'Ronel Tacocong' && pass === 'gege@635185') {
+                state.currentUser = { name: user, role: 'admin' };
+                document.body.classList.add('is-admin');
+                $('userBadge').textContent = `Admin: ${user}`;
+                $('loginModal').style.display = 'none';
+                toast('Logged in as Administrator');
+            } else if (user !== '') {
+                state.currentUser = { name: user, role: 'user' };
+                document.body.classList.remove('is-admin');
+                $('userBadge').textContent = `User: ${user}`;
+                $('loginModal').style.display = 'none';
+                toast('Logged in as Standard User');
+            } else {
+                alert('Please enter valid credentials.');
             }
         }
-        return files;
-    }
 
-    async function clearLibraryStorage() {
-        if (!confirm('Are you sure you want to clear stored library data?')) return;
-        const txHandles = db.transaction('handles', 'readwrite');
-        txHandles.objectStore('handles').clear();
-        const txSongs = db.transaction('songs', 'readwrite');
-        txSongs.objectStore('songs').clear();
-        
-        state.localFiles = [];
-        $('localStatus').textContent = 'Select folder to load songs';
-        renderFiles();
-        toast('Library data cleared');
-    }
-
-    function renderFiles() {
-        const container = $('songListContainer');
-        container.innerHTML = '';
-        if (state.localFiles.length === 0) {
-            container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No songs loaded.</p>`;
-            return;
+        function handleLogout() {
+            state.currentUser = null;
+            document.body.classList.remove('is-admin');
+            $('loginModal').style.display = 'flex';
         }
-        state.localFiles.forEach(file => {
-            const div = document.createElement('div');
-            div.className = 'song-item';
-            div.innerHTML = `<span>🎵 ${file.name}</span><button class="btn small" onclick="toast('Playing ${file.name}')">Play</button>`;
-            container.appendChild(div);
+
+        // Save song names to localStorage so they persist across refreshes reliably
+        function saveLibraryToStorage(files) {
+            const fileNames = Array.from(files)
+                .filter(f => f.name.match(/\.(mp3|wav|mid)$/i))
+                .map(f => f.name);
+            localStorage.setItem('karaoke_songs', JSON.stringify(fileNames));
+        }
+
+        function loadLibraryFromStorage() {
+            const saved = localStorage.getItem('karaoke_songs');
+            if (saved) {
+                try {
+                    const fileNames = JSON.parse(saved);
+                    if (fileNames.length > 0) {
+                        state.localFiles = fileNames.map(name => ({ name }));
+                        renderFiles();
+                        $('localStatus').textContent = `📁 Loaded • ${fileNames.length} file(s)`;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+
+        function handleFolderSelect(files) {
+            saveLibraryToStorage(files);
+            loadLibraryFromStorage();
+            toast('Song library saved successfully!');
+        }
+
+        function clearLibraryStorage() {
+            if (!confirm('Are you sure you want to clear the library?')) return;
+            localStorage.removeItem('karaoke_songs');
+            state.localFiles = [];
+            renderFiles();
+            $('localStatus').textContent = 'Select a folder to load songs';
+            toast('Library data cleared');
+        }
+
+        function renderFiles() {
+            const container = $('songListContainer');
+            container.innerHTML = '';
+            if (state.localFiles.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No songs loaded.</p>`;
+                return;
+            }
+            state.localFiles.forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'song-item';
+                div.innerHTML = `<span>🎵 ${file.name}</span><button class="btn small" onclick="toast('Playing ${file.name}')">Play</button>`;
+                container.appendChild(div);
+            });
+        }
+
+        function filterSongs() {
+            const query = $('searchInput').value.toLowerCase();
+            document.querySelectorAll('.song-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLibraryFromStorage();
         });
-    }
-
-    function filterSongs() {
-        const query = $('searchInput').value.toLowerCase();
-        const items = document.querySelectorAll('.song-item');
-        items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            item.style.display = text.includes(query) ? 'flex' : 'none';
-        });
-    }
-
-    function handleLrcFiles(files) {
-        toast(`Loaded ${files.length} LRC lyric file(s)`);
-    }
-
-    window.addEventListener('DOMContentLoaded', autoLoadPersistentStorage);
-</script>
+    </script>
+</body>
+</html>
