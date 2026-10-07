@@ -1,4 +1,4 @@
-const CACHE_NAME = 'karaokehub-v1';
+const CACHE_NAME = 'karaokehub-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -33,7 +33,7 @@ self.addEventListener('activate', (event) => {
 
 // Fetch Event - Serves cached assets or falls back to live network requests
 self.addEventListener('fetch', (event) => {
-  // Skip intercepting dynamic Google Drive API calls
+  // Skip intercepting dynamic Google Drive API calls (Target folder ID: p0j0hSPDRRn9u)
   if (event.request.url.includes('googleapis.com')) {
     return;
   }
