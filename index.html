@@ -263,14 +263,14 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
   <div class="local-library">
     <div class="local-library-title">💻 LOCAL SONG LIBRARY</div>
     <div class="local-library-buttons">
-      <button class="btn small" type="button" id="openLocalFolder">📁 Choose KARAOKE Folder</button>
-      <button class="btn small" type="button" id="selectLocalFiles">🎵 Choose Songs</button>
+      <button class="btn small" type="button" id="openLocalFolder">📁 Select Persistent Folder</button>
+      <button class="btn small" type="button" id="selectLocalFiles">🎵 Select Songs</button>
       <button class="btn small" type="button" id="selectLrcFiles" style="grid-column: 1/3; margin-top:4px;">📝 Load .LRC Lyrics</button>
-      <button class="btn red small" type="button" id="clearStoredLibrary" style="grid-column: 1/3; margin-top:4px;">🗑 Clear Saved Songs</button>
+      <button class="btn red small" type="button" id="clearStoredLibrary" style="grid-column: 1/3; margin-top:4px;">🗑 Clear Saved Handle</button>
     </div>
-    <div class="local-folder-name" id="localStatus">Loading persistent storage...</div>
+    <div class="local-folder-name" id="localStatus">Checking saved library...</div>
     <div class="local-picker-help">
-      Songs & lyrics auto-save to browser database for offline use.
+      Click <b>"📁 Select Persistent Folder"</b> to link your songs directory.
     </div>
     <input id="localFolderInput" type="file" webkitdirectory multiple hidden>
     <input id="localFilesInput" type="file" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mid,.midi,.kar" multiple hidden>
@@ -288,7 +288,7 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 
   <div id="files">
     <div style="padding:20px;color:#555;text-align:center;">
-      Use 📁 Choose KARAOKE Folder or 🎵 Choose Songs to load tracks.
+      Use 📁 Select Persistent Folder to link your songs directory.
     </div>
   </div>
 </aside>
@@ -465,96 +465,112 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-/* INDEXEDDB PERSISTENT STORAGE ENGINE */
-const DB_NAME = "KaraokeHubDB";
+/* INDEXEDDB FOR PERSISTENT FILE SYSTEM HANDLES & LYRICS */
+const DB_NAME = "KaraokeHubFS_DB";
 const DB_VERSION = 1;
 let db = null;
 
 function initIndexedDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
-
     request.onupgradeneeded = (e) => {
       const database = e.target.result;
-      if (!database.objectStoreNames.contains("songs")) {
-        database.createObjectStore("songs", { keyPath: "name" });
-      }
-      if (!database.objectStoreNames.contains("lyrics")) {
-        database.createObjectStore("lyrics", { keyPath: "name" });
-      }
+      if (!database.objectStoreNames.contains("handles")) database.createObjectStore("handles");
+      if (!database.objectStoreNames.contains("lyrics")) database.createObjectStore("lyrics", { keyPath: "name" });
     };
-
-    request.onsuccess = (e) => {
-      db = e.target.result;
-      resolve(db);
-    };
-
+    request.onsuccess = (e) => { db = e.target.result; resolve(db); };
     request.onerror = (e) => reject("IndexedDB error: " + e.target.errorCode);
   });
 }
 
-async function saveSongsToDB(files) {
+async function saveDirectoryHandle(handle) {
   if (!db) return;
-  const tx = db.transaction("songs", "readwrite");
-  const store = tx.objectStore("songs");
+  const tx = db.transaction("handles", "readwrite");
+  tx.objectStore("handles").put(handle, "folderHandle");
+}
 
-  for (let file of files) {
-    const arrayBuffer = await file.arrayBuffer();
-    const blob = new Blob([arrayBuffer], { type: file.type });
-    store.put({ name: file.name, type: file.type, data: blob });
-  }
+async function getStoredDirectoryHandle() {
+  if (!db) return null;
+  return new Promise((resolve) => {
+    const tx = db.transaction("handles", "readonly");
+    const req = tx.objectStore("handles").get("folderHandle");
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = () => resolve(null);
+  });
 }
 
 async function saveLyricToDB(name, content) {
   if (!db) return;
   const tx = db.transaction("lyrics", "readwrite");
-  const store = tx.objectStore("lyrics");
-  store.put({ name: name, content: content });
+  tx.objectStore("lyrics").put({ name: name, content: content });
 }
 
-async function loadLibraryFromDB() {
+async function clearStoredHandle() {
   if (!db) return;
-
-  // 1. Load Stored Song Files
-  const songTx = db.transaction("songs", "readonly");
-  const songStore = songTx.objectStore("songs");
-  const songsReq = songStore.getAll();
-
-  songsReq.onsuccess = () => {
-    const records = songsReq.result || [];
-    if (records.length > 0) {
-      state.localFiles = records.map(r => new File([r.data], r.name, { type: r.type }));
-      $("localStatus").textContent = `Saved Database • ${state.localFiles.length} song(s)`;
-      renderFiles();
-    } else {
-      $("localStatus").textContent = "No saved local songs";
-    }
-  };
-
-  // 2. Load Stored Lyrics
-  const lyricTx = db.transaction("lyrics", "readonly");
-  const lyricStore = lyricTx.objectStore("lyrics");
-  const lyricsReq = lyricStore.getAll();
-
-  lyricsReq.onsuccess = () => {
-    const records = lyricsReq.result || [];
-    records.forEach(r => {
-      lrcStore.set(r.name, parseLRC(r.content));
-    });
-  };
-}
-
-async function clearIndexedDB() {
-  if (!db) return;
-  const tx = db.transaction(["songs", "lyrics"], "readwrite");
-  tx.objectStore("songs").clear();
+  const tx = db.transaction(["handles", "lyrics"], "readwrite");
+  tx.objectStore("handles").clear();
   tx.objectStore("lyrics").clear();
-  
   state.localFiles = [];
   lrcStore.clear();
-  $("localStatus").textContent = "No saved local songs";
+  $("localStatus").textContent = "No persistent folder linked";
   renderFiles();
-  toast("Saved library cleared.");
+  toast("Persistent handle cleared.");
+}
+
+/* READ FILE SYSTEM HANDLE RECURSIVELY */
+async function scanDirectoryHandle(dirHandle) {
+  const files = [];
+  for await (const entry of dirHandle.values()) {
+    if (entry.kind === "file") {
+      const file = await entry.getFile();
+      if (isLocalKaraokeFile(file)) files.push(file);
+      if (file.name.endsWith(".lrc") || file.name.endsWith(".txt")) {
+        const text = await file.text();
+        const key = cleanTitle(file.name).toLowerCase().trim();
+        lrcStore.set(key, parseLRC(text));
+      }
+    } else if (entry.kind === "directory") {
+      const subFiles = await scanDirectoryHandle(entry);
+      files.push(...subFiles);
+    }
+  }
+  return files;
+}
+
+async function autoLoadPersistentStorage() {
+  try {
+    await initIndexedDB();
+
+    // 1. Restore Lyrics
+    const lyricTx = db.transaction("lyrics", "readonly");
+    const lyricsReq = lyricTx.objectStore("lyrics").getAll();
+    lyricsReq.onsuccess = () => {
+      (lyricsReq.result || []).forEach(r => lrcStore.set(r.name, parseLRC(r.content)));
+    };
+
+    // 2. Restore Folder Handle
+    const handle = await getStoredDirectoryHandle();
+    if (handle) {
+      if (typeof handle.queryPermission === "function") {
+        const options = { mode: "read" };
+        let permission = await handle.queryPermission(options);
+        if (permission !== "granted") {
+          permission = await handle.requestPermission(options);
+        }
+        if (permission === "granted") {
+          $("localStatus").textContent = "Re-scanning linked folder...";
+          const files = await scanDirectoryHandle(handle);
+          state.localFiles = files;
+          $("localStatus").textContent = `📁 ${handle.name} • ${files.length} track(s)`;
+          renderFiles();
+          return;
+        }
+      }
+    }
+    $("localStatus").textContent = "No persistent folder linked";
+  } catch (err) {
+    $("localStatus").textContent = "Select folder to load songs";
+  }
 }
 
 window.addEventListener("load", async () => {
@@ -576,12 +592,7 @@ window.addEventListener("load", async () => {
   initTVRemoteNavigation();
   initTvStageController();
 
-  try {
-    await initIndexedDB();
-    await loadLibraryFromDB();
-  } catch (err) {
-    $("localStatus").textContent = "Database unavailable";
-  }
+  await autoLoadPersistentStorage();
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -623,7 +634,7 @@ function setupLrcLoader() {
       await saveLyricToDB(key, text);
       count++;
     }
-    toast(`Saved ${count} .LRC lyric file(s) to browser storage.`);
+    toast(`Saved ${count} .LRC lyric file(s).`);
   };
 }
 
@@ -693,21 +704,17 @@ function isLocalKaraokeFile(file){
   return LOCAL_EXTENSIONS.some(ext => name.endsWith(ext)) || type.startsWith("audio/") || type.startsWith("video/");
 }
 
-async function setLocalFiles(files, folderName){
+function setLocalFiles(files, folderName){
   const supported = Array.from(files || []).filter(isLocalKaraokeFile);
   state.localFiles = supported;
   state.localFolderName = folderName || "";
 
   $("localStatus").textContent = supported.length
-    ? `Saving ${supported.length} song(s) to browser database...`
+    ? `${folderName ? folderName + " • " : ""}${supported.length} song(s) loaded`
     : "No supported karaoke files found";
 
   renderFiles();
-  if(supported.length) {
-    await saveSongsToDB(supported);
-    $("localStatus").textContent = `${folderName ? folderName + " • " : ""}${supported.length} song(s) saved in browser DB`;
-    toast(`Saved ${supported.length} local song(s) permanently.`);
-  }
+  if(supported.length) toast(`Loaded ${supported.length} local song(s).`);
 }
 
 function setupLocalLibrary(){
@@ -717,9 +724,28 @@ function setupLocalLibrary(){
   const filesInput = $("localFilesInput");
   const clearBtn = $("clearStoredLibrary");
 
-  folderButton.addEventListener("click", () => { folderInput.value = ""; folderInput.click(); });
+  folderButton.addEventListener("click", async () => {
+    if ("showDirectoryPicker" in window) {
+      try {
+        const handle = await window.showDirectoryPicker();
+        await saveDirectoryHandle(handle);
+        $("localStatus").textContent = "Reading folder...";
+        const files = await scanDirectoryHandle(handle);
+        state.localFiles = files;
+        $("localStatus").textContent = `📁 ${handle.name} • ${files.length} track(s)`;
+        renderFiles();
+        toast(`Linked ${files.length} song(s) permanently.`);
+      } catch (err) {
+        if (err.name !== "AbortError") toast("Could not open folder.");
+      }
+    } else {
+      folderInput.value = "";
+      folderInput.click();
+    }
+  });
+
   filesButton.addEventListener("click", () => { filesInput.value = ""; filesInput.click(); });
-  clearBtn.addEventListener("click", () => clearIndexedDB());
+  clearBtn.addEventListener("click", () => clearStoredHandle());
 
   folderInput.addEventListener("change", (e) => {
     const files = Array.from(e.target.files || []);
@@ -884,7 +910,7 @@ function renderFiles(){
   if(local.length){
     const heading = document.createElement("div");
     heading.className = "library-heading";
-    heading.textContent = "💻 LOCAL SONGS (SAVED)";
+    heading.textContent = "💻 LOCAL SONGS";
     $("files").appendChild(heading);
     local.forEach(file => renderSongItem(file, "local"));
   }
