@@ -368,14 +368,14 @@ body.is-admin .admin-only-flex { display: flex !important; }
 
 <body>
 
-<!-- APP ACCESS AUTHENTICATION GATE (EMAIL BASED) -->
+<!-- APP ACCESS AUTHENTICATION GATE -->
 <div id="appAuthGate">
   <div class="auth-card">
     <h1>🎤 KaraokeHub PRO</h1>
-    <p>Sign in with your email address to access the app</p>
+    <p>Sign in with your email or username to access the app</p>
     <div class="auth-form-group">
-      <label>Email Address</label>
-      <input type="email" id="appEmailInput" placeholder="Enter Email Address">
+      <label>Email Address or Username</label>
+      <input type="text" id="appEmailInput" placeholder="Ronel Tacocong or email">
     </div>
     <div class="auth-form-group">
       <label>Password</label>
@@ -593,9 +593,20 @@ const GOOGLE_CLIENT_ID = "57045846413-tgddgirr6b5cjskf3k5jf9g4rkagn8p0.apps.goog
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly";
 
 let usersDatabase = JSON.parse(localStorage.getItem("khUsers")) || [
-  { email: "ronel@admin.com", pass: "gege@635185", role: "admin", user: "Ronel" },
+  { email: "ronel.tacocong@admin.com", pass: "gege@635185", role: "admin", user: "Ronel Tacocong" },
   { email: "singer@karaokehub.com", pass: "1234", role: "user", user: "Singer" }
 ];
+
+// Ensure admin credentials match Ronel Tacocong & gege@635185 and clear old cached state
+usersDatabase = usersDatabase.map(u => {
+  if (u.role === "admin") {
+    u.user = "Ronel Tacocong";
+    u.email = "ronel.tacocong@admin.com";
+    u.pass = "gege@635185";
+  }
+  return u;
+});
+localStorage.setItem("khUsers", JSON.stringify(usersDatabase));
 
 let currentUser = null;
 let isAdminMode = false;
@@ -648,7 +659,11 @@ function setupAppAuth() {
   if (savedSession) {
     try {
       const userObj = JSON.parse(savedSession);
-      const exists = usersDatabase.find(u => u.email.toLowerCase() === userObj.email.toLowerCase() && u.pass === userObj.pass);
+      const exists = usersDatabase.find(u => 
+        ((u.email && u.email.toLowerCase() === (userObj.email || userObj.user || "").toLowerCase()) || 
+         (u.user && u.user.toLowerCase() === (userObj.user || "").toLowerCase())) && 
+        u.pass === userObj.pass
+      );
       if (exists) {
         applyUserSession(exists);
       }
@@ -658,17 +673,21 @@ function setupAppAuth() {
   }
 
   $("loginAppBtn").onclick = () => {
-    const email = $("appEmailInput").value.trim().toLowerCase();
+    const inputVal = $("appEmailInput").value.trim().toLowerCase();
     const pass = $("appPasswordInput").value.trim();
 
-    const matched = usersDatabase.find(u => u.email.toLowerCase() === email && u.pass === pass);
+    const matched = usersDatabase.find(u => 
+      ((u.email && u.email.toLowerCase() === inputVal) || 
+       (u.user && u.user.toLowerCase() === inputVal)) && 
+      u.pass === pass
+    );
 
     if (matched) {
       localStorage.setItem("khActiveUser", JSON.stringify(matched));
       applyUserSession(matched);
       toast(`Welcome, ${matched.user || matched.email}!`);
     } else {
-      toast("Invalid email address or password!");
+      toast("Invalid email address/username or password!");
     }
   };
 
@@ -744,8 +763,8 @@ function renderUserList() {
 
     item.innerHTML = `
       <div>
-        <span>${escapeHtml(u.email)}</span>
-        <em>(Pass: ${escapeHtml(u.pass)})</em>
+        <span>${escapeHtml(u.user || u.email)}</span>
+        <em>(${escapeHtml(u.email)})</em>
       </div>
       ${deleteBtnHtml}
     `;
