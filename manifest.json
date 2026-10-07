@@ -1,0 +1,25 @@
+{
+  "name": "KaraokeHub PRO",
+  "short_name": "KaraokeHub",
+  "description": "Professional Karaoke Player with Google Drive & Local Library Support",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#050507",
+  "theme_color": "#ff1673",
+  "categories": ["entertainment", "music"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
