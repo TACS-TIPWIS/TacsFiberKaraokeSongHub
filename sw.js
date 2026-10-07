@@ -1,4 +1,4 @@
-const CACHE_NAME = 'karaokehub-v2';
+const CACHE_NAME = 'karaokehub-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -9,7 +9,7 @@ const ASSETS_TO_CACHE = [
   'https://cdn.jsdelivr.net/npm/midiconvert@0.4.4/build/MidiConvert.min.js'
 ];
 
-// Install Event - Caches essential web app assets
+// Install Event - Caches essential assets immediately
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -19,7 +19,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate Event - Cleans up old caches when updating
+// Activate Event - Instantly purges outdated caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -31,16 +31,28 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event - Serves cached assets or falls back to live network requests
+// Fetch Event - Network-First strategy for dynamic updates
 self.addEventListener('fetch', (event) => {
-  // Skip intercepting dynamic Google Drive API calls (Target folder ID: p0j0hSPDRRn9u)
+  // Skip intercepting Google Drive API or external media streams
   if (event.request.url.includes('googleapis.com')) {
     return;
   }
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If online and fetch succeeds, clone it and update the cache dynamically
+        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Fallback to cache if the user is offline
+        return caches.match(event.request);
+      })
   );
 });
