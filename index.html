@@ -595,8 +595,22 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-/* AUTHENTICATION & USER MANAGEMENT */
+/* PERSISTENT AUTHENTICATION ENGINE */
 function setupAppAuth() {
+  // Check for existing session in localStorage
+  const savedSession = localStorage.getItem("khActiveUser");
+  if (savedSession) {
+    try {
+      const userObj = JSON.parse(savedSession);
+      const exists = usersDatabase.find(u => u.user.toLowerCase() === userObj.user.toLowerCase() && u.pass === userObj.pass);
+      if (exists) {
+        applyUserSession(exists);
+      }
+    } catch (err) {
+      localStorage.removeItem("khActiveUser");
+    }
+  }
+
   $("loginAppBtn").onclick = () => {
     const user = $("appUsernameInput").value.trim();
     const pass = $("appPasswordInput").value.trim();
@@ -604,19 +618,9 @@ function setupAppAuth() {
     const matched = usersDatabase.find(u => u.user.toLowerCase() === user.toLowerCase() && u.pass === pass);
 
     if (matched) {
-      currentUser = matched;
-      isAdminMode = matched.role === "admin";
-      $("activeUserLabel").textContent = matched.user;
-      
-      if (isAdminMode) {
-        document.body.classList.add("is-admin");
-      } else {
-        document.body.classList.remove("is-admin");
-      }
-
-      $("appAuthGate").style.display = "none";
+      localStorage.setItem("khActiveUser", JSON.stringify(matched));
+      applyUserSession(matched);
       toast(`Welcome, ${matched.user}!`);
-      renderFiles();
     } else {
       toast("Invalid username or password!");
     }
@@ -625,6 +629,7 @@ function setupAppAuth() {
   $("logoutAppBtn").onclick = () => {
     currentUser = null;
     isAdminMode = false;
+    localStorage.removeItem("khActiveUser");
     document.body.classList.remove("is-admin");
     $("appUsernameInput").value = "";
     $("appPasswordInput").value = "";
@@ -656,6 +661,21 @@ function setupAppAuth() {
     renderUserList();
     toast(`Account for "${u}" created!`);
   };
+}
+
+function applyUserSession(userObj) {
+  currentUser = userObj;
+  isAdminMode = userObj.role === "admin";
+  $("activeUserLabel").textContent = userObj.user;
+  
+  if (isAdminMode) {
+    document.body.classList.add("is-admin");
+  } else {
+    document.body.classList.remove("is-admin");
+  }
+
+  $("appAuthGate").style.display = "none";
+  renderFiles();
 }
 
 function renderUserList() {
