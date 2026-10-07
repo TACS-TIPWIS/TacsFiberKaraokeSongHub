@@ -140,7 +140,7 @@ html, body{
 
 #lyricsStage{ position:relative; z-index:3; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px 20px; overflow:hidden; }
 
-/* HIDE LYRICS STAGE CONTENT IN VIDEO MODE TO PREVENT OVERLAP */
+/* HIDE OVERLAY CONTENT IN VIDEO MODE */
 #stage.video-mode #lyricsStage { display: none !important; }
 
 #idleScreen{ text-align:center; color:#888; padding:20px; max-width: 80%; margin: 0 auto; }
@@ -419,7 +419,7 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 <div id="toast"></div>
 
 <script>
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "57045846413-tgddgirr6b5cjskf3k5jf9g4rkagn8p0.apps.googleusercontent.com";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly";
 
 const state = {
