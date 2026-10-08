@@ -3,14 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KaraokeHub PRO 🎤</title>
 
-<!-- PWA Manifest & App Metadata -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ff1673">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KaraokeHub">
+<title>KaraokeHub PRO 🎤</title>
 
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -18,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/midiconvert@0.4.4/build/MidiConvert.min.js"></script>
 
 <style>
+
 :root{
   --pink:#ff1673;
   --pink2:#ff4f9a;
@@ -34,38 +29,40 @@
   --muted:#858592;
 }
 
-*{ box-sizing:border-box; }
+*{
+  box-sizing:border-box;
+}
 
-html, body{
+html,
+body{
   margin:0;
   width:100%;
   height:100%;
   background:#000;
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
   overflow:hidden;
 }
 
-/* TV REMOTE FOCUS STYLES */
-*:focus {
-  outline: 3px solid var(--pink) !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 15px var(--pink) !important;
-}
-
-.file:focus, .queue-item:focus {
-  border-color: var(--pink) !important;
-  background: #351325 !important;
-}
-
+/* MAIN APPLICATION */
 #app{
   height:100vh;
   display:grid;
   grid-template-columns:320px 1fr 350px;
   grid-template-rows:64px 1fr 105px;
-  background: radial-gradient(circle at 50% 0%, #29102a 0%, #08080c 45%, #020203 100%);
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      #29102a 0%,
+      #08080c 45%,
+      #020203 100%
+    );
 }
 
+/* TOP BAR */
 #topbar{
   grid-column:1/4;
   display:flex;
@@ -76,11 +73,32 @@ html, body{
   border-bottom:1px solid var(--border);
 }
 
-.logo{ font-size:22px; font-weight:900; letter-spacing:.5px; color:var(--pink); }
-.logo span{ color:#fff; }
-.top-center{ display:flex; gap:8px; align-items:center; }
-.status{ font-size:12px; color:var(--muted); }
-.top-actions{ display:flex; gap:6px; }
+.logo{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:.5px;
+  color:var(--pink);
+}
+
+.logo span{
+  color:#fff;
+}
+
+.top-center{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.status{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.top-actions{
+  display:flex;
+  gap:6px;
+}
 
 .btn{
   border:1px solid var(--border);
@@ -92,13 +110,37 @@ html, body{
   font-weight:bold;
   transition:.15s;
 }
-.btn:hover{ background:#292932; border-color:#444450; }
-.btn.primary{ background:var(--pink); border-color:var(--pink); }
-.btn.primary:hover{ background:var(--pink2); }
-.btn.green{ background:#087a49; border-color:#087a49; }
-.btn.red{ background:#9c1f2d; border-color:#9c1f2d; }
-.btn.small{ padding:5px 8px; font-size:11px; }
 
+.btn:hover{
+  background:#292932;
+  border-color:#444450;
+}
+
+.btn.primary{
+  background:var(--pink);
+  border-color:var(--pink);
+}
+
+.btn.primary:hover{
+  background:var(--pink2);
+}
+
+.btn.green{
+  background:#087a49;
+  border-color:#087a49;
+}
+
+.btn.red{
+  background:#9c1f2d;
+  border-color:#9c1f2d;
+}
+
+.btn.small{
+  padding:5px 8px;
+  font-size:11px;
+}
+
+/* SONGBOOK */
 #songbook{
   border-right:1px solid var(--border);
   background:rgba(10,10,14,.96);
@@ -107,94 +149,602 @@ html, body{
   flex-direction:column;
 }
 
-.section-title{ padding:14px 15px 8px; font-size:12px; color:#aaa; text-transform:uppercase; letter-spacing:1px; }
-.search{ margin:8px 12px; padding:11px; border-radius:7px; border:1px solid var(--border); outline:none; background:#08080c; color:#fff; width:calc(100% - 24px); }
-.library-tabs{ display:flex; padding:4px 10px 8px; gap:4px; }
-.library-tabs button{ flex:1; background:#18181f; color:#aaa; border:0; border-radius:5px; padding:7px; cursor:pointer; font-size:11px; }
-.library-tabs button.active{ color:#fff; background:#35202b; }
+.section-title{
+  padding:14px 15px 8px;
+  font-size:12px;
+  color:#aaa;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
 
-#files{ flex:1; overflow-y:auto; padding:5px 10px 15px; }
-.file{ padding:11px; margin-bottom:5px; border:1px solid transparent; border-radius:7px; cursor:pointer; background:#101015; }
-.file:hover{ background:#19191f; }
-.file.selected{ background:#351325; border-color:#8b2850; }
-.file-title{ font-size:13px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.file-meta{ margin-top:4px; color:#6f6f79; font-size:10px; }
+.search{
+  margin:8px 12px;
+  padding:11px;
+  border-radius:7px;
+  border:1px solid var(--border);
+  outline:none;
+  background:#08080c;
+  color:#fff;
+  width:calc(100% - 24px);
+}
 
-#stage{ position:relative; overflow:hidden; display:flex; flex-direction:column; min-width:0; background:#05070b; isolation:isolate; }
-#visualizer{ position:absolute; inset:0; width:100%; height:100%; opacity:.16; pointer-events:none; z-index:1; }
-#videoPlayer{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:none; z-index:2; background:#000; }
+.library-tabs{
+  display:flex;
+  padding:4px 10px 8px;
+  gap:4px;
+}
+
+.library-tabs button{
+  flex:1;
+  background:#18181f;
+  color:#aaa;
+  border:0;
+  border-radius:5px;
+  padding:7px;
+  cursor:pointer;
+  font-size:11px;
+}
+
+.library-tabs button.active{
+  color:#fff;
+  background:#35202b;
+}
+
+#files{
+  flex:1;
+  overflow-y:auto;
+  padding:5px 10px 15px;
+}
+
+.file{
+  padding:11px;
+  margin-bottom:5px;
+  border:1px solid transparent;
+  border-radius:7px;
+  cursor:pointer;
+  background:#101015;
+}
+
+.file:hover{
+  background:#19191f;
+}
+
+.file.selected{
+  background:#351325;
+  border-color:#8b2850;
+}
+
+.file-title{
+  font-size:13px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.file-meta{
+  margin-top:4px;
+  color:#6f6f79;
+  font-size:10px;
+}
+
+/* PROFESSIONAL KARAOKE PERFORMANCE STAGE */
+#stage{
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  background:#05070b;
+  isolation:isolate;
+}
+
+#visualizer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:.16;
+  pointer-events:none;
+  z-index:1;
+}
+
+#videoPlayer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
+  z-index:0;
+  background:#000;
+}
+
+#stage::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(0,0,0,.78) 0,rgba(0,0,0,.18) 18%,transparent 40%,rgba(0,0,0,.14) 72%,rgba(0,0,0,.78) 100%);
+}
 
 #stageHeader{
-  position:relative; z-index:4; min-height:78px; padding:14px 20px 12px; display:flex; justify-content:space-between; align-items:flex-start; gap:20px;
-  border-bottom:1px solid rgba(255,255,255,.08); background:linear-gradient(to bottom,rgba(3,5,9,.94),rgba(3,5,9,.42)); backdrop-filter:blur(8px);
+  position:relative;
+  z-index:4;
+  min-height:78px;
+  padding:14px 20px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(to bottom,rgba(3,5,9,.94),rgba(3,5,9,.42));
+  backdrop-filter:blur(8px);
 }
-.stage-song-info{ min-width:0; max-width:72%; }
-#songTitle{ font-size:21px; line-height:1.12; font-weight:900; color:#fff; letter-spacing:.1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 8px #000; }
-#singerName{ display:inline-flex; align-items:center; gap:6px; color:#42d9ff; font-size:12px; font-weight:800; margin-top:6px; letter-spacing:.7px; text-transform:uppercase; }
-#singerName::before{ content:"🎤"; font-size:12px; }
-.stage-right{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
-.stage-badge{ padding:6px 10px; border:1px solid rgba(42,190,255,.8); border-radius:7px; color:#fff; background:rgba(0,100,150,.25); font-size:10px; font-weight:900; letter-spacing:.8px; box-shadow:0 0 14px rgba(0,180,255,.15); }
-#stageTimer{ min-width:105px; text-align:right; color:#fff; font-family:monospace; font-size:14px; font-weight:800; text-shadow:0 2px 8px #000; }
-#stageProgress{ position:absolute; left:20px; right:20px; bottom:-1px; height:4px; z-index:5; overflow:hidden; border-radius:4px; background:rgba(255,255,255,.2); }
-#stageProgressBar{ width:0%; height:100%; background:#18bfff; box-shadow:0 0 10px rgba(24,191,255,.8); transition:width .15s linear; }
 
-#lyricsStage{ position:relative; z-index:3; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px 20px; overflow:hidden; }
+.stage-song-info{
+  min-width:0;
+  max-width:72%;
+}
 
-/* HIDE OVERLAY CONTENT IN VIDEO MODE */
-#stage.video-mode #lyricsStage { display: none !important; }
+#songTitle{
+  font-size:21px;
+  line-height:1.12;
+  font-weight:900;
+  color:#fff;
+  letter-spacing:.1px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-shadow:0 2px 8px #000;
+}
 
-#idleScreen{ text-align:center; color:#888; padding:20px; max-width: 80%; margin: 0 auto; }
-#idleScreen .big{ font-size:55px; margin-bottom:6px; filter:drop-shadow(0 0 15px rgba(0,190,255,.3)); }
-#idleScreen h2{ margin:0 0 12px 0; color:#fff; font-size:22px; letter-spacing:0.5px; line-height: 1.3; }
-#idleScreen p{ margin:6px 0; color:#888; }
+#singerName{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  color:#42d9ff;
+  font-size:12px;
+  font-weight:800;
+  margin-top:6px;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
 
-/* SYNCED LRC STYLES */
-.lrc-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-height: 100%; overflow: hidden; }
-.lrc-line { font-size: 24px; font-weight: 800; color: #888899; margin: 10px 0; opacity: 0.4; transition: all 0.25s ease; text-shadow: 0 2px 6px #000; }
-.lrc-line.active { color: var(--pink); opacity: 1; font-size: 34px; transform: scale(1.08); text-shadow: 0 0 20px rgba(255, 22, 115, 0.8), -1px -1px 0 #fff, 1px -1px 0 #fff; }
-.lrc-line.past { color: #555566; opacity: 0.3; font-size: 20px; }
+#singerName::before{
+  content:"🎤";
+  font-size:12px;
+}
 
-.stage-bottom{ position:absolute; left:0; right:0; bottom:0; z-index:4; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; background:linear-gradient(to top,rgba(2,4,8,.92),rgba(2,4,8,.25)); pointer-events:none; }
-.stage-bottom > *{ pointer-events:auto; }
-.stage-format{ display:flex; gap:7px; }
-.stage-format span{ border:1px solid rgba(255,255,255,.55); border-radius:5px; padding:4px 8px; color:#fff; font-size:9px; font-weight:900; letter-spacing:.7px; background:rgba(0,0,0,.4); }
-.stage-next{ color:#fff; font-size:12px; font-weight:800; }
+.stage-right{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-shrink:0;
+}
 
-#queuePanel{ border-left:1px solid var(--border); background:rgba(10,10,14,.96); display:flex; flex-direction:column; overflow:hidden; }
-.queue-head{ padding:15px; border-bottom:1px solid var(--border); }
-.queue-title{ font-size:16px; font-weight:bold; }
-.queue-sub{ color:#666; font-size:11px; margin-top:3px; }
-#queue{ flex:1; overflow-y:auto; padding:8px; }
-.queue-item{ display:grid; grid-template-columns:38px 1fr auto; gap:8px; align-items:center; padding:10px 7px; margin-bottom:5px; border-radius:7px; background:#111117; border:1px solid transparent; }
-.queue-item.active{ background:#321426; border-color:#8e2852; }
-.queue-number{ font-size:17px; color:#555; font-weight:bold; text-align:center; }
-.queue-item.active .queue-number{ color:var(--pink); }
-.queue-song{ font-size:12px; font-weight:bold; }
-.queue-singer{ font-size:10px; color:#777; margin-top:3px; }
-.queue-controls{ display:flex; gap:3px; }
-.queue-bottom{ border-top:1px solid var(--border); padding:10px; display:flex; flex-direction:column; gap:6px; }
+.stage-badge{
+  padding:6px 10px;
+  border:1px solid rgba(42,190,255,.8);
+  border-radius:7px;
+  color:#fff;
+  background:rgba(0,100,150,.25);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.8px;
+  box-shadow:0 0 14px rgba(0,180,255,.15);
+}
 
-#deck{ grid-column:1/4; display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:8px; padding:10px; background:#0b0b0f; border-top:1px solid var(--border); }
-.deck-control{ background:#14141a; border:1px solid var(--border); border-radius:7px; padding:8px 12px; }
-.deck-label{ color:#777; font-size:9px; text-transform:uppercase; letter-spacing:1px; }
-.deck-value{ color:#fff; font-size:15px; font-weight:bold; margin:3px 0 5px; }
-input[type=range]{ width:100%; accent-color:var(--pink); }
+#stageTimer{
+  min-width:105px;
+  text-align:right;
+  color:#fff;
+  font-family:monospace;
+  font-size:14px;
+  font-weight:800;
+  text-shadow:0 2px 8px #000;
+}
 
-.transport{ display:flex; align-items:center; justify-content:center; gap:7px; }
-.transport button{ min-width:48px; height:43px; border-radius:8px; border:1px solid #333; background:#1b1b22; color:#fff; cursor:pointer; font-size:18px; }
-.transport button:hover{ background:#292932; }
-.transport .play{ background:var(--pink); border-color:var(--pink); width:65px; }
+#stageProgress{
+  position:absolute;
+  left:20px;
+  right:20px;
+  bottom:-1px;
+  height:4px;
+  z-index:5;
+  overflow:hidden;
+  border-radius:4px;
+  background:rgba(255,255,255,.2);
+}
 
-.modal{ position:fixed; inset:0; background:rgba(0,0,0,.78); z-index:100; display:none; align-items:center; justify-content:center; }
-.modal.show{ display:flex; }
-.modal-box{ width:420px; max-width:90%; background:#15151c; border:1px solid #333; border-radius:12px; padding:20px; box-shadow:0 20px 70px #000; }
-.modal-box h2{ margin-top:0; }
-.form-row{ margin:13px 0; }
-.form-row label{ display:block; color:#999; font-size:11px; margin-bottom:5px; }
-.form-row input{ width:100%; padding:10px; background:#08080c; color:white; border:1px solid #333; border-radius:6px; }
+#stageProgressBar{
+  width:0%;
+  height:100%;
+  background:#18bfff;
+  box-shadow:0 0 10px rgba(24,191,255,.8);
+  transition:width .15s linear;
+}
 
-#toast{ position:fixed; left:50%; bottom:125px; transform:translateX(-50%); background:#222; border:1px solid #555; border-radius:8px; padding:11px 20px; display:none; z-index:500; }
+#lyricsStage{
+  position:relative;
+  z-index:3;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:80px 45px 95px;
+  overflow:hidden;
+}
 
+#lyricsStage.video-mode{
+  display:none;
+}
+
+.lyric{
+  max-width:92%;
+  opacity:.24;
+  color:#fff;
+  font-size:28px;
+  line-height:1.15;
+  font-weight:900;
+  margin:6px 0;
+  padding:0 12px;
+  transition:opacity .2s,transform .2s,color .2s;
+  text-shadow:0 3px 7px #000,0 0 18px rgba(0,0,0,.9);
+}
+
+.lyric.active{
+  color:#ff334f;
+  opacity:1;
+  transform:scale(1.1);
+  text-shadow:
+    -2px -2px 0 #fff,
+     2px -2px 0 #fff,
+    -2px  2px 0 #fff,
+     2px  2px 0 #fff,
+     0 4px 12px #000;
+}
+
+.lyric.past{
+  opacity:.42;
+}
+
+#idleScreen{
+  text-align:center;
+  color:#888;
+  padding:20px;
+}
+
+#idleScreen .big{
+  font-size:55px;
+  margin-bottom:6px;
+  filter:drop-shadow(0 0 15px rgba(0,190,255,.3));
+}
+
+#idleScreen h2{
+  margin:0;
+  color:#fff;
+  font-size:25px;
+  letter-spacing:1px;
+}
+
+#idleScreen p{
+  margin:8px 0 0;
+  color:#888;
+}
+
+.stage-bottom{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 20px;
+  background:linear-gradient(to top,rgba(2,4,8,.92),rgba(2,4,8,.25));
+  pointer-events:none;
+}
+
+.stage-bottom > *{
+  pointer-events:auto;
+}
+
+.stage-format{
+  display:flex;
+  gap:7px;
+}
+
+.stage-format span{
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:5px;
+  padding:4px 8px;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.7px;
+  background:rgba(0,0,0,.4);
+}
+
+.stage-next{
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+}
+
+@media(max-width:800px){
+  #songTitle{font-size:16px}
+  #stageHeader{min-height:68px;padding:10px 12px}
+  #stageProgress{left:12px;right:12px}
+  #lyricsStage{padding:60px 15px 75px}
+  .lyric{font-size:21px}
+  .stage-badge{display:none}
+  #stageTimer{font-size:11px;min-width:85px}
+}
+/* QUEUE PANEL */
+#queuePanel{
+  border-left:1px solid var(--border);
+  background:rgba(10,10,14,.96);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.queue-head{
+  padding:15px;
+  border-bottom:1px solid var(--border);
+}
+
+.queue-title{
+  font-size:16px;
+  font-weight:bold;
+}
+
+.queue-sub{
+  color:#666;
+  font-size:11px;
+  margin-top:3px;
+}
+
+#queue{
+  flex:1;
+  overflow-y:auto;
+  padding:8px;
+}
+
+.queue-item{
+  display:grid;
+  grid-template-columns:38px 1fr auto;
+  gap:8px;
+  align-items:center;
+  padding:10px 7px;
+  margin-bottom:5px;
+  border-radius:7px;
+  background:#111117;
+  border:1px solid transparent;
+}
+
+.queue-item.active{
+  background:#321426;
+  border-color:#8e2852;
+}
+
+.queue-number{
+  font-size:17px;
+  color:#555;
+  font-weight:bold;
+  text-align:center;
+}
+
+.queue-item.active .queue-number{
+  color:var(--pink);
+}
+
+.queue-song{
+  font-size:12px;
+  font-weight:bold;
+}
+
+.queue-singer{
+  font-size:10px;
+  color:#777;
+  margin-top:3px;
+}
+
+.queue-controls{
+  display:flex;
+  gap:3px;
+}
+
+.queue-bottom{
+  border-top:1px solid var(--border);
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+/* CONTROL DECK */
+#deck{
+  grid-column:1/4;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+  gap:8px;
+  padding:10px;
+  background:#0b0b0f;
+  border-top:1px solid var(--border);
+}
+
+.deck-control{
+  background:#14141a;
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:8px 12px;
+}
+
+.deck-label{
+  color:#777;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.deck-value{
+  color:#fff;
+  font-size:15px;
+  font-weight:bold;
+  margin:3px 0 5px;
+}
+
+input[type=range]{
+  width:100%;
+  accent-color:var(--pink);
+}
+
+.transport{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+}
+
+.transport button{
+  min-width:48px;
+  height:43px;
+  border-radius:8px;
+  border:1px solid #333;
+  background:#1b1b22;
+  color:#fff;
+  cursor:pointer;
+  font-size:18px;
+}
+
+.transport button:hover{
+  background:#292932;
+}
+
+.transport .play{
+  background:var(--pink);
+  border-color:var(--pink);
+  width:65px;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.78);
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:420px;
+  max-width:90%;
+  background:#15151c;
+  border:1px solid #333;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 20px 70px #000;
+}
+
+.modal-box h2{
+  margin-top:0;
+}
+
+.form-row{
+  margin:13px 0;
+}
+
+.form-row label{
+  display:block;
+  color:#999;
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+.form-row input{
+  width:100%;
+  padding:10px;
+  background:#08080c;
+  color:white;
+  border:1px solid #333;
+  border-radius:6px;
+}
+
+/* FULLSCREEN */
+#fullscreenStage{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:200;
+  display:none;
+}
+
+#fullscreenStage.active{
+  display:flex;
+}
+
+#fullscreenLyrics{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  overflow:hidden;
+}
+
+#closeFullscreen{
+  position:absolute;
+  top:15px;
+  right:15px;
+  z-index:5;
+}
+
+/* TOAST */
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:125px;
+  transform:translateX(-50%);
+  background:#222;
+  border:1px solid #555;
+  border-radius:8px;
+  padding:11px 20px;
+  display:none;
+  z-index:500;
+}
+
+@media(max-width:1000px){
+  #app{ grid-template-columns:250px 1fr 280px; }
+}
+
+@media(max-width:800px){
+  #app{
+    grid-template-columns:1fr;
+    grid-template-rows:55px 1fr 250px 100px;
+  }
+  #topbar{ grid-column:1; }
+  #songbook{ display:none; }
+  #stage{ grid-row:2; }
+  #queuePanel{ grid-row:3; border-left:0; border-top:1px solid var(--border); }
+  #deck{ grid-row:4; grid-column:1; }
+}
+
+
+/* LOCAL SONG LIBRARY */
 .local-picker-help{margin-top:7px;font-size:9px;line-height:1.35;color:#666}
 .local-picker-help b{color:#aaa}
 .local-library{margin:0 10px 8px;padding:10px;background:#101016;border:1px solid #292933;border-radius:8px}
@@ -204,41 +754,17 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 .local-folder-name{margin-top:8px;font-size:10px;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .file.local-file{border-left:3px solid #5b8cff}
 .file.local-file .file-meta{color:#6f9dff}
+
+
 .library-heading{padding:7px 10px 4px;font-size:9px;font-weight:900;letter-spacing:.8px;color:#777}
 
+/* RESERVED / UP NEXT QUEUE */
 .queue-panel-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .queue-panel-title .reserve-badge{font-size:9px;padding:4px 7px;border:1px solid rgba(24,191,255,.55);border-radius:5px;color:#55d8ff;background:rgba(24,191,255,.08);letter-spacing:.5px}
 .queue-item.reserved{border-left:3px solid #18bfff}
 .queue-item.active{border-left:3px solid #ff334f}
 .queue-status{font-size:9px;color:#777;margin:4px 10px 8px}
-
-/* FULL-SCREEN SMART TV STAGE */
-#tvStageOverlay { position: fixed; inset: 0; background: #020306; z-index: 1000; display: none; flex-direction: column; justify-content: space-between; overflow: hidden; isolation: isolate; }
-#tvStageOverlay.active { display: flex; }
-.tv-header { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 24px 36px; background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent); transition: opacity 0.4s ease; }
-.tv-title { font-size: 38px; font-weight: 900; color: #fff; text-shadow: 0 4px 12px rgba(0,0,0,0.9); }
-.tv-singer { font-size: 22px; color: var(--pink); font-weight: 800; margin-top: 6px; }
-.tv-timer { font-size: 28px; font-family: monospace; font-weight: bold; color: #fff; }
-.tv-lyrics-container { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 60px; overflow: hidden; }
-
-/* HIDE TV OVERLAY TEXT IN VIDEO MODE */
-#tvStageOverlay.video-mode .tv-lyrics-container { display: none !important; }
-
-.tv-lrc-line { font-size: 34px; font-weight: 900; color: #7788aa; margin: 14px 0; opacity: 0.4; transition: all 0.25s ease; text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; }
-.tv-lrc-line.active { color: #ff1673; opacity: 1; font-size: 52px; transform: scale(1.15); text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0 0 25px rgba(255, 22, 115, 0.9); }
-.tv-footer { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 20px 36px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); transition: opacity 0.4s ease; }
-.tv-next-up { font-size: 20px; font-weight: 800; color: #18aaff; }
-.tv-idle .tv-header, .tv-idle .tv-footer { opacity: 0; pointer-events: none; }
-
-@media(max-width:1000px){ #app{ grid-template-columns:250px 1fr 280px; } }
-@media(max-width:800px){
-  #app{ grid-template-columns:1fr; grid-template-rows:55px 1fr 250px 100px; }
-  #topbar{ grid-column:1; }
-  #songbook{ display:none; }
-  #stage{ grid-row:2; }
-  #queuePanel{ grid-row:3; border-left:0; border-top:1px solid var(--border); }
-  #deck{ grid-row:4; grid-column:1; }
-}
+.queue-status b{color:#18bfff}
 </style>
 </head>
 
@@ -246,38 +772,54 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 
 <div id="app">
 
+<!-- TOP BAR -->
 <header id="topbar">
-  <div class="logo">🎤 Karaoke<span>Hub</span> PRO</div>
-  <div class="top-center">
-    <div class="status" id="driveStatus">Not logged in</div>
+  <div class="logo">
+    🎤 Karaoke<span>Hub</span> PRO
   </div>
+
+  <div class="top-center">
+    <div class="status" id="driveStatus">
+      Not logged in
+    </div>
+  </div>
+
   <div class="top-actions">
-    <button class="btn primary" id="loginButton">☁ Log in with Google</button>
-    <button class="btn" id="fullscreenButton">⛶ TV Stage</button>
-    <button class="btn" id="settingsButton">⚙ Profile</button>
+    <button class="btn primary" id="loginButton">
+      ☁ Log in with Google
+    </button>
+    <button class="btn" id="fullscreenButton">
+      ⛶ TV
+    </button>
+    <button class="btn" id="settingsButton">
+      ⚙ Profile
+    </button>
   </div>
 </header>
 
+<!-- SONGBOOK -->
 <aside id="songbook">
   <div class="section-title">SONGBOOK</div>
+
   <div class="local-library">
     <div class="local-library-title">💻 LOCAL SONG LIBRARY</div>
     <div class="local-library-buttons">
       <button class="btn small" type="button" id="openLocalFolder">📁 Choose KARAOKE Folder</button>
       <button class="btn small" type="button" id="selectLocalFiles">🎵 Choose Songs</button>
-      <button class="btn small" type="button" id="selectLrcFiles" style="grid-column: 1/3; margin-top:4px;">📝 Load .LRC Lyrics</button>
-      <button class="btn red small" type="button" id="clearStoredLibrary" style="grid-column: 1/3; margin-top:4px;">🗑 Clear Saved Songs</button>
     </div>
-    <div class="local-folder-name" id="localStatus">Loading persistent storage...</div>
+    <div class="local-folder-name" id="localStatus">No local songs selected</div>
     <div class="local-picker-help">
-      Songs & lyrics auto-save to browser database for offline use.
+      Select the <b>KARAOKE</b> folder in the Windows dialog, then click <b>Upload</b>.
+      The files will stay on your computer; they are only loaded into this browser app.
     </div>
-    <input id="localFolderInput" type="file" webkitdirectory multiple hidden>
-    <input id="localFilesInput" type="file" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mid,.midi,.kar" multiple hidden>
-    <input id="lrcFileInput" type="file" accept=".lrc,.txt" multiple hidden>
+    <input id="localFolderInput" type="file" webkitdirectory directory multiple hidden>
+    <input id="localFilesInput" type="file"
+           accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mid,.midi,.kar"
+           multiple hidden>
   </div>
 
   <div id="driveFolders" style="padding:0 10px 6px;"></div>
+
   <input class="search" id="search" placeholder="🔎 Search title or artist...">
 
   <div class="library-tabs">
@@ -288,11 +830,12 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 
   <div id="files">
     <div style="padding:20px;color:#555;text-align:center;">
-      Use 📁 Choose KARAOKE Folder or 🎵 Choose Songs to load tracks.
+      Use 📁 Open Song Folder or 🎵 Select Files to load songs from this computer.
     </div>
   </div>
 </aside>
 
+<!-- PROFESSIONAL KARAOKE PERFORMANCE STAGE -->
 <main id="stage">
   <canvas id="visualizer"></canvas>
   <video id="videoPlayer" playsinline></video>
@@ -302,10 +845,12 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
       <div id="songTitle">KaraokeHub</div>
       <div id="singerName">Ready to Sing</div>
     </div>
+
     <div class="stage-right">
       <div class="stage-badge">KARAOKE</div>
       <div id="stageTimer">00:00 / 00:00</div>
     </div>
+
     <div id="stageProgress"><div id="stageProgressBar"></div></div>
   </div>
 
@@ -322,20 +867,17 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
       <span>HD</span>
       <span id="stageMediaType">KARAOKE</span>
     </div>
-    <div class="stage-next" id="nextSongLabel">⚡ NEXT: None</div>
+    <div class="stage-next">⚡ NEXT</div>
   </div>
 </main>
 
+<!-- QUEUE -->
 <aside id="queuePanel">
   <div class="queue-head">
-    <div class="queue-panel-title">
-      <div class="queue-title">🎶 SINGER QUEUE</div>
-      <div class="reserve-badge">PRO STAGE</div>
-    </div>
+    <div class="queue-title">🎶 SINGER QUEUE</div>
     <div class="queue-sub">Rotation / Reservations</div>
   </div>
 
-  <div class="queue-status" id="queueStatus">No songs queued</div>
   <div id="queue"></div>
 
   <div class="queue-bottom">
@@ -344,6 +886,7 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
   </div>
 </aside>
 
+<!-- CONTROL DECK -->
 <footer id="deck">
   <div class="deck-control">
     <div class="deck-label">Transport</div>
@@ -382,6 +925,7 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
 
 </div>
 
+<!-- SETTINGS MODAL -->
 <div class="modal" id="settingsModal">
   <div class="modal-box">
     <h2>⚙ Singer Profile</h2>
@@ -396,37 +940,27 @@ input[type=range]{ width:100%; accent-color:var(--pink); }
   </div>
 </div>
 
-<!-- SMART TV FULLSCREEN STAGE -->
-<div id="tvStageOverlay">
-  <div class="tv-header">
-    <div>
-      <div class="tv-title" id="tvSongTitle">KaraokeHub PRO</div>
-      <div class="tv-singer" id="tvSingerName">🎤 Ready to Sing</div>
-    </div>
-    <div class="tv-timer" id="tvStageTimer">00:00 / 00:00</div>
-  </div>
-
-  <div class="tv-lyrics-container" id="tvLyricsContainer">
-    <div class="tv-lrc-line active" id="tvMainLyric">🎤 PRESS PLAY TO START</div>
-    <div class="tv-lrc-line" style="font-size: 28px; opacity: 0.6;">Select a track from your queue</div>
-  </div>
-
-  <div class="tv-footer">
-    <div class="tv-next-up" id="tvNextUp">⚡ NEXT SINGER: None</div>
-    <button class="btn primary" id="exitTvStageBtn" style="font-size: 16px; padding: 12px 24px;">✕ Exit TV Stage</button>
-  </div>
+<!-- FULLSCREEN TV -->
+<div id="fullscreenStage">
+  <button class="btn" id="closeFullscreen">✕ Exit TV</button>
+  <div id="fullscreenLyrics"></div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const GOOGLE_CLIENT_ID = "57045846413-tgddgirr6b5cjskf3k5jf9g4rkagn8p0.apps.googleusercontent.com";
+
+/* CONFIGURATION */
+// Paste your Google OAuth Client ID here once:
+const GOOGLE_CLIENT_ID = "YOUR_HARDCODED_CLIENT_ID_HERE.apps.googleusercontent.com";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly";
 
+/* APPLICATION STATE */
 const state = {
   driveFiles: [],
   localFiles: [],
   localFolderName: "",
+  selectedFile: null,
   queue: [],
   currentIndex: -1,
   playing: false,
@@ -435,20 +969,20 @@ const state = {
   singer: "Singer",
   mediaUrl: null,
   audioPlayer: null,
+  midiSynth: null,
+  midiLyrics: [],
   audioContext: null,
+  analyser: null,
   micStream: null,
   micSource: null,
   micGain: null
 };
 
-const lrcStore = new Map();
-let activeLrcData = [];
-let currentLrcIndex = -1;
-
 const $ = id => document.getElementById(id);
 
-function escapeHtml(str) { return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-function cleanTitle(filename) { return (filename || "").replace(/\.[^/.]+$/, ""); }
+function escapeHtml(str) {
+  return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 
 function toast(msg) {
   const el = $("toast");
@@ -458,106 +992,8 @@ function toast(msg) {
   el._timer = setTimeout(() => { el.style.display = "none"; }, 3000);
 }
 
-function formatTime(seconds) {
-  if (isNaN(seconds) || seconds < 0) return "00:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
-
-/* INDEXEDDB PERSISTENT STORAGE ENGINE */
-const DB_NAME = "KaraokeHubDB";
-const DB_VERSION = 1;
-let db = null;
-
-function initIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onupgradeneeded = (e) => {
-      const database = e.target.result;
-      if (!database.objectStoreNames.contains("songs")) {
-        database.createObjectStore("songs", { keyPath: "name" });
-      }
-      if (!database.objectStoreNames.contains("lyrics")) {
-        database.createObjectStore("lyrics", { keyPath: "name" });
-      }
-    };
-
-    request.onsuccess = (e) => {
-      db = e.target.result;
-      resolve(db);
-    };
-
-    request.onerror = (e) => reject("IndexedDB error: " + e.target.errorCode);
-  });
-}
-
-async function saveSongsToDB(files) {
-  if (!db) return;
-  const tx = db.transaction("songs", "readwrite");
-  const store = tx.objectStore("songs");
-
-  for (let file of files) {
-    const arrayBuffer = await file.arrayBuffer();
-    const blob = new Blob([arrayBuffer], { type: file.type });
-    store.put({ name: file.name, type: file.type, data: blob });
-  }
-}
-
-async function saveLyricToDB(name, content) {
-  if (!db) return;
-  const tx = db.transaction("lyrics", "readwrite");
-  const store = tx.objectStore("lyrics");
-  store.put({ name: name, content: content });
-}
-
-async function loadLibraryFromDB() {
-  if (!db) return;
-
-  // 1. Load Stored Song Files
-  const songTx = db.transaction("songs", "readonly");
-  const songStore = songTx.objectStore("songs");
-  const songsReq = songStore.getAll();
-
-  songsReq.onsuccess = () => {
-    const records = songsReq.result || [];
-    if (records.length > 0) {
-      state.localFiles = records.map(r => new File([r.data], r.name, { type: r.type }));
-      $("localStatus").textContent = `Saved Database • ${state.localFiles.length} song(s)`;
-      renderFiles();
-    } else {
-      $("localStatus").textContent = "No saved local songs";
-    }
-  };
-
-  // 2. Load Stored Lyrics
-  const lyricTx = db.transaction("lyrics", "readonly");
-  const lyricStore = lyricTx.objectStore("lyrics");
-  const lyricsReq = lyricStore.getAll();
-
-  lyricsReq.onsuccess = () => {
-    const records = lyricsReq.result || [];
-    records.forEach(r => {
-      lrcStore.set(r.name, parseLRC(r.content));
-    });
-  };
-}
-
-async function clearIndexedDB() {
-  if (!db) return;
-  const tx = db.transaction(["songs", "lyrics"], "readwrite");
-  tx.objectStore("songs").clear();
-  tx.objectStore("lyrics").clear();
-  
-  state.localFiles = [];
-  lrcStore.clear();
-  $("localStatus").textContent = "No saved local songs";
-  renderFiles();
-  toast("Saved library cleared.");
-}
-
-window.addEventListener("load", async () => {
+/* INITIALIZATION */
+window.addEventListener("load", () => {
   state.tempo = Number(localStorage.getItem("khTempo") || 100);
   state.key = Number(localStorage.getItem("khKey") || 0);
   state.singer = localStorage.getItem("khSinger") || "Singer";
@@ -571,143 +1007,59 @@ window.addEventListener("load", async () => {
   renderQueue();
   setupUIEvents();
   setupLocalLibrary();
-  setupLrcLoader();
   initVisualizer();
-  initTVRemoteNavigation();
-  initTvStageController();
-
-  try {
-    await initIndexedDB();
-    await loadLibraryFromDB();
-  } catch (err) {
-    $("localStatus").textContent = "Database unavailable";
-  }
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  }
 });
 
-/* LRC PARSER & RENDERER */
-function parseLRC(lrcText) {
-  const lines = lrcText.split(/\r?\n/);
-  const timeRegex = /\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\]/;
-  const parsed = [];
-
-  for (let line of lines) {
-    const match = timeRegex.exec(line);
-    if (match) {
-      const minutes = parseInt(match[1], 10);
-      const seconds = parseInt(match[2], 10);
-      const milliseconds = match[3] ? parseInt(match[3].padEnd(3, "0"), 10) : 0;
-      const time = minutes * 60 + seconds + milliseconds / 1000;
-      const text = line.replace(timeRegex, "").trim();
-      if (text) parsed.push({ time, text });
-    }
-  }
-  return parsed.sort((a, b) => a.time - b.time);
-}
-
-function setupLrcLoader() {
-  const btn = $("selectLrcFiles");
-  const input = $("lrcFileInput");
-
-  btn.onclick = () => { input.value = ""; input.click(); };
-  input.onchange = async (e) => {
-    const files = Array.from(e.target.files || []);
-    let count = 0;
-    for (let file of files) {
-      const text = await file.text();
-      const key = cleanTitle(file.name).toLowerCase().trim();
-      lrcStore.set(key, parseLRC(text));
-      await saveLyricToDB(key, text);
-      count++;
-    }
-    toast(`Saved ${count} .LRC lyric file(s) to browser storage.`);
-  };
-}
-
-function loadLyricsForSong(songTitle) {
-  const key = songTitle.toLowerCase().trim();
-  activeLrcData = lrcStore.get(key) || [];
-  currentLrcIndex = -1;
-  renderLrcContainer();
-}
-
-function renderLrcContainer() {
-  const stage = $("lyricsStage");
-  const tvStage = $("tvLyricsContainer");
-
-  if (!activeLrcData || activeLrcData.length === 0) {
-    const songTitle = $("songTitle").textContent;
-    const singerName = $("singerName").textContent;
-
-    stage.innerHTML = `
-      <div id="idleScreen">
-        <div class="big">🎤</div>
-        <h2>${escapeHtml(songTitle)}</h2>
-        <p>${escapeHtml(singerName)}</p>
-        <p style="font-size:12px; color:#ff1673; margin-top:12px;">Load matching .lrc file via "📝 Load .LRC Lyrics" button</p>
-      </div>`;
-
-    tvStage.innerHTML = `
-      <div class="tv-lrc-line active" id="tvMainLyric">${escapeHtml(songTitle)}</div>
-      <div class="tv-lrc-line" style="font-size: 24px; opacity: 0.6;">🎤 ${escapeHtml(singerName)}</div>
-      <div style="font-size: 16px; color: #ff1673; margin-top: 15px;">No .LRC Lyrics file loaded for this song</div>`;
-    return;
-  }
-
-  stage.innerHTML = `<div class="lrc-container" id="lrcContainer">${activeLrcData.map((item, i) => `<div class="lrc-line" id="lrc-line-${i}">${escapeHtml(item.text)}</div>`).join("")}</div>`;
-  tvStage.innerHTML = `<div class="lrc-container" id="tvLrcContainer">${activeLrcData.map((item, i) => `<div class="tv-lrc-line" id="tv-lrc-line-${i}">${escapeHtml(item.text)}</div>`).join("")}</div>`;
-}
-
-function updateLrcPlayback(currentTime) {
-  if (!activeLrcData || activeLrcData.length === 0) return;
-
-  let index = activeLrcData.findIndex((line, i) => {
-    const nextLine = activeLrcData[i + 1];
-    return currentTime >= line.time && (!nextLine || currentTime < nextLine.time);
-  });
-
-  if (index !== -1 && index !== currentLrcIndex) {
-    currentLrcIndex = index;
-    activeLrcData.forEach((_, i) => {
-      const el = $(`lrc-line-${i}`);
-      const tvEl = $(`tv-lrc-line-${i}`);
-      if (el) el.className = `lrc-line ${i === index ? "active" : i < index ? "past" : ""}`;
-      if (tvEl) tvEl.className = `tv-lrc-line ${i === index ? "active" : i < index ? "past" : ""}`;
-    });
-
-    const activeEl = $(`lrc-line-${index}`);
-    const tvActiveEl = $(`tv-lrc-line-${index}`);
-    if (activeEl) activeEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    if (tvActiveEl) tvActiveEl.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-}
-
-const LOCAL_EXTENSIONS = [".mp3",".wav",".m4a",".aac",".ogg",".flac",".mp4",".webm",".mov",".mid",".midi",".kar"];
+/* LOCAL SONG LIBRARY */
+const LOCAL_EXTENSIONS = [
+  ".mp3",".wav",".m4a",".aac",".ogg",".flac",
+  ".mp4",".webm",".mov",".mid",".midi",".kar"
+];
 
 function isLocalKaraokeFile(file){
   const name = (file.name || "").toLowerCase();
   const type = file.type || "";
-  return LOCAL_EXTENSIONS.some(ext => name.endsWith(ext)) || type.startsWith("audio/") || type.startsWith("video/");
+  return LOCAL_EXTENSIONS.some(ext => name.endsWith(ext)) ||
+         type.startsWith("audio/") ||
+         type.startsWith("video/");
 }
 
-async function setLocalFiles(files, folderName){
+function setLocalFiles(files, folderName){
   const supported = Array.from(files || []).filter(isLocalKaraokeFile);
   state.localFiles = supported;
   state.localFolderName = folderName || "";
 
   $("localStatus").textContent = supported.length
-    ? `Saving ${supported.length} song(s) to browser database...`
+    ? `${folderName ? folderName + " • " : ""}${supported.length} song file${supported.length === 1 ? "" : "s"} loaded`
     : "No supported karaoke files found";
 
   renderFiles();
-  if(supported.length) {
-    await saveSongsToDB(supported);
-    $("localStatus").textContent = `${folderName ? folderName + " • " : ""}${supported.length} song(s) saved in browser DB`;
-    toast(`Saved ${supported.length} local song(s) permanently.`);
+
+  if(supported.length){
+    toast(`Loaded ${supported.length} local song${supported.length === 1 ? "" : "s"}.`);
+  }else if(files && files.length){
+    toast("Folder selected, but no supported karaoke files were found.");
+  }else{
+    toast("No files were selected.");
   }
+}
+
+async function readDirectoryHandle(dirHandle, results = []){
+  for await (const entry of dirHandle.values()){
+    if(entry.kind === "file"){
+      const file = await entry.getFile();
+      if(isLocalKaraokeFile(file)) results.push(file);
+    }else if(entry.kind === "directory"){
+      await readDirectoryHandle(entry, results);
+    }
+  }
+  return results;
+}
+
+function chooseLocalFolder(){
+  const input = $("localFolderInput");
+  input.value = "";
+  input.click();
 }
 
 function setupLocalLibrary(){
@@ -715,20 +1067,35 @@ function setupLocalLibrary(){
   const filesButton = $("selectLocalFiles");
   const folderInput = $("localFolderInput");
   const filesInput = $("localFilesInput");
-  const clearBtn = $("clearStoredLibrary");
 
-  folderButton.addEventListener("click", () => { folderInput.value = ""; folderInput.click(); });
-  filesButton.addEventListener("click", () => { filesInput.value = ""; filesInput.click(); });
-  clearBtn.addEventListener("click", () => clearIndexedDB());
+  if(!folderButton || !filesButton || !folderInput || !filesInput){
+    console.error("Local song controls were not found.");
+    return;
+  }
 
-  folderInput.addEventListener("change", (e) => {
-    const files = Array.from(e.target.files || []);
-    let folderName = files.length && files[0].webkitRelativePath ? files[0].webkitRelativePath.split("/")[0] : "";
+  folderButton.addEventListener("click", chooseLocalFolder);
+
+  filesButton.addEventListener("click", () => {
+    filesInput.value = "";
+    filesInput.click();
+  });
+
+  folderInput.addEventListener("change", (event) => {
+    const files = Array.from(event.target.files || []);
+    let folderName = "";
+
+    if(files.length && files[0].webkitRelativePath){
+      folderName = files[0].webkitRelativePath.split("/")[0];
+    }
+
+    console.log("Local folder selected:", folderName, "files:", files.length);
     setLocalFiles(files, folderName);
   });
 
-  filesInput.addEventListener("change", (e) => {
-    setLocalFiles(Array.from(e.target.files || []), "Selected files");
+  filesInput.addEventListener("change", (event) => {
+    const files = Array.from(event.target.files || []);
+    console.log("Local files selected:", files.length);
+    setLocalFiles(files, "Selected files");
   });
 }
 
@@ -744,25 +1111,34 @@ function setupUIEvents() {
     toast("Profile updated.");
   };
 
+  $("fullscreenButton").onclick = () => $("fullscreenStage").classList.add("active");
+  $("closeFullscreen").onclick = () => $("fullscreenStage").classList.remove("active");
+
   $("playButton").onclick = () => state.playing ? pausePlayback() : resumePlayback();
   $("stopButton").onclick = () => stopPlayback();
   
   $("nextButton").onclick = () => {
-    if (state.queue.length > 0 && state.currentIndex < state.queue.length - 1) playQueueIndex(state.currentIndex + 1);
+    if (state.queue.length > 0 && state.currentIndex < state.queue.length - 1) {
+      playQueueIndex(state.currentIndex + 1);
+    }
   };
 
   $("previousButton").onclick = () => {
-    if (state.queue.length > 0 && state.currentIndex > 0) playQueueIndex(state.currentIndex - 1);
+    if (state.queue.length > 0 && state.currentIndex > 0) {
+      playQueueIndex(state.currentIndex - 1);
+    }
   };
 
   $("keySlider").oninput = (e) => {
     state.key = Number(e.target.value);
     $("keyValue").textContent = state.key;
+    localStorage.setItem("khKey", state.key);
   };
 
   $("tempoSlider").oninput = (e) => {
     state.tempo = Number(e.target.value);
     $("tempoValue").textContent = state.tempo;
+    localStorage.setItem("khTempo", state.tempo);
     if (state.audioPlayer) state.audioPlayer.playbackRate = state.tempo / 100;
   };
 
@@ -770,6 +1146,7 @@ function setupUIEvents() {
     const val = Number(e.target.value);
     $("musicVolumeValue").textContent = val;
     if (state.audioPlayer) state.audioPlayer.volume = val / 100;
+    if (Tone.Destination) Tone.Destination.volume.value = Tone.gainToDb(val / 100);
   };
 
   $("micVolume").oninput = async (e) => {
@@ -777,97 +1154,174 @@ function setupUIEvents() {
     $("micVolumeValue").textContent = val;
     await setupMicrophone(val / 100);
   };
-
-  $("playQueue").onclick = () => {
-    if (state.queue.length > 0) playQueueIndex(state.currentIndex >= 0 ? state.currentIndex : 0);
-  };
-
-  $("clearQueue").onclick = () => {
-    state.queue = [];
-    state.currentIndex = -1;
-    stopPlayback();
-    renderQueue();
-  };
 }
 
-async function setupMicrophone(volumeGain) {
-  try {
-    if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    if (volumeGain > 0) {
-      if (!state.micStream) {
-        state.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        state.micSource = state.audioContext.createMediaStreamSource(state.micStream);
-        state.micGain = state.audioContext.createGain();
-        state.micSource.connect(state.micGain);
-        state.micGain.connect(state.audioContext.destination);
-      }
-      state.micGain.gain.value = volumeGain;
-    } else if (state.micGain) state.micGain.gain.value = 0;
-  } catch (err) { toast("Microphone access failed."); }
-}
-
-let gapiReady = false, gisReady = false, tokenClient = null;
+/* ONE-CLICK GOOGLE LOGIN */
+let gapiReady = false;
+let gisReady = false;
+let tokenClient = null;
+let accessToken = null;
 
 async function initGoogle(){
   try{
     await new Promise((resolve, reject) => {
-      if (window.gapi) gapi.load("client", { callback: resolve, onerror: reject });
-      else reject("gapi script not loaded");
+      if (window.gapi) {
+        gapi.load("client", { callback: resolve, onerror: reject });
+      } else {
+        reject("gapi script not loaded");
+      }
     });
-    await gapi.client.init({ discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"] });
+
+    await gapi.client.init({
+      discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"]
+    });
+
     gapiReady = true;
-  }catch(error){ $("driveStatus").textContent = "Drive Error"; }
+    checkStatus();
+  }catch(error){
+    console.error("GAPI Init Error:", error);
+    $("driveStatus").textContent = "Drive: Connection Error";
+  }
 }
 
 function checkGisLoaded() {
-  if (window.google && window.google.accounts && window.google.accounts.oauth2) gisReady = true;
-  else setTimeout(checkGisLoaded, 100);
+  if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+    gisReady = true;
+    checkStatus();
+  } else {
+    setTimeout(checkGisLoaded, 100);
+  }
+}
+
+function checkStatus() {
+  if (gapiReady && gisReady) {
+    $("driveStatus").textContent = "Ready to log in";
+  }
 }
 
 if (window.gapi) gapi.load("client", initGoogle);
 checkGisLoaded();
 
 function loginWithGoogle(){
-  if (!gapiReady || !gisReady) return toast("Google service loading...");
+  if (!gapiReady || !gisReady) {
+    toast("Google service loading. Try again in a moment...");
+    return;
+  }
+
   try {
     tokenClient = google.accounts.oauth2.initTokenClient({
       client_id: GOOGLE_CLIENT_ID,
       scope: DRIVE_SCOPE,
       callback: async (response) => {
-        if(response.error) return toast("Google sign-in cancelled.");
-        gapi.client.setToken({ access_token: response.access_token });
-        $("driveStatus").textContent = "Connected";
-        await loadDriveFolder("root", "My Drive", true);
+        if(response.error){
+          console.error(response);
+          toast("Google sign-in was cancelled.");
+          return;
+        }
+        accessToken = response.access_token;
+        gapi.client.setToken({ access_token: accessToken });
+        $("driveStatus").textContent = "Connected to Google";
+        $("loginButton").textContent = "☁ Logged In";
+        await loadDriveFiles();
       }
     });
+
     tokenClient.requestAccessToken({ prompt: "consent" });
-  } catch(error) { toast("Could not start Google sign-in."); }
+  } catch(error) {
+    console.error("Sign-in error:", error);
+    toast("Could not start Google sign-in process.");
+  }
 }
 
 $("loginButton").onclick = loginWithGoogle;
 
+/* DRIVE FILE MANAGER */
+let currentFolderId = "root";
+let currentFolderName = "My Drive";
+let folderStack = [];
+
+async function loadDriveFiles(){
+  await loadDriveFolder("root", "My Drive", true);
+}
+
+function isDriveFolder(file){
+  return file.mimeType === "application/vnd.google-apps.folder";
+}
+
+function isKaraokeFile(file){
+  const name = (file.name || "").toLowerCase();
+  return file.mimeType?.startsWith("audio/") ||
+         file.mimeType?.startsWith("video/") ||
+         /\.(mid|midi|kar|mp3|wav|m4a|aac|ogg|flac|mp4|webm|mov)$/i.test(name);
+}
+
 async function loadDriveFolder(folderId, folderName, resetStack=false){
   try{
+    $("driveStatus").textContent = "Loading songs...";
+    if(resetStack) folderStack = [];
+    currentFolderId = folderId;
+    currentFolderName = folderName;
+
     const response = await gapi.client.drive.files.list({
       q: `'${folderId}' in parents and trashed=false`,
-      fields: "files(id,name,mimeType)",
-      pageSize: 1000
+      fields: "nextPageToken,files(id,name,mimeType,size,modifiedTime,parents)",
+      orderBy: "folder,name",
+      pageSize: 1000,
+      spaces: "drive"
     });
+
     const all = response.result.files || [];
-    state.driveFiles = all.filter(f => f.mimeType?.startsWith("audio/") || f.mimeType?.startsWith("video/"));
+    const folders = all.filter(isDriveFolder);
+    state.driveFiles = all.filter(isKaraokeFile);
+
+    renderDriveFolders(folders);
     renderFiles();
-  }catch(error){ $("driveStatus").textContent = "Error loading files"; }
+
+    $("driveStatus").textContent = `Connected · ${state.driveFiles.length} songs`;
+    toast(`${state.driveFiles.length} songs loaded from ${folderName}`);
+  }catch(error){
+    console.error(error);
+    $("driveStatus").textContent = "Error loading files";
+    toast("Could not load Google Drive folder.");
+  }
 }
 
+function renderDriveFolders(folders){
+  const box = $("driveFolders");
+  box.innerHTML = "";
+
+  const back = document.createElement("button");
+  back.className = "btn small";
+  back.style.cssText = "width:100%;text-align:left;margin-bottom:5px;";
+  back.textContent = currentFolderId === "root" ? "☁ My Drive" : "← Back";
+  back.disabled = currentFolderId === "root";
+  back.onclick = async ()=>{
+    const parent = folderStack.pop();
+    if(parent) await loadDriveFolder(parent.id, parent.name);
+  };
+  box.appendChild(back);
+
+  const label = document.createElement("div");
+  label.style.cssText = "font-size:11px;color:#aaa;padding:4px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+  label.textContent = "📁 " + currentFolderName;
+  box.appendChild(label);
+
+  folders.forEach(folder=>{
+    const button = document.createElement("button");
+    button.className = "btn small";
+    button.style.cssText = "display:block;width:100%;text-align:left;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;";
+    button.textContent = "📁 " + folder.name;
+    button.title = folder.name;
+    button.onclick = async ()=>{
+      folderStack.push({id:currentFolderId, name:currentFolderName});
+      await loadDriveFolder(folder.id, folder.name);
+    };
+    box.appendChild(button);
+  });
+}
+
+/* SONGBOOK */
 $("search").addEventListener("input", renderFiles);
-
-function fileType(file) {
-  const name = (file.name || "").toLowerCase();
-  const mime = file.type || file.mimeType || "";
-  if (name.endsWith(".mid") || name.endsWith(".midi") || name.endsWith(".kar")) return "MIDI";
-  if (mime.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".webm")) return "VIDEO";
-  return "AUDIO";
-}
 
 function renderFiles(){
   const search = $("search").value.toLowerCase().trim();
@@ -877,14 +1331,16 @@ function renderFiles(){
   const local = state.localFiles.filter(file => file.name.toLowerCase().includes(search));
 
   if(!local.length && !drive.length){
-    $("files").innerHTML = `<div style="padding:20px;text-align:center;color:#555;">No karaoke files found.</div>`;
+    $("files").innerHTML = `<div style="padding:20px;text-align:center;color:#555;">
+      No karaoke files found.<br><small>Use 📁 Open Song Folder or 🎵 Select Files.</small>
+    </div>`;
     return;
   }
 
   if(local.length){
     const heading = document.createElement("div");
     heading.className = "library-heading";
-    heading.textContent = "💻 LOCAL SONGS (SAVED)";
+    heading.textContent = "💻 LOCAL SONGS";
     $("files").appendChild(heading);
     local.forEach(file => renderSongItem(file, "local"));
   }
@@ -898,233 +1354,605 @@ function renderFiles(){
   }
 }
 
-function renderSongItem(file, source) {
+function renderSongItem(file, source){
   const item = document.createElement("div");
-  item.className = `file ${source === "local" ? "local-file" : ""}`;
-  const title = cleanTitle(file.name);
-  item.innerHTML = `<div class="file-title">${escapeHtml(title)}</div><div class="file-meta">${fileType(file)} • ${source.toUpperCase()}</div>`;
-  item.onclick = () => { addToQueue(file, source); toast(`Added "${title}" to queue.`); };
+  item.className = "file" + (source === "local" ? " local-file" : "");
+
+  const fileId = source === "local"
+    ? `local:${file.name}:${file.size}:${file.lastModified}`
+    : file.id;
+
+  if(state.selectedFile && state.selectedFile._fileId === fileId) item.classList.add("selected");
+
+  item.innerHTML = `
+    <div class="file-title">${escapeHtml(cleanTitle(file.name))}</div>
+    <div class="file-meta">${source === "local" ? "💻 Local • " : ""}${fileType(file)}</div>
+  `;
+
+  item.onclick = () => {
+    document.querySelectorAll(".file").forEach(el => el.classList.remove("selected"));
+    item.classList.add("selected");
+
+    file.source = source;
+    file._fileId = fileId;
+    state.selectedFile = file;
+
+    const queueIndex = addSongToQueue(file, {select:false});
+
+    $("songTitle").textContent = cleanTitle(file.name);
+
+    if(state.playing && state.currentIndex >= 0){
+      $("queueStatus").innerHTML = `Reserved <b>#${queueIndex + 1}</b> • plays automatically after the current song`;
+    }else{
+      $("queueStatus").innerHTML = `Reserved <b>#${queueIndex + 1}</b> • ready to play`;
+    }
+  };
+
+  item.ondblclick = () => {
+    // Double-click is intentionally non-interrupting.
+    // The song remains reserved and will play in queue order.
+    const queueIndex = state.queue.findIndex(q => q.file === file);
+    if(queueIndex >= 0){
+      toast(`Reserved: ${cleanTitle(file.name)} • plays next`);
+    }
+  };
+
   $("files").appendChild(item);
 }
 
-function addToQueue(file, source) {
-  state.queue.push({ file, source, singer: state.singer, title: cleanTitle(file.name) });
-  renderQueue();
+function fileType(file){
+  const name = file.name.toLowerCase();
+  const mime = file.type || file.mimeType || "";
+  if(name.endsWith(".kar")) return "🎤 Karaoke KAR";
+  if(name.endsWith(".mid") || name.endsWith(".midi")) return "🎹 MIDI";
+  if(mime.startsWith("video/") || /\.(mp4|webm|mov)$/i.test(name)) return "🎬 Video";
+  return "🎵 Audio";
 }
 
-function renderQueue() {
-  const container = $("queue");
-  container.innerHTML = "";
-  if (state.queue.length === 0) { $("queueStatus").innerHTML = "No songs queued"; return; }
-  $("queueStatus").innerHTML = `<b>${state.queue.length}</b> song(s) in rotation`;
-
-  state.queue.forEach((item, index) => {
-    const el = document.createElement("div");
-    el.className = `queue-item ${index === state.currentIndex ? "active" : ""}`;
-    el.innerHTML = `
-      <div class="queue-number">${index + 1}</div>
-      <div>
-        <div class="queue-song">${escapeHtml(item.title)}</div>
-        <div class="queue-singer">🎤 ${escapeHtml(item.singer)}</div>
-      </div>
-      <div class="queue-controls"><button class="btn red small" onclick="removeFromQueue(${index})">✕</button></div>`;
-    container.appendChild(el);
-  });
-
-  const nextSong = state.queue[state.currentIndex + 1];
-  $("nextSongLabel").textContent = `⚡ NEXT: ${nextSong ? nextSong.title : "None"}`;
+function cleanTitle(name){
+  return name.replace(/\.(mid|midi|kar|mp3|wav|m4a|ogg|flac|mp4|webm|mov)$/i,"").replace(/[_]+/g," ");
 }
 
-function removeFromQueue(index) {
-  state.queue.splice(index, 1);
-  if (index === state.currentIndex) stopPlayback();
-  else if (index < state.currentIndex) state.currentIndex--;
-  renderQueue();
-}
+/* QUEUE SYSTEM */
+function addSongToQueue(file, options = {}){
+  if(!file) return -1;
 
-async function playQueueIndex(index) {
-  if (index < 0 || index >= state.queue.length) return;
-  stopPlayback();
-  state.currentIndex = index;
-  renderQueue();
+  const source = file.source || (file instanceof File ? "local" : "drive");
+  const existingIndex = state.queue.findIndex(item =>
+    item.file === file ||
+    (
+      item.file &&
+      item.file.name === file.name &&
+      (item.file.id || "") === (file.id || "") &&
+      (item.file.lastModified || 0) === (file.lastModified || 0)
+    )
+  );
 
-  const item = state.queue[index];
-  $("songTitle").textContent = item.title;
-  $("singerName").textContent = item.singer;
-  loadLyricsForSong(item.title);
-
-  let url = item.source === "local" ? URL.createObjectURL(item.file) : `https://www.googleapis.com/drive/3/files/${item.file.id}?alt=media`;
-  const type = fileType(item.file);
-  $("stageMediaType").textContent = type;
-
-  const stage = $("stage");
-  const tvOverlay = $("tvStageOverlay");
-
-  if (type === "VIDEO") {
-    stage.classList.add("video-mode");
-    tvOverlay.classList.add("video-mode");
-
-    const video = $("videoPlayer");
-    video.src = url;
-    video.style.display = "block";
-    video.play();
-    state.audioPlayer = video;
-
-    if (tvOverlay.classList.contains("active")) {
-      tvOverlay.appendChild(video);
+  if(existingIndex !== -1){
+    if(options.select !== false){
+      state.selectedFile = file;
+      file.source = source;
     }
-  } else {
-    stage.classList.remove("video-mode");
-    tvOverlay.classList.remove("video-mode");
-
-    $("videoPlayer").style.display = "none";
-    const audio = new Audio(url);
-    audio.play();
-    state.audioPlayer = audio;
+    renderQueue();
+    if(options.silent !== true){
+      toast("Already reserved: " + cleanTitle(file.name));
+    }
+    return existingIndex;
   }
 
-  state.audioPlayer.playbackRate = state.tempo / 100;
-  state.audioPlayer.volume = Number($("musicVolume").value) / 100;
+  const item = {
+    file,
+    singer: state.singer,
+    key: state.key,
+    tempo: state.tempo,
+    reservedAt: Date.now()
+  };
+
+  state.queue.push(item);
+  renderQueue();
+
+  if(options.silent !== true){
+    const position = state.queue.length;
+    if(state.playing && state.currentIndex >= 0){
+      toast(`Reserved #${position}: ${cleanTitle(file.name)} • will play next`);
+    }else{
+      toast(`Reserved: ${cleanTitle(file.name)}`);
+    }
+  }
+
+  return state.queue.length - 1;
+}
+
+$("playQueue").onclick = () => {
+  if(!state.queue.length){
+    if(state.selectedFile){
+      addSongToQueue(state.selectedFile);
+    }else{
+      toast("Select a song to reserve.");
+      return;
+    }
+  }
+
+  const startIndex = state.currentIndex >= 0 ? state.currentIndex : 0;
+  playQueueIndex(startIndex);
+};
+
+function renderQueue(){
+  $("queue").innerHTML = "";
+
+  if(!state.queue.length){
+    $("queue").innerHTML = '<div style="padding:20px;text-align:center;color:#555">No reserved songs.<br><small>Select a song to reserve it.</small></div>';
+    $("queueStatus").innerHTML = "Select a song to <b>reserve</b> it.";
+    return;
+  }
+
+  state.queue.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "queue-item";
+    if(index === state.currentIndex) div.classList.add("active");
+    else div.classList.add("reserved");
+
+    const label = index === state.currentIndex
+      ? "▶ NOW PLAYING"
+      : `#${index + 1} RESERVED`;
+
+    div.innerHTML = `
+      <div class="queue-number">${index+1}</div>
+      <div>
+        <div class="queue-song">${escapeHtml(cleanTitle(item.file.name))}</div>
+        <div class="queue-singer">${label} • ${escapeHtml(item.singer)} • Key ${item.key > 0 ? "+" + item.key : item.key} • ${item.tempo}%</div>
+      </div>
+      <div class="queue-controls">
+        <button class="btn small" onclick="playQueueIndex(${index})" title="Play this song now">▶</button>
+        <button class="btn small" onclick="moveQueue(${index},-1)" title="Move up">↑</button>
+        <button class="btn small" onclick="moveQueue(${index},1)" title="Move down">↓</button>
+        <button class="btn small red" onclick="removeQueue(${index})" title="Remove reservation">×</button>
+      </div>
+    `;
+    $("queue").appendChild(div);
+  });
+
+  const reservedCount = state.queue.length - (state.currentIndex >= 0 ? 1 : 0);
+  $("queueStatus").innerHTML = state.currentIndex >= 0
+    ? `<b>${Math.max(0,reservedCount)}</b> song${reservedCount === 1 ? "" : "s"} reserved after the current song`
+    : `<b>${state.queue.length}</b> song${state.queue.length === 1 ? "" : "s"} reserved`;
+}
+
+function removeQueue(index){
+  if(index < 0 || index >= state.queue.length) return;
+
+  const wasCurrent = index === state.currentIndex;
+  if(wasCurrent) stopPlayback();
+
+  state.queue.splice(index, 1);
+
+  if(state.currentIndex > index) state.currentIndex--;
+
+  if(!state.queue.length){
+    state.currentIndex = -1;
+  }else if(wasCurrent){
+    // Keep the next reserved song ready; it will not be interrupted by removal.
+    state.currentIndex = Math.min(index, state.queue.length - 1);
+  }
+
+  renderQueue();
+  toast("Reservation removed.");
+}
+
+function moveQueue(index, direction){
+  const newIndex = index + direction;
+  if(newIndex < 0 || newIndex >= state.queue.length) return;
+  [state.queue[index], state.queue[newIndex]] = [state.queue[newIndex], state.queue[index]];
+  if(state.currentIndex === index) state.currentIndex = newIndex;
+  renderQueue();
+}
+
+$("clearQueue").onclick = () => {
+  stopPlayback();
+  state.queue = [];
+  state.currentIndex = -1;
+  renderQueue();
+  $("queueStatus").innerHTML = "Select a song to <b>reserve</b> it.";
+  toast("All reservations cleared.");
+};
+
+/* PLAYBACK ENGINE */
+async function playQueueIndex(index){
+  if(index < 0 || index >= state.queue.length){
+    state.playing = false;
+    state.currentIndex = -1;
+    renderQueue();
+    return;
+  }
+
+  state.currentIndex = index;
+  const item = state.queue[index];
+
+  state.tempo = item.tempo;
+  state.key = item.key;
+  $("tempoSlider").value = item.tempo;
+  $("keySlider").value = item.key;
+  $("tempoValue").textContent = item.tempo;
+  $("keyValue").textContent = item.key;
+
+  renderQueue();
+
+  $("queueStatus").innerHTML = index < state.queue.length - 1
+    ? `Playing <b>${escapeHtml(cleanTitle(item.file.name))}</b> • ${state.queue.length - index - 1} reserved after this`
+    : `Playing <b>${escapeHtml(cleanTitle(item.file.name))}</b> • no song reserved after this`;
+
+  await playFile(item.file, item.tempo, item.key, () => {
+    setTimeout(() => {
+      if(!state.playing) return;
+
+      const nextIndex = index + 1;
+
+      if(nextIndex < state.queue.length){
+        playQueueIndex(nextIndex);
+      }else{
+        state.playing = false;
+        state.currentIndex = -1;
+        renderQueue();
+        $("queueStatus").innerHTML = "Current song finished. Select a song to <b>reserve</b> the next one.";
+      }
+    }, 500);
+  });
+}
+
+async function getDriveBlob(file){
+  const response = await gapi.client.drive.files.get({
+    fileId: file.id,
+    alt: "media"
+  });
+
+  let data = response.body;
+  if(typeof data === "string"){
+    const bytes = new Uint8Array(data.length);
+    for(let i=0; i<data.length; i++){
+      bytes[i] = data.charCodeAt(i) & 255;
+    }
+    return new Blob([bytes], { type: file.mimeType || "application/octet-stream" });
+  }
+  return new Blob([data], { type: file.mimeType || "application/octet-stream" });
+}
+
+async function playFile(file, tempo, key, callback){
+  stopPlayback();
   state.playing = true;
+
+  $("songTitle").textContent = cleanTitle(file.name);
+  $("singerName").textContent = state.queue[state.currentIndex]?.singer || state.singer;
   $("playButton").textContent = "⏸";
 
-  state.audioPlayer.ontimeupdate = () => {
-    const cur = state.audioPlayer.currentTime || 0;
-    const dur = state.audioPlayer.duration || 0;
-    $("stageTimer").textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
-    if (dur > 0) $("stageProgressBar").style.width = `${(cur / dur) * 100}%`;
-    updateLrcPlayback(cur);
+  let objectUrl = null;
+
+  try{
+    const blob = (file.source === "local" || file instanceof File)
+      ? file
+      : await getDriveBlob(file);
+
+    objectUrl = URL.createObjectURL(blob);
+    state.mediaUrl = objectUrl;
+
+    const name = file.name.toLowerCase();
+    const mime = file.type || file.mimeType || "";
+    const isVideo = mime.startsWith("video/") || /\.(mp4|webm|mov)$/i.test(name);
+
+    if(isVideo){
+      await playVideo(objectUrl, tempo, callback);
+      return;
+    }
+
+    if(name.endsWith(".mid") || name.endsWith(".midi") || name.endsWith(".kar")){
+      await playMidi(blob, tempo, key, callback);
+      return;
+    }
+
+    await playAudio(objectUrl, tempo, key, callback);
+  }catch(error){
+    console.error("Playback error:", error);
+    toast("Unable to play: " + file.name);
+    if(objectUrl) try{ URL.revokeObjectURL(objectUrl); }catch(e){}
+    stopPlayback();
+  }
+}
+
+async function playAudio(url, tempo, key, callback) {
+  $("videoPlayer").style.display = "none";
+  const audio = new Audio(url);
+  state.audioPlayer = audio;
+
+  audio.playbackRate = tempo / 100;
+  audio.volume = Number($("musicVolume").value) / 100;
+
+  setupAudioNodes(audio);
+
+  audio.onended = () => {
+    stopPlayback();
+    if (callback) callback();
   };
 
-  state.audioPlayer.onended = () => {
-    if (state.currentIndex < state.queue.length - 1) playQueueIndex(state.currentIndex + 1);
-    else stopPlayback();
+  audio.ontimeupdate = () => {
+    updateTimer(audio.currentTime, audio.duration);
   };
+
+  await audio.play();
+}
+
+async function playVideo(url, tempo, callback) {
+  const video = $("videoPlayer");
+
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+
+  video.style.display = "block";
+  $("lyricsStage").classList.add("video-mode");
+  $("stageMediaType").textContent = "MP4";
+  video.controls = false;
+  video.preload = "auto";
+  video.src = url;
+  state.audioPlayer = video;
+
+  video.playbackRate = tempo / 100;
+  video.volume = Number($("musicVolume").value) / 100;
+
+  setupAudioNodes(video);
+
+  video.onended = () => {
+    stopPlayback();
+    if(callback) callback();
+  };
+
+  video.onerror = () => {
+    console.error("Video error:", video.error);
+    toast("This MP4/video cannot be played by this browser.");
+  };
+
+  video.ontimeupdate = () => updateTimer(video.currentTime, video.duration);
+
+  video.load();
+  await video.play();
+}
+
+async function playMidi(blob, tempo, key, callback) {
+  await Tone.start();
+  $("videoPlayer").style.display = "none";
+
+  const arrayBuffer = await blob.arrayBuffer();
+  const midi = MidiConvert.parse(arrayBuffer);
+
+  state.midiLyrics = extractMidiLyrics(midi);
+  renderLyricsStage();
+
+  const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+  state.midiSynth = synth;
+
+  Tone.Transport.cancel();
+  Tone.Transport.bpm.value = (midi.header.bpm || 120) * (tempo / 100);
+
+  midi.tracks.forEach(track => {
+    track.notes.forEach(note => {
+      const pitchedNote = Tone.Frequency(note.midi + key, "midi").toNote();
+      Tone.Transport.schedule((time) => {
+        synth.triggerAttackRelease(pitchedNote, note.duration, time, note.velocity);
+      }, note.time);
+    });
+  });
+
+  const duration = midi.duration;
+  
+  Tone.Transport.scheduleRepeat(() => {
+    const seconds = Tone.Transport.seconds;
+    updateTimer(seconds, duration);
+    updateLyricsDisplay(seconds);
+
+    if (seconds >= duration) {
+      stopPlayback();
+      if (callback) callback();
+    }
+  }, 0.1);
+
+  Tone.Transport.start();
+}
+
+function extractMidiLyrics(midi) {
+  const lyrics = [];
+  midi.tracks.forEach(track => {
+    if (track.text) {
+      track.text.forEach(t => {
+        if (t.text) lyrics.push({ time: t.time, text: t.text });
+      });
+    }
+  });
+  return lyrics.sort((a, b) => a.time - b.time);
+}
+
+function renderLyricsStage() {
+  const stage = $("lyricsStage");
+  const tv = $("fullscreenLyrics");
+
+  if (!state.midiLyrics.length) {
+    stage.innerHTML = `<div id="idleScreen"><h2>🎵 Playing Audio Track</h2><p>No embedded lyrics found</p></div>`;
+    tv.innerHTML = stage.innerHTML;
+    return;
+  }
+
+  const html = state.midiLyrics.map((l, i) => `<div class="lyric" id="lyric-${i}">${escapeHtml(l.text)}</div>`).join("");
+  stage.innerHTML = html;
+  tv.innerHTML = html;
+}
+
+function updateLyricsDisplay(currentTime) {
+  if (!state.midiLyrics.length) return;
+
+  state.midiLyrics.forEach((lyric, index) => {
+    const el = $(`lyric-${index}`);
+    if (!el) return;
+
+    if (currentTime >= lyric.time) {
+      el.className = "lyric active";
+      if (index > 0) {
+        const prev = $(`lyric-${index - 1}`);
+        if (prev) prev.className = "lyric past";
+      }
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
 }
 
 function pausePlayback() {
-  if (state.audioPlayer) { state.audioPlayer.pause(); state.playing = false; $("playButton").textContent = "▶"; }
+  state.playing = false;
+  $("playButton").textContent = "▶";
+  if (state.audioPlayer) state.audioPlayer.pause();
+  if (state.midiSynth) Tone.Transport.pause();
 }
 
 function resumePlayback() {
-  if (state.audioPlayer) { state.audioPlayer.play(); state.playing = true; $("playButton").textContent = "⏸"; }
-  else if (state.queue.length > 0) playQueueIndex(0);
+  state.playing = true;
+  $("playButton").textContent = "⏸";
+  if (state.audioPlayer) state.audioPlayer.play();
+  if (state.midiSynth) Tone.Transport.start();
 }
 
 function stopPlayback() {
-  if (state.audioPlayer) { state.audioPlayer.pause(); state.audioPlayer.currentTime = 0; state.audioPlayer = null; }
   state.playing = false;
   $("playButton").textContent = "▶";
-  $("videoPlayer").style.display = "none";
-  
-  $("stage").classList.remove("video-mode");
-  $("tvStageOverlay").classList.remove("video-mode");
 
-  $("stageProgressBar").style.width = "0%";
+  if (state.audioPlayer) {
+    state.audioPlayer.pause();
+    state.audioPlayer.currentTime = 0;
+    state.audioPlayer = null;
+  }
+
+  if (state.midiSynth) {
+    Tone.Transport.stop();
+    Tone.Transport.cancel();
+    state.midiSynth.dispose();
+    state.midiSynth = null;
+  }
+
+  if (state.mediaUrl) {
+    URL.revokeObjectURL(state.mediaUrl);
+    state.mediaUrl = null;
+  }
+
   $("stageTimer").textContent = "00:00 / 00:00";
-  loadLyricsForSong("");
+  $("stageProgressBar").style.width = "0%";
+  $("videoPlayer").style.display = "none";
+  $("videoPlayer").controls = false;
+  $("lyricsStage").classList.remove("video-mode");
+  $("stageMediaType").textContent = "KARAOKE";
+  $("lyricsStage").innerHTML =`
+    <div id="idleScreen">
+      <div class="big">🎤</div>
+      <h2>READY TO SING</h2>
+      <p>Select a song from the songbook</p>
+    </div>
+  `;
+  $("fullscreenLyrics").innerHTML = $("lyricsStage").innerHTML;
+}
+
+function updateTimer(current, duration) {
+  const cMin = Math.floor((current || 0) / 60).toString().padStart(2, "0");
+  const cSec = Math.floor((current || 0) % 60).toString().padStart(2, "0");
+  const dMin = Math.floor((duration || 0) / 60).toString().padStart(2, "0");
+  const dSec = Math.floor((duration || 0) % 60).toString().padStart(2, "0");
+
+  $("stageTimer").textContent = `${cMin}:${cSec} / ${dMin}:${dSec}`;
+
+  const percent = duration > 0
+    ? Math.max(0, Math.min(100, (current / duration) * 100))
+    : 0;
+
+  $("stageProgressBar").style.width = percent + "%";
+}
+
+/* AUDIO & VISUALS */
+function initAudioContext() {
+  if (!state.audioContext) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    state.audioContext = new AudioContext();
+    state.analyser = state.audioContext.createAnalyser();
+    state.analyser.fftSize = 64;
+  }
+  if (state.audioContext.state === "suspended") {
+    state.audioContext.resume();
+  }
+}
+
+function setupAudioNodes(element) {
+  initAudioContext();
+  try {
+    const source = state.audioContext.createMediaElementSource(element);
+    source.connect(state.analyser);
+    state.analyser.connect(state.audioContext.destination);
+  } catch(e) {}
+}
+
+async function setupMicrophone(volume) {
+  initAudioContext();
+
+  if (volume <= 0) {
+    if (state.micStream) {
+      state.micStream.getTracks().forEach(t => t.stop());
+      state.micStream = null;
+    }
+    return;
+  }
+
+  try {
+    if (!state.micStream) {
+      state.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      state.micSource = state.audioContext.createMediaStreamSource(state.micStream);
+      state.micGain = state.audioContext.createGain();
+
+      state.micSource.connect(state.micGain);
+      state.micGain.connect(state.analyser);
+      state.micGain.connect(state.audioContext.destination);
+    }
+    state.micGain.gain.value = volume * 2;
+  } catch (err) {
+    console.error(err);
+    toast("Microphone access denied or unavailable.");
+  }
 }
 
 function initVisualizer() {
-  const canvas = $("visualizer"), ctx = canvas.getContext("2d");
-  function resize() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; }
+  const canvas = $("visualizer");
+  const ctx = canvas.getContext("2d");
+
+  function resize() {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+  }
   window.addEventListener("resize", resize);
   resize();
 
   function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (state.playing) {
-      ctx.fillStyle = "rgba(255, 22, 115, 0.2)";
-      const bars = 30, width = canvas.width / bars;
-      for (let i = 0; i < bars; i++) {
-        const height = Math.random() * (canvas.height * 0.6);
-        ctx.fillRect(i * width, canvas.height - height, width - 2, height);
-      }
-    }
     requestAnimationFrame(draw);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!state.analyser) return;
+
+    const bufferLength = state.analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    state.analyser.getByteFrequencyData(dataArray);
+
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
+
+    for (let i = 0; i < bufferLength; i++) {
+      const barHeight = (dataArray[i] / 255) * canvas.height;
+      ctx.fillStyle = `rgba(255, 22, 115, ${dataArray[i] / 255})`;
+      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+      x += barWidth + 2;
+    }
   }
+
   draw();
 }
 
-/* SMART TV REMOTE NAVIGATION */
-function initTVRemoteNavigation() {
-  const makeFocusable = (selector) => {
-    document.querySelectorAll(selector).forEach((el) => { if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "0"); });
-  };
-  makeFocusable("button, input, .file, .queue-item");
-
-  window.addEventListener("keydown", (e) => {
-    const focusables = Array.from(document.querySelectorAll("button:not([disabled]), input:not([disabled]), .file, .queue-item")).filter(el => el.offsetWidth > 0);
-    const activeEl = document.activeElement;
-    const idx = focusables.indexOf(activeEl);
-
-    switch (e.key) {
-      case "ArrowDown": if (idx < focusables.length - 1) focusables[idx + 1].focus(); e.preventDefault(); break;
-      case "ArrowUp": if (idx > 0) focusables[idx - 1].focus(); e.preventDefault(); break;
-      case "Enter": if (activeEl) activeEl.click(); break;
-      case "MediaPlayPause": state.playing ? pausePlayback() : resumePlayback(); break;
-      case "MediaStop": stopPlayback(); break;
-    }
-  });
-}
-
-/* TV OVERLAY CONTROLLER WITH REAL-TIME LYRICS & VIDEO DETECT */
-let tvIdleTimer = null;
-function initTvStageController() {
-  const overlay = $("tvStageOverlay");
-  const tvBtn = $("fullscreenButton");
-  const exitBtn = $("exitTvStageBtn");
-  const video = $("videoPlayer");
-
-  function enterTvStage() {
-    overlay.classList.add("active");
-    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
-    
-    if (video.style.display !== "none") {
-      overlay.appendChild(video);
-    }
-
-    updateTvStageInfo();
-    renderLrcContainer();
-    
-    if (state.audioPlayer) {
-      updateLrcPlayback(state.audioPlayer.currentTime || 0);
-    }
-  }
-
-  function exitTvStage() {
-    overlay.classList.remove("active");
-    
-    if (video.parentElement === overlay) {
-      $("stage").appendChild(video);
-    }
-
-    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
-  }
-
-  tvBtn.onclick = enterTvStage;
-  exitBtn.onclick = exitTvStage;
-
-  function updateTvStageInfo() {
-    const currentSong = state.queue[state.currentIndex];
-    const nextSong = state.queue[state.currentIndex + 1];
-    $("tvSongTitle").textContent = currentSong ? currentSong.title : "KaraokeHub PRO";
-    $("tvSingerName").textContent = currentSong ? `🎤 ${currentSong.singer}` : "Ready to Sing";
-    $("tvNextUp").textContent = `⚡ NEXT SINGER: ${nextSong ? `${nextSong.singer} (${nextSong.title})` : "None"}`;
-  }
-
-  setInterval(() => {
-    if (overlay.classList.contains("active")) {
-      if (state.audioPlayer) {
-        const cur = state.audioPlayer.currentTime || 0;
-        const dur = state.audioPlayer.duration || 0;
-        $("tvStageTimer").textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
-      } else {
-        $("tvStageTimer").textContent = "00:00 / 00:00";
-      }
-    }
-  }, 250);
-}
 </script>
 </body>
 </html>
