@@ -19,160 +19,37 @@
 
 <style>
 :root{
-  --pink:#ff1673;
-  --pink2:#ff4f9a;
-  --purple:#762cff;
-  --blue:#18aaff;
-  --green:#19d37b;
-  --red:#ff3d4d;
-  --yellow:#ffd23f;
-  --bg:#050507;
-  --panel:#101015;
-  --panel2:#17171e;
-  --border:#292932;
-  --text:#f5f5f7;
-  --muted:#858592;
+  --pink:#ff1673; --pink2:#ff4f9a; --purple:#762cff; --blue:#18aaff;
+  --green:#19d37b; --red:#ff3d4d; --yellow:#ffd23f; --bg:#050507;
+  --panel:#101015; --panel2:#17171e; --border:#292932; --text:#f5f5f7; --muted:#858592;
 }
-
 *{ box-sizing:border-box; }
+html, body{ margin:0; width:100%; height:100%; background:#000; color:var(--text); font-family:Arial,Helvetica,sans-serif; overflow:hidden; }
 
-html, body{
-  margin:0;
-  width:100%;
-  height:100%;
-  background:#000;
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  overflow:hidden;
-}
+#appAuthGate { position: fixed; inset: 0; background: radial-gradient(circle at 50% 30%, #2e102e 0%, #08080c 60%, #020203 100%); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+.auth-card { width: 380px; max-width: 90%; background: rgba(16, 16, 21, 0.95); border: 1px solid var(--border); border-radius: 14px; padding: 30px 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); text-align: center; }
+.auth-card h1 { margin: 0 0 8px 0; font-size: 26px; color: var(--pink); }
+.auth-form-group { text-align: left; margin-bottom: 15px; }
+.auth-form-group label { display: block; font-size: 11px; color: #aaa; margin-bottom: 6px; font-weight: bold; }
+.auth-form-group input { width: 100%; padding: 12px; background: #08080c; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
 
-/* APP ACCESS LOCK SCREEN */
-#appAuthGate {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 30%, #2e102e 0%, #08080c 60%, #020203 100%);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.auth-card {
-  width: 380px;
-  max-width: 90%;
-  background: rgba(16, 16, 21, 0.95);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 30px 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 22, 115, 0.2);
-  text-align: center;
-}
-
-.auth-card h1 {
-  margin: 0 0 8px 0;
-  font-size: 26px;
-  color: var(--pink);
-}
-
-.auth-card p {
-  color: var(--muted);
-  font-size: 12px;
-  margin-bottom: 22px;
-}
-
-.auth-form-group {
-  text-align: left;
-  margin-bottom: 15px;
-}
-
-.auth-form-group label {
-  display: block;
-  font-size: 11px;
-  color: #aaa;
-  margin-bottom: 6px;
-  font-weight: bold;
-}
-
-.auth-form-group input {
-  width: 100%;
-  padding: 12px;
-  background: #08080c;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
-}
-
-.auth-form-group input:focus {
-  border-color: var(--pink);
-}
-
-/* TV REMOTE & TOUCH FOCUS STYLES */
-*:focus {
-  outline: 3px solid var(--pink) !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 15px var(--pink) !important;
-}
-
-.file:focus, .queue-item:focus {
-  border-color: var(--pink) !important;
-  background: #351325 !important;
-}
-
-#app{
-  height:100vh;
-  display:grid;
-  grid-template-columns:320px 1fr 350px;
-  grid-template-rows:64px 1fr 105px;
-  background: radial-gradient(circle at 50% 0%, #29102a 0%, #08080c 45%, #020203 100%);
-}
-
-#topbar{
-  grid-column:1/4;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 18px;
-  background:rgba(10,10,14,.96);
-  border-bottom:1px solid var(--border);
-}
-
-.logo{ font-size:22px; font-weight:900; letter-spacing:.5px; color:var(--pink); }
+#app{ height:100vh; display:grid; grid-template-columns:320px 1fr 350px; grid-template-rows:64px 1fr 105px; background: radial-gradient(circle at 50% 0%, #29102a 0%, #08080c 45%, #020203 100%); }
+#topbar{ grid-column:1/4; display:flex; align-items:center; justify-content:space-between; padding:0 18px; background:rgba(10,10,14,.96); border-bottom:1px solid var(--border); }
+.logo{ font-size:22px; font-weight:900; color:var(--pink); }
 .logo span{ color:#fff; }
-.top-center{ display:flex; gap:8px; align-items:center; }
-.status{ font-size:12px; color:var(--muted); }
 .top-actions{ display:flex; gap:6px; }
 
-.btn{
-  border:1px solid var(--border);
-  background:#191920;
-  color:white;
-  border-radius:7px;
-  padding:9px 13px;
-  cursor:pointer;
-  font-weight:bold;
-  transition:.15s;
-}
-.btn:hover{ background:#292932; border-color:#444450; }
+.btn{ border:1px solid var(--border); background:#191920; color:white; border-radius:7px; padding:9px 13px; cursor:pointer; font-weight:bold; }
+.btn:hover{ background:#292932; }
 .btn.primary{ background:var(--pink); border-color:var(--pink); }
-.btn.primary:hover{ background:var(--pink2); }
 .btn.green{ background:#087a49; border-color:#087a49; }
 .btn.red{ background:#9c1f2d; border-color:#9c1f2d; }
 .btn.small{ padding:5px 8px; font-size:11px; }
 
-#songbook{
-  border-right:1px solid var(--border);
-  background:rgba(10,10,14,.96);
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-}
-
-.section-title{ padding:14px 15px 8px; font-size:12px; color:#aaa; text-transform:uppercase; letter-spacing:1px; }
+#songbook{ border-right:1px solid var(--border); background:rgba(10,10,14,.96); overflow:hidden; display:flex; flex-direction:column; }
+.section-title{ padding:14px 15px 8px; font-size:12px; color:#aaa; text-transform:uppercase; }
 .search{ margin:8px 12px; padding:11px; border-radius:7px; border:1px solid var(--border); outline:none; background:#08080c; color:#fff; width:calc(100% - 24px); }
 
-/* CATEGORY TABS */
 .category-tabs{ display:flex; padding:4px 10px 8px; gap:4px; }
 .category-tabs button{ flex:1; background:#18181f; color:#aaa; border:1px solid var(--border); border-radius:6px; padding:8px 4px; cursor:pointer; font-size:10px; font-weight:bold; }
 .category-tabs button.active{ color:#fff; background:var(--pink); border-color:var(--pink); }
@@ -184,199 +61,50 @@ html, body{
 .file-title{ font-size:13px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .file-meta{ margin-top:4px; color:#6f6f79; font-size:10px; }
 
-#stage{ position:relative; overflow:hidden; display:flex; flex-direction:column; min-width:0; background:#05070b; isolation:isolate; }
-#visualizer{ position:absolute; inset:0; width:100%; height:100%; opacity:.16; pointer-events:none; z-index:1; }
+#stage{ position:relative; overflow:hidden; display:flex; flex-direction:column; min-width:0; background:#05070b; }
 #videoPlayer{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:none; z-index:2; background:#000; }
+#stageHeader{ position:relative; z-index:4; min-height:78px; padding:14px 20px; display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid rgba(255,255,255,.08); background:rgba(3,5,9,.94); }
+#songTitle{ font-size:21px; font-weight:900; color:#fff; }
+#singerName{ color:#42d9ff; font-size:12px; font-weight:800; margin-top:6px; text-transform:uppercase; }
 
-#stageHeader{
-  position:relative; z-index:4; min-height:78px; padding:14px 20px 12px; display:flex; justify-content:space-between; align-items:flex-start; gap:20px;
-  border-bottom:1px solid rgba(255,255,255,.08); background:linear-gradient(to bottom,rgba(3,5,9,.94),rgba(3,5,9,.42)); backdrop-filter:blur(8px);
-}
-.stage-song-info{ min-width:0; max-width:72%; }
-#songTitle{ font-size:21px; line-height:1.12; font-weight:900; color:#fff; letter-spacing:.1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 2px 8px #000; }
-#singerName{ display:inline-flex; align-items:center; gap:6px; color:#42d9ff; font-size:12px; font-weight:800; margin-top:6px; letter-spacing:.7px; text-transform:uppercase; }
-#singerName::before{ content:"🎤"; font-size:12px; }
-.stage-right{ display:flex; align-items:center; gap:14px; flex-shrink:0; }
-.stage-badge{ padding:6px 10px; border:1px solid rgba(42,190,255,.8); border-radius:7px; color:#fff; background:rgba(0,100,150,.25); font-size:10px; font-weight:900; letter-spacing:.8px; box-shadow:0 0 14px rgba(0,180,255,.15); }
-#stageTimer{ min-width:105px; text-align:right; color:#fff; font-family:monospace; font-size:14px; font-weight:800; text-shadow:0 2px 8px #000; }
-#stageProgress{ position:absolute; left:20px; right:20px; bottom:-1px; height:4px; z-index:5; overflow:hidden; border-radius:4px; background:rgba(255,255,255,.2); }
-#stageProgressBar{ width:0%; height:100%; background:#18bfff; box-shadow:0 0 10px rgba(24,191,255,.8); transition:width .15s linear; }
-
-#lyricsStage{ position:relative; z-index:3; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px 20px; overflow:hidden; }
-
-#stage.video-mode #lyricsStage { display: none !important; }
-
-#idleScreen{ text-align:center; color:#888; padding:20px; max-width: 80%; margin: 0 auto; }
-#idleScreen .big{ font-size:55px; margin-bottom:6px; filter:drop-shadow(0 0 15px rgba(0,190,255,.3)); }
-#idleScreen h2{ margin:0 0 12px 0; color:#fff; font-size:22px; letter-spacing:0.5px; line-height: 1.3; }
-#idleScreen p{ margin:6px 0; color:#888; }
-
-/* SYNCED LRC STYLES */
-.lrc-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-height: 100%; overflow: hidden; }
-.lrc-line { font-size: 24px; font-weight: 800; color: #888899; margin: 10px 0; opacity: 0.4; transition: all 0.25s ease; text-shadow: 0 2px 6px #000; }
-.lrc-line.active { color: var(--pink); opacity: 1; font-size: 34px; transform: scale(1.08); text-shadow: 0 0 20px rgba(255, 22, 115, 0.8), -1px -1px 0 #fff, 1px -1px 0 #fff; }
-.lrc-line.past { color: #555566; opacity: 0.3; font-size: 20px; }
-
-.stage-bottom{ position:absolute; left:0; right:0; bottom:0; z-index:4; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; background:linear-gradient(to top,rgba(2,4,8,.92),rgba(2,4,8,.25)); pointer-events:none; }
-.stage-bottom > *{ pointer-events:auto; }
-.stage-format{ display:flex; gap:7px; }
-.stage-format span{ border:1px solid rgba(255,255,255,.55); border-radius:5px; padding:4px 8px; color:#fff; font-size:9px; font-weight:900; letter-spacing:.7px; background:rgba(0,0,0,.4); }
-.stage-next{ color:#fff; font-size:12px; font-weight:800; }
+#lyricsStage{ position:relative; z-index:3; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px; }
+#idleScreen .big{ font-size:55px; margin-bottom:6px; }
+#idleScreen h2{ margin:0 0 12px 0; color:#fff; font-size:22px; }
 
 #queuePanel{ border-left:1px solid var(--border); background:rgba(10,10,14,.96); display:flex; flex-direction:column; overflow:hidden; }
 .queue-head{ padding:15px; border-bottom:1px solid var(--border); }
-.queue-title{ font-size:16px; font-weight:bold; }
-.queue-sub{ color:#666; font-size:11px; margin-top:3px; }
 #queue{ flex:1; overflow-y:auto; padding:8px; }
-.queue-item{ display:grid; grid-template-columns:38px 1fr auto; gap:8px; align-items:center; padding:10px 7px; margin-bottom:5px; border-radius:7px; background:#111117; border:1px solid transparent; }
-.queue-item.active{ background:#321426; border-color:#8e2852; }
-.queue-number{ font-size:17px; color:#555; font-weight:bold; text-align:center; }
-.queue-item.active .queue-number{ color:var(--pink); }
-.queue-song{ font-size:12px; font-weight:bold; }
-.queue-singer{ font-size:10px; color:#777; margin-top:3px; }
-.queue-controls{ display:flex; gap:3px; }
+.queue-item{ display:grid; grid-template-columns:38px 1fr auto; gap:8px; align-items:center; padding:10px 7px; margin-bottom:5px; border-radius:7px; background:#111117; }
 .queue-bottom{ border-top:1px solid var(--border); padding:10px; display:flex; flex-direction:column; gap:6px; }
 
 #deck{ grid-column:1/4; display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:8px; padding:10px; background:#0b0b0f; border-top:1px solid var(--border); }
 .deck-control{ background:#14141a; border:1px solid var(--border); border-radius:7px; padding:8px 12px; }
-.deck-label{ color:#777; font-size:9px; text-transform:uppercase; letter-spacing:1px; }
+.deck-label{ color:#777; font-size:9px; text-transform:uppercase; }
 .deck-value{ color:#fff; font-size:15px; font-weight:bold; margin:3px 0 5px; }
 input[type=range]{ width:100%; accent-color:var(--pink); }
-
 .transport{ display:flex; align-items:center; justify-content:center; gap:7px; }
 .transport button{ min-width:48px; height:43px; border-radius:8px; border:1px solid #333; background:#1b1b22; color:#fff; cursor:pointer; font-size:18px; }
-.transport button:hover{ background:#292932; }
 .transport .play{ background:var(--pink); border-color:var(--pink); width:65px; }
 
 .modal{ position:fixed; inset:0; background:rgba(0,0,0,.78); z-index:100; display:none; align-items:center; justify-content:center; }
 .modal.show{ display:flex; }
-.modal-box{ width:420px; max-width:90%; background:#15151c; border:1px solid #333; border-radius:12px; padding:20px; box-shadow:0 20px 70px #000; }
-.modal-box h2{ margin-top:0; }
+.modal-box{ width:420px; max-width:90%; background:#15151c; border:1px solid #333; border-radius:12px; padding:20px; }
 .form-row{ margin:13px 0; }
 .form-row label{ display:block; color:#999; font-size:11px; margin-bottom:5px; }
 .form-row input{ width:100%; padding:10px; background:#08080c; color:white; border:1px solid #333; border-radius:6px; }
 
 #toast{ position:fixed; left:50%; bottom:125px; transform:translateX(-50%); background:#222; border:1px solid #555; border-radius:8px; padding:11px 20px; display:none; z-index:500; }
 
-.local-picker-help{margin-top:7px;font-size:9px;line-height:1.35;color:#666}
-.local-picker-help b{color:#aaa}
-.local-library{margin:0 10px 8px;padding:10px;background:#101016;border:1px solid #292933;border-radius:8px}
-.local-library-title{font-size:10px;font-weight:800;letter-spacing:.8px;color:#aaa;margin-bottom:8px}
-.local-library-buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.local-library .btn{width:100%;min-height:34px;cursor:pointer}
-.local-folder-name{margin-top:8px;font-size:10px;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.file.local-file{border-left:3px solid #5b8cff}
-.file.local-file .file-meta{color:#6f9dff}
-.library-heading{padding:7px 10px 4px;font-size:9px;font-weight:900;letter-spacing:.8px;color:#777}
-
-/* ADMIN CONTROLS HIDING */
 .admin-only { display: none !important; }
 body.is-admin .admin-only { display: block !important; }
 body.is-admin .admin-only-flex { display: flex !important; }
 
-/* USER MANAGEMENT STYLES */
-.user-list { max-height: 180px; overflow-y: auto; margin: 10px 0; background: #08080c; border: 1px solid var(--border); border-radius: 6px; padding: 6px; }
-.user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #1f1f28; font-size: 12px; }
-.user-item:last-child { border-bottom: none; }
-.user-item span { font-weight: bold; }
-.user-item em { font-size: 10px; color: #777; margin-left: 6px; }
-
-/* FULL-SCREEN SMART TV STAGE */
-#tvStageOverlay { position: fixed; inset: 0; background: #020306; z-index: 1000; display: none; flex-direction: column; justify-content: space-between; overflow: hidden; isolation: isolate; }
-#tvStageOverlay.active { display: flex; }
-.tv-header { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 24px 36px; background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent); transition: opacity 0.4s ease; }
-.tv-title { font-size: 38px; font-weight: 900; color: #fff; text-shadow: 0 4px 12px rgba(0,0,0,0.9); }
-.tv-singer { font-size: 22px; color: var(--pink); font-weight: 800; margin-top: 6px; }
-.tv-timer { font-size: 28px; font-family: monospace; font-weight: bold; color: #fff; }
-.tv-lyrics-container { position: relative; z-index: 10; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 60px; overflow: hidden; }
-
-#tvStageOverlay.video-mode .tv-lyrics-container { display: none !important; }
-
-.tv-lrc-line { font-size: 34px; font-weight: 900; color: #7788aa; margin: 14px 0; opacity: 0.4; transition: all 0.25s ease; text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; }
-.tv-lrc-line.active { color: #ff1673; opacity: 1; font-size: 52px; transform: scale(1.15); text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0 0 25px rgba(255, 22, 115, 0.9); }
-.tv-footer { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 20px 36px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); transition: opacity 0.4s ease; }
-.tv-next-up { font-size: 20px; font-weight: 800; color: #18aaff; }
-.tv-idle .tv-header, .tv-idle .tv-footer { opacity: 0; pointer-events: none; }
-
-/* ------------------------------------------------------------- */
-/* RESPONSIVE CSS MEDIA QUERIES (ANDROID PHONE vs ANDROID TV)   */
-/* ------------------------------------------------------------- */
-
-/* ANDROID PHONE (PORTRAIT & SMALL SCREEN LAYOUT) */
-@media screen and (max-width: 768px) {
-  #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow-y: auto;
-  }
-  #topbar {
-    padding: 10px;
-    flex-wrap: wrap;
-    gap: 8px;
-    min-height: 56px;
-  }
-  .logo { font-size: 18px; }
-  .top-actions { gap: 4px; flex-wrap: wrap; }
-  .top-actions .btn { font-size: 10px; padding: 6px 10px; }
-  
-  #songbook {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    max-height: 350px;
-    flex-shrink: 0;
-  }
-  
-  #stage {
-    min-height: 280px;
-    flex-shrink: 0;
-  }
-  
-  .lrc-line { font-size: 18px; }
-  .lrc-line.active { font-size: 24px; }
-  
-  #queuePanel {
-    max-height: 250px;
-    border-left: none;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  
-  #deck {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    padding: 8px;
-    flex-shrink: 0;
-  }
-  .deck-control:first-child {
-    grid-column: 1 / 3;
-  }
-}
-
-/* ANDROID TV / LARGE SCREEN (LANDSCAPE & TELEVISION LAYOUT) */
-@media screen and (min-width: 1200px) and (orientation: landscape) {
-  #app {
-    grid-template-columns: 360px 1fr 380px;
-    grid-template-rows: 72px 1fr 120px;
-  }
-  
-  .logo { font-size: 26px; }
-  .btn { font-size: 14px; padding: 12px 18px; }
-  .file-title { font-size: 15px; }
-  .queue-song { font-size: 14px; }
-  
-  .lrc-line { font-size: 28px; }
-  .lrc-line.active { font-size: 42px; }
-  
-  .tv-lrc-line { font-size: 42px; }
-  .tv-lrc-line.active { font-size: 64px; }
-}
+.local-library { margin: 0 10px 8px; padding: 10px; background: #101016; border: 1px solid var(--border); border-radius: 8px; }
 </style>
 </head>
 
 <body>
 
-<!-- APP ACCESS AUTHENTICATION GATE -->
 <div id="appAuthGate">
   <div class="auth-card">
     <h1>🎤 KaraokeHub PRO</h1>
@@ -394,15 +122,14 @@ body.is-admin .admin-only-flex { display: flex !important; }
 </div>
 
 <div id="app">
-
 <header id="topbar">
   <div class="logo">🎤 Karaoke<span>Hub</span> PRO</div>
-  <div class="top-center">
-    <div class="status" id="driveStatus">Not logged in</div>
-  </div>
+  <div class="top-center"><div class="status" id="driveStatus">Not logged in</div></div>
   <div class="top-actions">
+    <!-- ADMIN ONLY: Google Login & User Management -->
     <button class="btn primary admin-only-flex" id="loginButton">☁ Log in with Google</button>
     <button class="btn admin-only-flex" id="manageUsersBtn">👥 Manage Users</button>
+    
     <button class="btn" id="logoutAppBtn">🚪 Logout (<span id="activeUserLabel">Singer</span>)</button>
     <button class="btn" id="fullscreenButton">⛶ TV Stage</button>
     <button class="btn" id="settingsButton">⚙ Profile</button>
@@ -411,57 +138,37 @@ body.is-admin .admin-only-flex { display: flex !important; }
 
 <aside id="songbook">
   <div class="section-title">MEDIA LIBRARY</div>
-  <div class="local-library">
-    <div class="local-library-title">💻 LOCAL SONG LIBRARY</div>
-    
-    <!-- ADMIN ONLY UPLOAD BUTTONS -->
-    <div class="local-library-buttons admin-only-flex admin-only">
-      <button class="btn small" type="button" id="selectLocalFiles" style="grid-column: 1/3;">📤 Upload Files</button>
-      <button class="btn small" type="button" id="selectLrcFiles" style="grid-column: 1/2; margin-top:4px;">📝 Load .LRC Lyrics</button>
-      <button class="btn red small" type="button" id="clearStoredLibrary" style="grid-column: 2/3; margin-top:4px;">🗑 Clear Saved Library</button>
-    </div>
-
-    <div class="local-folder-name" id="localStatus">Library ready for singers</div>
-    <div class="local-picker-help admin-only">
-      Admin Mode Active: Add or delete tracks across folders.
-    </div>
-    <input id="localFilesInput" type="file" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mkv,.avi,.mid,.midi,.kar" multiple hidden>
-    <input id="lrcFileInput" type="file" accept=".lrc,.txt" multiple hidden>
+  
+  <!-- ADMIN ONLY LOCAL LIBRARY & UPLOAD CONTROLS -->
+  <div class="local-library admin-only admin-only-flex" style="flex-direction:column;">
+    <div style="font-size:10px; font-weight:800; color:#aaa; margin-bottom:8px;">💻 LOCAL SONG LIBRARY</div>
+    <button class="btn small" type="button" id="selectLocalFiles" style="width:100%;">📤 Upload Files</button>
+    <div id="localStatus" style="margin-top:8px; font-size:10px; color:#777;">Library ready</div>
+    <input id="localFilesInput" type="file" accept=".mp3,.wav,.m4a,.aac,.ogg,.flac,.mp4,.webm,.mov,.mkv,.avi" multiple hidden>
   </div>
 
-  <div id="driveFolders" style="padding:0 10px 6px;"></div>
   <input class="search" id="search" placeholder="🔎 Search title or artist...">
 
-  <!-- MEDIA CATEGORY FILTER BUTTONS -->
   <div class="category-tabs">
     <button id="catKtv" class="active" onclick="setCategory('ktv')">🎤 KTV Songs</button>
-    <button id="catMusic" onclick="setCategory('music')">🎵 MP3 MUSIC</button>
+    <button id="catMusic" onclick="setCategory('music')">🎵 MUSIC</button>
     <button id="catMovie" onclick="setCategory('movie')">🎬 MOVIE</button>
   </div>
 
   <div id="files">
-    <div style="padding:20px;text-align:center;color:#555;">
-      Search for songs above or select from rotation.
-    </div>
+    <div style="padding:20px;text-align:center;color:#555;">Search files or select from queue.</div>
   </div>
 </aside>
 
 <main id="stage">
-  <canvas id="visualizer"></canvas>
   <video id="videoPlayer" playsinline></video>
-
   <div id="stageHeader">
-    <div class="stage-song-info">
+    <div>
       <div id="songTitle">KaraokeHub</div>
       <div id="singerName">Ready to Sing</div>
     </div>
-    <div class="stage-right">
-      <div class="stage-badge">KARAOKE</div>
-      <div id="stageTimer">00:00 / 00:00</div>
-    </div>
-    <div id="stageProgress"><div id="stageProgressBar"></div></div>
+    <div id="stageTimer" style="font-family:monospace;font-weight:bold;">00:00 / 00:00</div>
   </div>
-
   <section id="lyricsStage">
     <div id="idleScreen">
       <div class="big">🎤</div>
@@ -469,31 +176,15 @@ body.is-admin .admin-only-flex { display: flex !important; }
       <p>Select a song from the songbook</p>
     </div>
   </section>
-
-  <div class="stage-bottom">
-    <div class="stage-format">
-      <span>HD</span>
-      <span id="stageMediaType">KARAOKE</span>
-    </div>
-    <div class="stage-next" id="nextSongLabel">⚡ NEXT: None</div>
-  </div>
 </main>
 
 <aside id="queuePanel">
-  <div class="queue-head">
-    <div class="queue-panel-title">
-      <div class="queue-title">🎶 SINGER QUEUE</div>
-      <div class="reserve-badge">PRO STAGE</div>
-    </div>
-    <div class="queue-sub">Rotation / Reservations</div>
-  </div>
-
-  <div class="queue-status" id="queueStatus">No songs queued</div>
+  <div class="queue-head"><div style="font-size:16px; font-weight:bold;">🎶 SINGER QUEUE</div></div>
   <div id="queue"></div>
-
   <div class="queue-bottom">
-    <button class="btn green" style="width:100%;" id="playQueue">▶ START QUEUE</button>
-    <button class="btn red" style="width:100%;" id="clearQueue">🗑 CLEAR QUEUE</button>
+    <!-- ADMIN ONLY: Start & Clear Queue Buttons -->
+    <button class="btn green admin-only admin-only-flex" style="width:100%;" id="playQueue">▶ START QUEUE</button>
+    <button class="btn red admin-only admin-only-flex" style="width:100%;" id="clearQueue">🗑 CLEAR QUEUE</button>
   </div>
 </aside>
 
@@ -507,32 +198,27 @@ body.is-admin .admin-only-flex { display: flex !important; }
       <button id="nextButton">⏭</button>
     </div>
   </div>
-
   <div class="deck-control">
     <div class="deck-label">Key / Pitch</div>
     <div class="deck-value"><span id="keyValue">0</span> semitones</div>
     <input type="range" id="keySlider" min="-6" max="6" value="0" step="1">
   </div>
-
   <div class="deck-control">
     <div class="deck-label">Tempo</div>
     <div class="deck-value"><span id="tempoValue">100</span>%</div>
     <input type="range" id="tempoSlider" min="70" max="130" value="100">
   </div>
-
   <div class="deck-control">
     <div class="deck-label">Music Volume</div>
     <div class="deck-value"><span id="musicVolumeValue">100</span>%</div>
     <input type="range" id="musicVolume" min="0" max="100" value="100">
   </div>
-
   <div class="deck-control">
     <div class="deck-label">Microphone</div>
     <div class="deck-value"><span id="micVolumeValue">0</span>%</div>
     <input type="range" id="micVolume" min="0" max="100" value="0">
   </div>
 </footer>
-
 </div>
 
 <!-- SINGER PROFILE MODAL -->
@@ -554,7 +240,6 @@ body.is-admin .admin-only-flex { display: flex !important; }
 <div class="modal" id="userManageModal">
   <div class="modal-box" style="width: 480px;">
     <h2>👥 Manage User Accounts</h2>
-    
     <div style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
       <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px; color: var(--pink);">➕ Create New Account</div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -563,34 +248,11 @@ body.is-admin .admin-only-flex { display: flex !important; }
       </div>
       <button class="btn green small" id="createUserBtn" style="width: 100%; margin-top: 8px; padding: 8px;">Add User Account</button>
     </div>
-
     <div style="font-size: 12px; font-weight: bold; margin-bottom: 6px;">Existing Accounts</div>
-    <div class="user-list" id="userListContainer"></div>
-
+    <div class="user-list" id="userListContainer" style="max-height: 180px; overflow-y: auto; background: #08080c; border: 1px solid var(--border); border-radius: 6px; padding: 6px;"></div>
     <div style="text-align:right; margin-top: 15px;">
       <button class="btn" id="closeUserManageModal">Close</button>
     </div>
-  </div>
-</div>
-
-<!-- SMART TV FULLSCREEN STAGE -->
-<div id="tvStageOverlay">
-  <div class="tv-header">
-    <div>
-      <div class="tv-title" id="tvSongTitle">KaraokeHub PRO</div>
-      <div class="tv-singer" id="tvSingerName">🎤 Ready to Sing</div>
-    </div>
-    <div class="tv-timer" id="tvStageTimer">00:00 / 00:00</div>
-  </div>
-
-  <div class="tv-lyrics-container" id="tvLyricsContainer">
-    <div class="tv-lrc-line active" id="tvMainLyric">🎤 PRESS PLAY TO START</div>
-    <div class="tv-lrc-line" style="font-size: 28px; opacity: 0.6;">Select a track from your queue</div>
-  </div>
-
-  <div class="tv-footer">
-    <div class="tv-next-up" id="tvNextUp">⚡ NEXT SINGER: None</div>
-    <button class="btn primary" id="exitTvStageBtn" style="font-size: 16px; padding: 12px 24px;">✕ Exit TV Stage</button>
   </div>
 </div>
 
@@ -599,9 +261,7 @@ body.is-admin .admin-only-flex { display: flex !important; }
 <script>
 const GOOGLE_CLIENT_ID = "57045846413-tgddgirr6b5cjskf3k5jf9g4rkagn8p0.apps.googleusercontent.com";
 const DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly";
-
-const ADMIN_USER = "Ronel";
-const ADMIN_PASS = "gege@635185";
+const TARGET_FOLDER_ID = "p0j0hSPDRRn9u";
 
 let usersDatabase = JSON.parse(localStorage.getItem("khUsers")) || [
   { user: "Ronel", pass: "gege@635185", role: "admin" },
@@ -611,34 +271,17 @@ let usersDatabase = JSON.parse(localStorage.getItem("khUsers")) || [
 let currentUser = null;
 let isAdminMode = false;
 let currentCategory = "ktv";
+let tokenClient = null;
 
 const state = {
   driveFiles: [],
   localFiles: [],
-  localFolderName: "",
   queue: [],
-  currentIndex: -1,
   playing: false,
-  tempo: 100,
-  key: 0,
-  singer: "Singer",
-  mediaUrl: null,
-  audioPlayer: null,
-  audioContext: null,
-  micStream: null,
-  micSource: null,
-  micGain: null
+  singer: "Singer"
 };
 
-const lrcStore = new Map();
-let activeLrcData = [];
-let currentLrcIndex = -1;
-
 const $ = id => document.getElementById(id);
-
-function escapeHtml(str) { return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-function cleanTitle(filename) { return (filename || "").replace(/\.[^/.]+$/, ""); }
-
 function toast(msg) {
   const el = $("toast");
   el.textContent = msg;
@@ -647,12 +290,11 @@ function toast(msg) {
   el._timer = setTimeout(() => { el.style.display = "none"; }, 3000);
 }
 
-function formatTime(seconds) {
-  if (isNaN(seconds) || seconds < 0) return "00:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-}
+window.addEventListener('DOMContentLoaded', () => {
+  setupAppAuth();
+  setupUIEventListeners();
+  localStorage.removeItem('karaoke_auth_token');
+});
 
 function setupAppAuth() {
   const savedSession = localStorage.getItem("khActiveUser");
@@ -660,20 +302,14 @@ function setupAppAuth() {
     try {
       const userObj = JSON.parse(savedSession);
       const exists = usersDatabase.find(u => u.user.toLowerCase() === userObj.user.toLowerCase() && u.pass === userObj.pass);
-      if (exists) {
-        applyUserSession(exists);
-      }
-    } catch (err) {
-      localStorage.removeItem("khActiveUser");
-    }
+      if (exists) applyUserSession(exists);
+    } catch (e) { localStorage.removeItem("khActiveUser"); }
   }
 
   $("loginAppBtn").onclick = () => {
     const user = $("appUsernameInput").value.trim();
     const pass = $("appPasswordInput").value.trim();
-
     const matched = usersDatabase.find(u => u.user.toLowerCase() === user.toLowerCase() && u.pass === pass);
-
     if (matched) {
       localStorage.setItem("khActiveUser", JSON.stringify(matched));
       applyUserSession(matched);
@@ -685,34 +321,31 @@ function setupAppAuth() {
 
   $("logoutAppBtn").onclick = () => {
     currentUser = null;
-    isAdminMode = false;
     localStorage.removeItem("khActiveUser");
+    localStorage.removeItem("karaoke_auth_token");
     document.body.classList.remove("is-admin");
-    $("appUsernameInput").value = "";
-    $("appPasswordInput").value = "";
     $("appAuthGate").style.display = "flex";
+    $("driveStatus").textContent = "Not logged in";
     toast("Logged out successfully.");
   };
 
   $("manageUsersBtn").onclick = () => {
+    if (!isAdminMode) return toast("Admin access required.");
     renderUserList();
     $("userManageModal").classList.add("show");
   };
-
   $("closeUserManageModal").onclick = () => $("userManageModal").classList.remove("show");
 
   $("createUserBtn").onclick = () => {
+    if (!isAdminMode) return;
     const u = $("newUsernameInput").value.trim();
     const p = $("newPasswordInput").value.trim();
-
     if (!u || !p) return toast("Enter both username and password.");
     if (usersDatabase.some(user => user.user.toLowerCase() === u.toLowerCase())) {
       return toast("Username already exists!");
     }
-
     usersDatabase.push({ user: u, pass: p, role: "user" });
     localStorage.setItem("khUsers", JSON.stringify(usersDatabase));
-    
     $("newUsernameInput").value = "";
     $("newPasswordInput").value = "";
     renderUserList();
@@ -724,13 +357,11 @@ function applyUserSession(userObj) {
   currentUser = userObj;
   isAdminMode = userObj.role === "admin";
   $("activeUserLabel").textContent = userObj.user;
-  
   if (isAdminMode) {
     document.body.classList.add("is-admin");
   } else {
     document.body.classList.remove("is-admin");
   }
-
   $("appAuthGate").style.display = "none";
   renderFiles();
 }
@@ -738,22 +369,13 @@ function applyUserSession(userObj) {
 function renderUserList() {
   const container = $("userListContainer");
   container.innerHTML = "";
-
   usersDatabase.forEach((u, i) => {
     const item = document.createElement("div");
     item.className = "user-item";
-    
     let deleteBtnHtml = u.role !== "admin" 
       ? `<button class="btn red small" onclick="deleteUserAccount(${i})">✕ Remove</button>` 
       : `<span style="color: var(--pink); font-size: 10px;">ADMIN</span>`;
-
-    item.innerHTML = `
-      <div>
-        <span>${escapeHtml(u.user)}</span>
-        <em>(Pass: ${escapeHtml(u.pass)})</em>
-      </div>
-      ${deleteBtnHtml}
-    `;
+    item.innerHTML = `<div style="padding:4px 0;"><span>${u.user}</span></div>${deleteBtnHtml}`;
     container.appendChild(item);
   });
 }
@@ -762,723 +384,173 @@ function deleteUserAccount(index) {
   usersDatabase.splice(index, 1);
   localStorage.setItem("khUsers", JSON.stringify(usersDatabase));
   renderUserList();
-  toast(`Removed user account.`);
+  toast("User removed.");
 }
 
-function setCategory(category) {
-  currentCategory = category;
-  $("catKtv").classList.toggle("active", category === "ktv");
-  $("catMusic").classList.toggle("active", category === "music");
-  $("catMovie").classList.toggle("active", category === "movie");
-  renderFiles();
-}
-
-const DB_NAME = "KaraokeHubFS_DB";
-const DB_VERSION = 2;
-let db = null;
-
-function initIndexedDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = (e) => {
-      const database = e.target.result;
-      if (!database.objectStoreNames.contains("handles")) database.createObjectStore("handles", { autoIncrement: true });
-      if (!database.objectStoreNames.contains("lyrics")) database.createObjectStore("lyrics", { keyPath: "name" });
-    };
-    request.onsuccess = (e) => { db = e.target.result; resolve(db); };
-    request.onerror = (e) => reject("IndexedDB error: " + e.target.errorCode);
-  });
-}
-
-async function saveDirectoryHandle(handle) {
-  if (!db) return;
-  const tx = db.transaction("handles", "readwrite");
-  tx.objectStore("handles").add(handle);
-}
-
-async function getAllStoredDirectoryHandles() {
-  if (!db) return [];
-  return new Promise((resolve) => {
-    const tx = db.transaction("handles", "readonly");
-    const req = tx.objectStore("handles").getAll();
-    req.onsuccess = () => resolve(req.result || []);
-    req.onerror = () => resolve([]);
-  });
-}
-
-async function saveLyricToDB(name, content) {
-  if (!db) return;
-  const tx = db.transaction("lyrics", "readwrite");
-  tx.objectStore("lyrics").put({ name: name, content: content });
-}
-
-async function clearStoredHandle() {
-  if (!db) return;
-  const tx = db.transaction(["handles", "lyrics"], "readwrite");
-  tx.objectStore("handles").clear();
-  tx.objectStore("lyrics").clear();
-  state.localFiles = [];
-  lrcStore.clear();
-  $("localStatus").textContent = "No persistent folder linked";
-  renderFiles();
-  toast("Persistent handles cleared.");
-}
-
-async function scanDirectoryHandle(dirHandle) {
-  const files = [];
-  for await (const entry of dirHandle.values()) {
-    if (entry.kind === "file") {
-      const file = await entry.getFile();
-      if (isLocalKaraokeFile(file)) files.push(file);
-      if (file.name.endsWith(".lrc") || file.name.endsWith(".txt")) {
-        const text = await file.text();
-        const key = cleanTitle(file.name).toLowerCase().trim();
-        lrcStore.set(key, parseLRC(text));
-      }
-    } else if (entry.kind === "directory") {
-      const subFiles = await scanDirectoryHandle(entry);
-      files.push(...subFiles);
-    }
-  }
-  return files;
-}
-
-async function autoLoadPersistentStorage() {
-  try {
-    await initIndexedDB();
-
-    const lyricTx = db.transaction("lyrics", "readonly");
-    const lyricsReq = lyricTx.objectStore("lyrics").getAll();
-    lyricsReq.onsuccess = () => {
-      (lyricsReq.result || []).forEach(r => lrcStore.set(r.name, parseLRC(r.content)));
-    };
-
-    const handles = await getAllStoredDirectoryHandles();
-    let accumulatedFiles = [];
-
-    if (handles.length > 0) {
-      for (const handle of handles) {
-        if (typeof handle.queryPermission === "function") {
-          const options = { mode: "read" };
-          let permission = await handle.queryPermission(options);
-          if (permission !== "granted") {
-            permission = await handle.requestPermission(options);
-          }
-          if (permission === "granted") {
-            const files = await scanDirectoryHandle(handle);
-            accumulatedFiles.push(...files);
-          }
-        }
-      }
-      
-      const uniqueMap = new Map();
-      accumulatedFiles.forEach(f => uniqueMap.set(f.name, f));
-      state.localFiles = Array.from(uniqueMap.values());
-
-      $("localStatus").textContent = `📁 ${handles.length} folder(s) • ${state.localFiles.length} file(s)`;
-      renderFiles();
-      return;
-    }
-    $("localStatus").textContent = "Library ready for singers";
-  } catch (err) {
-    $("localStatus").textContent = "Select folder to load songs";
-  }
-}
-
-window.addEventListener("load", async () => {
-  state.tempo = Number(localStorage.getItem("khTempo") || 100);
-  state.key = Number(localStorage.getItem("khKey") || 0);
-  state.singer = localStorage.getItem("khSinger") || "Singer";
-
-  $("tempoSlider").value = state.tempo;
-  $("keySlider").value = state.key;
-  $("tempoValue").textContent = state.tempo;
-  $("keyValue").textContent = state.key;
-  $("singerInput").value = state.singer;
-
-  setupAppAuth();
-  renderQueue();
-  setupUIEvents();
-  setupLocalLibrary();
-  setupLrcLoader();
-  initVisualizer();
-  initTVRemoteNavigation();
-  initTvStageController();
-
-  await autoLoadPersistentStorage();
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  }
-});
-
-function parseLRC(lrcText) {
-  const lines = lrcText.split(/\r?\n/);
-  const timeRegex = /\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\]/;
-  const parsed = [];
-
-  for (let line of lines) {
-    const match = timeRegex.exec(line);
-    if (match) {
-      const minutes = parseInt(match[1], 10);
-      const seconds = parseInt(match[2], 10);
-      const milliseconds = match[3] ? parseInt(match[3].padEnd(3, "0"), 10) : 0;
-      const time = minutes * 60 + seconds + milliseconds / 1000;
-      const text = line.replace(timeRegex, "").trim();
-      if (text) parsed.push({ time, text });
-    }
-  }
-  return parsed.sort((a, b) => a.time - b.time);
-}
-
-function setupLrcLoader() {
-  const btn = $("selectLrcFiles");
-  const input = $("lrcFileInput");
-
-  btn.onclick = () => { input.value = ""; input.click(); };
-  input.onchange = async (e) => {
-    const files = Array.from(e.target.files || []);
-    let count = 0;
-    for (let file of files) {
-      const text = await file.text();
-      const key = cleanTitle(file.name).toLowerCase().trim();
-      lrcStore.set(key, parseLRC(text));
-      await saveLyricToDB(key, text);
-      count++;
-    }
-    toast(`Saved ${count} .LRC lyric file(s).`);
-  };
-}
-
-function loadLyricsForSong(songTitle) {
-  const key = songTitle.toLowerCase().trim();
-  activeLrcData = lrcStore.get(key) || [];
-  currentLrcIndex = -1;
-  renderLrcContainer();
-}
-
-function renderLrcContainer() {
-  const stage = $("lyricsStage");
-  const tvStage = $("tvLyricsContainer");
-
-  if (!activeLrcData || activeLrcData.length === 0) {
-    const songTitle = $("songTitle").textContent;
-    const singerName = $("singerName").textContent;
-
-    stage.innerHTML = `
-      <div id="idleScreen">
-        <div class="big">🎤</div>
-        <h2>${escapeHtml(songTitle)}</h2>
-        <p>${escapeHtml(singerName)}</p>
-      </div>`;
-
-    tvStage.innerHTML = `
-      <div class="tv-lrc-line active" id="tvMainLyric">${escapeHtml(songTitle)}</div>
-      <div class="tv-lrc-line" style="font-size: 24px; opacity: 0.6;">🎤 ${escapeHtml(singerName)}</div>`;
-    return;
-  }
-
-  stage.innerHTML = `<div class="lrc-container" id="lrcContainer">${activeLrcData.map((item, i) => `<div class="lrc-line" id="lrc-line-${i}">${escapeHtml(item.text)}</div>`).join("")}</div>`;
-  tvStage.innerHTML = `<div class="lrc-container" id="tvLrcContainer">${activeLrcData.map((item, i) => `<div class="tv-lrc-line" id="tv-lrc-line-${i}">${escapeHtml(item.text)}</div>`).join("")}</div>`;
-}
-
-function updateLrcPlayback(currentTime) {
-  if (!activeLrcData || activeLrcData.length === 0) return;
-
-  let index = activeLrcData.findIndex((line, i) => {
-    const nextLine = activeLrcData[i + 1];
-    return currentTime >= line.time && (!nextLine || currentTime < nextLine.time);
-  });
-
-  if (index !== -1 && index !== currentLrcIndex) {
-    currentLrcIndex = index;
-    activeLrcData.forEach((_, i) => {
-      const el = $(`lrc-line-${i}`);
-      const tvEl = $(`tv-lrc-line-${i}`);
-      if (el) el.className = `lrc-line ${i === index ? "active" : i < index ? "past" : ""}`;
-      if (tvEl) tvEl.className = `tv-lrc-line ${i === index ? "active" : i < index ? "past" : ""}`;
-    });
-
-    const activeEl = $(`lrc-line-${index}`);
-    const tvActiveEl = $(`tv-lrc-line-${index}`);
-    if (activeEl) activeEl.scrollIntoView({ behavior: "smooth", block: "center" });
-    if (tvActiveEl) tvActiveEl.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-}
-
-const LOCAL_EXTENSIONS = [".mp3",".wav",".m4a",".aac",".ogg",".flac",".mp4",".webm",".mov",".mkv",".avi",".mid",".midi",".kar"];
-
-function isLocalKaraokeFile(file){
-  const name = (file.name || "").toLowerCase();
-  const type = file.type || "";
-  return LOCAL_EXTENSIONS.some(ext => name.endsWith(ext)) || type.startsWith("audio/") || type.startsWith("video/");
-}
-
-function appendLocalFiles(newFiles){
-  const supported = Array.from(newFiles || []).filter(isLocalKaraokeFile);
-  const combined = [...state.localFiles, ...supported];
-  
-  const uniqueMap = new Map();
-  combined.forEach(f => uniqueMap.set(f.name, f));
-  state.localFiles = Array.from(uniqueMap.values());
-
-  $("localStatus").textContent = `${state.localFiles.length} song(s) loaded in total`;
-  renderFiles();
-  if(supported.length) toast(`Added ${supported.length} file(s) to library.`);
-}
-
-function setupLocalLibrary(){
-  const filesButton = $("selectLocalFiles");
-  const filesInput = $("localFilesInput");
-  const clearBtn = $("clearStoredLibrary");
-
-  filesButton.addEventListener("click", () => { filesInput.value = ""; filesInput.click(); });
-  clearBtn.addEventListener("click", () => clearStoredHandle());
-
-  filesInput.addEventListener("change", (e) => {
-    appendLocalFiles(Array.from(e.target.files || []));
-  });
-}
-
-function setupUIEvents() {
-  $("settingsButton").onclick = () => $("settingsModal").classList.add("show");
+function setupUIEventListeners() {
+  $("settingsButton").onclick = () => { $("singerInput").value = state.singer; $("settingsModal").classList.add("show"); };
   $("closeSettings").onclick = () => $("settingsModal").classList.remove("show");
-  
   $("saveSettings").onclick = () => {
-    const singer = $("singerInput").value.trim() || "Singer";
-    localStorage.setItem("khSinger", singer);
-    state.singer = singer;
+    state.singer = $("singerInput").value.trim() || "Singer";
     $("settingsModal").classList.remove("show");
-    toast("Profile updated.");
+    toast(`Singer updated to: ${state.singer}`);
   };
 
-  $("playButton").onclick = () => state.playing ? pausePlayback() : resumePlayback();
-  $("stopButton").onclick = () => stopPlayback();
-  
-  $("nextButton").onclick = () => {
-    if (state.queue.length > 0 && state.currentIndex < state.queue.length - 1) playQueueIndex(state.currentIndex + 1);
+  $("loginButton").onclick = () => {
+    if (!isAdminMode) return toast("Only admin can connect Google Drive.");
+    if (tokenClient) {
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    } else {
+      toast("Google API initializing, please try again.");
+    }
   };
 
-  $("previousButton").onclick = () => {
-    if (state.queue.length > 0 && state.currentIndex > 0) playQueueIndex(state.currentIndex - 1);
+  $("selectLocalFiles").onclick = () => {
+    if (!isAdminMode) return toast("Only admin can upload files.");
+    $("localFilesInput").click();
   };
 
-  $("keySlider").oninput = (e) => {
-    state.key = Number(e.target.value);
-    $("keyValue").textContent = state.key;
+  $("localFilesInput").onchange = (e) => {
+    if (!isAdminMode) return;
+    state.localFiles = Array.from(e.target.files);
+    $("localStatus").textContent = `📁 Loaded • ${state.localFiles.length} file(s)`;
+    renderFiles();
+    toast(`Loaded ${state.localFiles.length} local files.`);
   };
 
-  $("tempoSlider").oninput = (e) => {
-    state.tempo = Number(e.target.value);
-    $("tempoValue").textContent = state.tempo;
-    if (state.audioPlayer) state.audioPlayer.playbackRate = state.tempo / 100;
-  };
-
-  $("musicVolume").oninput = (e) => {
-    const val = Number(e.target.value);
-    $("musicVolumeValue").textContent = val;
-    if (state.audioPlayer) state.audioPlayer.volume = val / 100;
-  };
-
-  $("micVolume").oninput = async (e) => {
-    const val = Number(e.target.value);
-    $("micVolumeValue").textContent = val;
-    await setupMicrophone(val / 100);
-  };
+  $("search").oninput = () => renderFiles();
 
   $("playQueue").onclick = () => {
-    if (state.queue.length > 0) playQueueIndex(state.currentIndex >= 0 ? state.currentIndex : 0);
+    if (!isAdminMode) return toast("Admin access required to start queue playback.");
+    if (state.queue.length === 0) return toast("Queue is empty!");
+    state.playing = !state.playing;
+    toast(state.playing ? "Queue playback started" : "Playback paused");
   };
 
   $("clearQueue").onclick = () => {
+    if (!isAdminMode) return toast("Admin access required to clear queue.");
     state.queue = [];
-    state.currentIndex = -1;
-    stopPlayback();
     renderQueue();
+    toast("Queue cleared.");
+  };
+
+  $("playButton").onclick = () => {
+    if (state.queue.length === 0) return toast("Queue is empty!");
+    state.playing = !state.playing;
+    $("playButton").textContent = state.playing ? "⏸" : "▶";
+    toast(state.playing ? "Playback started" : "Playback paused");
+  };
+  $("stopButton").onclick = () => {
+    state.playing = false;
+    $("playButton").textContent = "▶";
+    toast("Playback stopped");
   };
 }
 
-async function setupMicrophone(volumeGain) {
+function gapiLoaded() { gapi.load('client', initializeGapiClient); }
+function gsiLoaded() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: DRIVE_SCOPE,
+    callback: (resp) => {
+      if (resp.error) return toast("Google Auth Error: " + resp.error);
+      localStorage.setItem('karaoke_auth_token', resp.access_token);
+      initGoogleAuth(resp.access_token);
+    }
+  });
+}
+
+async function initializeGapiClient() {
+  await gapi.client.init({ discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"] });
+}
+
+async function initGoogleAuth(token) {
+  gapi.client.setToken({ access_token: token });
+  $("driveStatus").textContent = "Google Drive Connected";
+  loadDriveFolder(TARGET_FOLDER_ID);
+}
+
+async function loadDriveFolder(folderId) {
   try {
-    if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    if (volumeGain > 0) {
-      if (!state.micStream) {
-        state.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        state.micSource = state.audioContext.createMediaStreamSource(state.micStream);
-        state.micGain = state.audioContext.createGain();
-        state.micSource.connect(state.micGain);
-        state.micGain.connect(state.audioContext.destination);
-      }
-      state.micGain.gain.value = volumeGain;
-    } else if (state.micGain) state.micGain.gain.value = 0;
-  } catch (err) { toast("Microphone access failed."); }
-}
-
-let gapiReady = false, gisReady = false, tokenClient = null;
-
-async function initGoogle(){
-  try{
-    await new Promise((resolve, reject) => {
-      if (window.gapi) gapi.load("client", { callback: resolve, onerror: reject });
-      else reject("gapi script not loaded");
+    const res = await gapi.client.drive.files.list({
+      q: `'${folderId}' in parents and (mimeType contains 'audio/' or mimeType contains 'video/' or mimeType = 'application/vnd.google-apps.folder') and trashed = false`,
+      fields: "files(id, name, mimeType)"
     });
-    await gapi.client.init({ discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"] });
-    gapiReady = true;
-  }catch(error){ $("driveStatus").textContent = "Drive Error"; }
-}
-
-function checkGisLoaded() {
-  if (window.google && window.google.accounts && window.google.accounts.oauth2) gisReady = true;
-  else setTimeout(checkGisLoaded, 100);
-}
-
-if (window.gapi) gapi.load("client", initGoogle);
-checkGisLoaded();
-
-function loginWithGoogle(){
-  if (!gapiReady || !gisReady) return toast("Google service loading...");
-  try {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: GOOGLE_CLIENT_ID,
-      scope: DRIVE_SCOPE,
-      callback: async (response) => {
-        if(response.error) return toast("Google sign-in cancelled.");
-        gapi.client.setToken({ access_token: response.access_token });
-        $("driveStatus").textContent = "Connected";
-        await loadDriveFolder("root", "My Drive", true);
-      }
-    });
-    tokenClient.requestAccessToken({ prompt: "consent" });
-  } catch(error) { toast("Could not start Google sign-in."); }
-}
-
-$("loginButton").onclick = loginWithGoogle;
-
-async function loadDriveFolder(folderId, folderName, resetStack=false){
-  try{
-    const response = await gapi.client.drive.files.list({
-      q: `'${folderId}' in parents and trashed=false`,
-      fields: "files(id,name,mimeType)",
-      pageSize: 1000
-    });
-    const all = response.result.files || [];
-    state.driveFiles = all.filter(f => f.mimeType?.startsWith("audio/") || f.mimeType?.startsWith("video/"));
+    state.driveFiles = res.result.files || [];
+    $("driveStatus").textContent = `Connected • ${state.driveFiles.length} file(s)`;
     renderFiles();
-  }catch(error){ $("driveStatus").textContent = "Error loading files"; }
-}
-
-$("search").addEventListener("input", renderFiles);
-
-function fileType(file) {
-  const name = (file.name || "").toLowerCase();
-  const mime = file.type || file.mimeType || "";
-  
-  if (name.endsWith(".mid") || name.endsWith(".midi") || name.endsWith(".kar")) return "MIDI";
-  if (mime.startsWith("video/") || name.endsWith(".mp4") || name.endsWith(".webm") || name.endsWith(".mov") || name.endsWith(".mkv") || name.endsWith(".avi")) {
-    return "VIDEO";
-  }
-  if (mime.startsWith("audio/") || name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".m4a") || name.endsWith(".aac") || name.endsWith(".flac") || name.endsWith(".ogg")) {
-    return "AUDIO";
-  }
-
-  return "AUDIO";
-}
-
-function matchesCategory(file) {
-  const type = fileType(file);
-  const name = (file.name || "").toLowerCase();
-
-  if (currentCategory === "music") {
-    return type === "AUDIO";
-  }
-  if (currentCategory === "movie") {
-    return type === "VIDEO";
-  }
-  if (currentCategory === "ktv") {
-    const titleKey = cleanTitle(file.name).toLowerCase().trim();
-    const hasLyrics = lrcStore.has(titleKey);
-    return type === "MIDI" || hasLyrics || name.includes("karaoke") || name.includes("ktv");
-  }
-
-  return true;
-}
-
-function renderFiles(){
-  const search = $("search").value.toLowerCase().trim();
-  $("files").innerHTML = "";
-
-  const drive = state.driveFiles.filter(file => file.name.toLowerCase().includes(search) && matchesCategory(file));
-  const local = state.localFiles.filter(file => file.name.toLowerCase().includes(search) && matchesCategory(file));
-
-  if(!local.length && !drive.length){
-    $("files").innerHTML = `<div style="padding:20px;text-align:center;color:#555;">No files found in this category.</div>`;
-    return;
-  }
-
-  if(local.length){
-    const heading = document.createElement("div");
-    heading.className = "library-heading";
-    heading.textContent = "💻 LOCAL FILES";
-    $("files").appendChild(heading);
-    local.forEach((file, index) => renderSongItem(file, "local", index));
-  }
-
-  if(drive.length){
-    const heading = document.createElement("div");
-    heading.className = "library-heading";
-    heading.textContent = "☁ GOOGLE DRIVE";
-    $("files").appendChild(heading);
-    drive.forEach((file, index) => renderSongItem(file, "drive", index));
+  } catch (err) {
+    console.error("Drive load error:", err);
+    $("driveStatus").textContent = "Drive sync error";
   }
 }
 
-function renderSongItem(file, source, index) {
-  const item = document.createElement("div");
-  item.className = `file ${source === "local" ? "local-file" : ""}`;
-  const title = cleanTitle(file.name);
-  
-  let deleteBtnHtml = isAdminMode ? `<button class="btn red small" style="margin-left: 8px;" onclick="event.stopPropagation(); deleteSongFromLibrary('${source}', ${index})">✕ Remove</button>` : "";
-
-  item.innerHTML = `
-    <div>
-      <div class="file-title">${escapeHtml(title)}</div>
-      <div class="file-meta">${fileType(file)} • ${source.toUpperCase()}</div>
-    </div>
-    ${deleteBtnHtml}
-  `;
-
-  item.onclick = () => { addToQueue(file, source); toast(`Added "${title}" to queue.`); };
-  $("files").appendChild(item);
-}
-
-function deleteSongFromLibrary(source, index) {
-  if (!isAdminMode) return;
-  if (source === "local") {
-    const deleted = state.localFiles.splice(index, 1);
-    toast(`Removed "${cleanTitle(deleted[0]?.name)}" from library.`);
-  } else if (source === "drive") {
-    const deleted = state.driveFiles.splice(index, 1);
-    toast(`Removed "${cleanTitle(deleted[0]?.name)}" from drive view.`);
-  }
+function setCategory(cat) {
+  currentCategory = cat;
+  $("catKtv").classList.toggle("active", cat === 'ktv');
+  $("catMusic").classList.toggle("active", cat === 'music');
+  $("catMovie").classList.toggle("active", cat === 'movie');
   renderFiles();
 }
 
-function addToQueue(file, source) {
-  state.queue.push({ file, source, singer: state.singer, title: cleanTitle(file.name) });
-  renderQueue();
+function renderFiles() {
+  const container = $("files");
+  container.innerHTML = "";
+  const query = ($("search").value || "").toLowerCase();
+
+  const allItems = [...state.localFiles.map(f => ({ name: f.name, type: 'local', file: f })), ...state.driveFiles.map(f => ({ name: f.name, type: 'drive', file: f }))];
+  const filtered = allItems.filter(item => item.name.toLowerCase().includes(query));
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div style="padding:20px;text-align:center;color:#555;">No media files found.</div>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "file";
+    div.innerHTML = `
+      <div>
+        <div class="file-title">${item.name}</div>
+        <div class="file-meta">${item.type.toUpperCase()} • Ready</div>
+      </div>
+      <button class="btn small primary">+ Queue</button>
+    `;
+    div.querySelector("button").onclick = () => {
+      state.queue.push(item);
+      renderQueue();
+      toast(`Added to queue: ${item.name}`);
+    };
+    container.appendChild(div);
+  });
 }
 
 function renderQueue() {
   const container = $("queue");
   container.innerHTML = "";
-  if (state.queue.length === 0) { $("queueStatus").innerHTML = "No songs queued"; return; }
-  $("queueStatus").innerHTML = `<b>${state.queue.length}</b> song(s) in rotation`;
-
-  state.queue.forEach((item, index) => {
-    const el = document.createElement("div");
-    el.className = `queue-item ${index === state.currentIndex ? "active" : ""}`;
-    el.innerHTML = `
-      <div class="queue-number">${index + 1}</div>
-      <div>
-        <div class="queue-song">${escapeHtml(item.title)}</div>
-        <div class="queue-singer">🎤 ${escapeHtml(item.singer)}</div>
-      </div>
-      <div class="queue-controls"><button class="btn red small" onclick="removeFromQueue(${index})">✕</button></div>`;
-    container.appendChild(el);
-  });
-
-  const nextSong = state.queue[state.currentIndex + 1];
-  $("nextSongLabel").textContent = `⚡ NEXT: ${nextSong ? nextSong.title : "None"}`;
-}
-
-function removeFromQueue(index) {
-  state.queue.splice(index, 1);
-  if (index === state.currentIndex) stopPlayback();
-  else if (index < state.currentIndex) state.currentIndex--;
-  renderQueue();
-}
-
-async function playQueueIndex(index) {
-  if (index < 0 || index >= state.queue.length) return;
-  stopPlayback();
-  state.currentIndex = index;
-  renderQueue();
-
-  const item = state.queue[index];
-  $("songTitle").textContent = item.title;
-  $("singerName").textContent = item.singer;
-  loadLyricsForSong(item.title);
-
-  let url = item.source === "local" ? URL.createObjectURL(item.file) : `https://www.googleapis.com/drive/3/files/${item.file.id}?alt=media`;
-  const type = fileType(item.file);
-  $("stageMediaType").textContent = type;
-
-  const stage = $("stage");
-  const tvOverlay = $("tvStageOverlay");
-
-  if (type === "VIDEO") {
-    stage.classList.add("video-mode");
-    tvOverlay.classList.add("video-mode");
-
-    const video = $("videoPlayer");
-    video.src = url;
-    video.style.display = "block";
-    video.play();
-    state.audioPlayer = video;
-
-    if (tvOverlay.classList.contains("active")) {
-      tvOverlay.appendChild(video);
-    }
-  } else {
-    stage.classList.remove("video-mode");
-    tvOverlay.classList.remove("video-mode");
-
-    $("videoPlayer").style.display = "none";
-    const audio = new Audio(url);
-    audio.play();
-    state.audioPlayer = audio;
-  }
-
-  state.audioPlayer.playbackRate = state.tempo / 100;
-  state.audioPlayer.volume = Number($("musicVolume").value) / 100;
-  state.playing = true;
-  $("playButton").textContent = "⏸";
-
-  state.audioPlayer.ontimeupdate = () => {
-    const cur = state.audioPlayer.currentTime || 0;
-    const dur = state.audioPlayer.duration || 0;
-    $("stageTimer").textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
-    if (dur > 0) $("stageProgressBar").style.width = `${(cur / dur) * 100}%`;
-    updateLrcPlayback(cur);
-  };
-
-  state.audioPlayer.onended = () => {
-    if (state.currentIndex < state.queue.length - 1) playQueueIndex(state.currentIndex + 1);
-    else stopPlayback();
-  };
-}
-
-function pausePlayback() {
-  if (state.audioPlayer) { state.audioPlayer.pause(); state.playing = false; $("playButton").textContent = "▶"; }
-}
-
-function resumePlayback() {
-  if (state.audioPlayer) { state.audioPlayer.play(); state.playing = true; $("playButton").textContent = "⏸"; }
-  else if (state.queue.length > 0) playQueueIndex(0);
-}
-
-function stopPlayback() {
-  if (state.audioPlayer) { state.audioPlayer.pause(); state.audioPlayer.currentTime = 0; state.audioPlayer = null; }
-  state.playing = false;
-  $("playButton").textContent = "▶";
-  $("videoPlayer").style.display = "none";
-  
-  $("stage").classList.remove("video-mode");
-  $("tvStageOverlay").classList.remove("video-mode");
-
-  $("stageProgressBar").style.width = "0%";
-  $("stageTimer").textContent = "00:00 / 00:00";
-  loadLyricsForSong("");
-}
-
-function initVisualizer() {
-  const canvas = $("visualizer"), ctx = canvas.getContext("2d");
-  function resize() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; }
-  window.addEventListener("resize", resize);
-  resize();
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (state.playing) {
-      ctx.fillStyle = "rgba(255, 22, 115, 0.2)";
-      const bars = 30, width = canvas.width / bars;
-      for (let i = 0; i < bars; i++) {
-        const height = Math.random() * (canvas.height * 0.6);
-        ctx.fillRect(i * width, canvas.height - height, width - 2, height);
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-function initTVRemoteNavigation() {
-  const makeFocusable = (selector) => {
-    document.querySelectorAll(selector).forEach((el) => { if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "0"); });
-  };
-  makeFocusable("button, input, .file, .queue-item");
-
-  window.addEventListener("keydown", (e) => {
-    const focusables = Array.from(document.querySelectorAll("button:not([disabled]), input:not([disabled]), .file, .queue-item")).filter(el => el.offsetWidth > 0);
-    const activeEl = document.activeElement;
-    const idx = focusables.indexOf(activeEl);
-
-    switch (e.key) {
-      case "ArrowDown": if (idx < focusables.length - 1) focusables[idx + 1].focus(); e.preventDefault(); break;
-      case "ArrowUp": if (idx > 0) focusables[idx - 1].focus(); e.preventDefault(); break;
-      case "Enter": if (activeEl) activeEl.click(); break;
-      case "MediaPlayPause": state.playing ? pausePlayback() : resumePlayback(); break;
-      case "MediaStop": stopPlayback(); break;
-    }
+  state.queue.forEach((item, idx) => {
+    const qItem = document.createElement("div");
+    qItem.className = "queue-item";
+    qItem.innerHTML = `
+      <div style="font-weight:bold; color:var(--pink);">${idx + 1}</div>
+      <div style="font-size:12px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.name}</div>
+      <button class="btn red small remove-queue-btn">✕</button>
+    `;
+    qItem.querySelector(".remove-queue-btn").onclick = () => {
+      if (!isAdminMode) return toast("Admin access required to remove queue items.");
+      removeFromQueue(idx);
+    };
+    container.appendChild(qItem);
   });
 }
 
-let tvIdleTimer = null;
-function initTvStageController() {
-  const overlay = $("tvStageOverlay");
-  const tvBtn = $("fullscreenButton");
-  const exitBtn = $("exitTvStageBtn");
-  const video = $("videoPlayer");
-
-  function enterTvStage() {
-    overlay.classList.add("active");
-    if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
-    
-    if (video.style.display !== "none") {
-      overlay.appendChild(video);
-    }
-
-    updateTvStageInfo();
-    renderLrcContainer();
-    
-    if (state.audioPlayer) {
-      updateLrcPlayback(state.audioPlayer.currentTime || 0);
-    }
-  }
-
-  function exitTvStage() {
-    overlay.classList.remove("active");
-    
-    if (video.parentElement === overlay) {
-      $("stage").appendChild(video);
-    }
-
-    if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
-  }
-
-  tvBtn.onclick = enterTvStage;
-  exitBtn.onclick = exitTvStage;
-
-  function updateTvStageInfo() {
-    const currentSong = state.queue[state.currentIndex];
-    const nextSong = state.queue[state.currentIndex + 1];
-    $("tvSongTitle").textContent = currentSong ? currentSong.title : "KaraokeHub PRO";
-    $("tvSingerName").textContent = currentSong ? `🎤 ${currentSong.singer}` : "Ready to Sing";
-    $("tvNextUp").textContent = `⚡ NEXT SINGER: ${nextSong ? `${nextSong.singer} (${nextSong.title})` : "None"}`;
-  }
-
-  setInterval(() => {
-    if (overlay.classList.contains("active")) {
-      if (state.audioPlayer) {
-        const cur = state.audioPlayer.currentTime || 0;
-        const dur = state.audioPlayer.duration || 0;
-        $("tvStageTimer").textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
-      } else {
-        $("tvStageTimer").textContent = "00:00 / 00:00";
-      }
-    }
-  }, 250);
+function removeFromQueue(idx) {
+  state.queue.splice(idx, 1);
+  renderQueue();
+  toast("Removed item from queue.");
 }
 </script>
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gsiLoaded()"></script>
 </body>
 </html>
