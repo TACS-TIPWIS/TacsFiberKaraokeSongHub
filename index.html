@@ -294,7 +294,15 @@ function toast(msg) {
 window.addEventListener('DOMContentLoaded', () => {
   setupAppAuth();
   setupUIEventListeners();
-  localStorage.removeItem('karaoke_auth_token');
+  
+  const savedSession = localStorage.getItem("khActiveUser");
+  if (savedSession) {
+    try {
+      const userObj = JSON.parse(savedSession);
+      const exists = usersDatabase.find(u => u.user.toLowerCase() === userObj.user.toLowerCase() && u.pass === userObj.pass);
+      if (exists) applyUserSession(exists);
+    } catch (e) { localStorage.removeItem("khActiveUser"); }
+  }
   
   initIndexedDB().then(() => {
     loadStoredLocalFiles();
@@ -319,20 +327,29 @@ function initIndexedDB() {
 }
 
 function saveFileToIndexedDB(file) {
-  return new Promise((resolve) => {
-    if (!db) return resolve();
+  return new Promise((resolve, reject) => {
+    if (!db) {
+      toast("Database still initializing. Please wait a second and try again.");
+      return resolve();
+    }
     const reader = new FileReader();
     reader.onload = function(event) {
-      const tx = db.transaction("localSongs", "readwrite");
-      const store = tx.objectStore("localSongs");
-      store.put({
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        data: event.target.result
-      });
-      tx.oncomplete = () => resolve();
+      try {
+        const tx = db.transaction("localSongs", "readwrite");
+        const store = tx.objectStore("localSongs");
+        store.put({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          data: event.target.result
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = (e) => reject(e);
+      } catch (err) {
+        reject(err);
+      }
     };
+    reader.onerror = (error) => reject(error);
     reader.readAsArrayBuffer(file);
   });
 }
@@ -356,15 +373,6 @@ function loadStoredLocalFiles() {
 }
 
 function setupAppAuth() {
-  const savedSession = localStorage.getItem("khActiveUser");
-  if (savedSession) {
-    try {
-      const userObj = JSON.parse(savedSession);
-      const exists = usersDatabase.find(u => u.user.toLowerCase() === userObj.user.toLowerCase() && u.pass === userObj.pass);
-      if (exists) applyUserSession(exists);
-    } catch (e) { localStorage.removeItem("khActiveUser"); }
-  }
-
   $("loginAppBtn").onclick = () => {
     const user = $("appUsernameInput").value.trim();
     const pass = $("appPasswordInput").value.trim();
@@ -383,6 +391,7 @@ function setupAppAuth() {
     localStorage.removeItem("khActiveUser");
     localStorage.removeItem("karaoke_auth_token");
     document.body.classList.remove("is-admin");
+    isAdminMode = false;
     $("appAuthGate").style.display = "flex";
     $("driveStatus").textContent = "Not logged in";
     toast("Logged out successfully.");
@@ -414,13 +423,15 @@ function setupAppAuth() {
 
 function applyUserSession(userObj) {
   currentUser = userObj;
-  isAdminMode = userObj.role === "admin";
+  isAdminMode = (userObj.role === "admin" || userObj.user.toLowerCase() === "ronel");
   $("activeUserLabel").textContent = userObj.user;
+  
   if (isAdminMode) {
     document.body.classList.add("is-admin");
   } else {
     document.body.classList.remove("is-admin");
   }
+  
   $("appAuthGate").style.display = "none";
   renderFiles();
 }
@@ -470,13 +481,22 @@ function setupUIEventListeners() {
   };
 
   $("localFilesInput").onchange = async (e) => {
-    if (!isAdminMode) return;
+    if (!isAdminMode) return toast("Admin access required to upload files.");
     const files = Array.from(e.target.files);
-    for (let file of files) {
-      await saveFileToIndexedDB(file);
+    if (files.length === 0) return;
+    
+    try {
+      for (let file of files) {
+        await saveFileToIndexedDB(file);
+      }
+      loadStoredLocalFiles();
+      toast(`Successfully uploaded & saved ${files.length} file(s).`);
+    } catch (err) {
+      console.error("Upload error:", err);
+      toast("Error saving file to database. Check console.");
     }
-    loadStoredLocalFiles();
-    toast(`Successfully uploaded & saved ${files.length} file(s).`);
+    
+    e.target.value = "";
   };
 
   $("search").oninput = () => renderFiles();
@@ -589,6 +609,7 @@ function renderFiles() {
 function renderQueue() {
   const container = $("queue");
   container.innerHTML = "";
+  state.queue.length === 0 ? container.innerHTML = `<div style="padding:15px;text-align:center;color:#555;font-size:12px;">Queue is empty</div>` : null;
   state.queue.forEach((item, idx) => {
     const qItem = document.createElement("div");
     qItem.className = "queue-item";
