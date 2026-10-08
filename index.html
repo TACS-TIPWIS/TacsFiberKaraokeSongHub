@@ -272,6 +272,7 @@ let currentUser = null;
 let isAdminMode = false;
 let currentCategory = "ktv";
 let tokenClient = null;
+let db = null;
 
 const state = {
   driveFiles: [],
@@ -294,7 +295,65 @@ window.addEventListener('DOMContentLoaded', () => {
   setupAppAuth();
   setupUIEventListeners();
   localStorage.removeItem('karaoke_auth_token');
+  
+  initIndexedDB().then(() => {
+    loadStoredLocalFiles();
+  });
 });
+
+function initIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open("KaraokeHub_DB", 1);
+    request.onupgradeneeded = (e) => {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains("localSongs")) {
+        database.createObjectStore("localSongs", { keyPath: "id", autoIncrement: true });
+      }
+    };
+    request.onsuccess = (e) => {
+      db = e.target.result;
+      resolve(db);
+    };
+    request.onerror = (e) => reject(e);
+  });
+}
+
+function saveFileToIndexedDB(file) {
+  return new Promise((resolve) => {
+    if (!db) return resolve();
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const tx = db.transaction("localSongs", "readwrite");
+      const store = tx.objectStore("localSongs");
+      store.put({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        data: event.target.result
+      });
+      tx.oncomplete = () => resolve();
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function loadStoredLocalFiles() {
+  if (!db) return;
+  const tx = db.transaction("localSongs", "readonly");
+  const store = tx.objectStore("localSongs");
+  const req = store.getAll();
+  req.onsuccess = () => {
+    const records = req.result || [];
+    state.localFiles = records.map(rec => {
+      const blob = new Blob([rec.data], { type: rec.type });
+      return new File([blob], rec.name, { type: rec.type });
+    });
+    if (state.localFiles.length > 0) {
+      $("localStatus").textContent = `📁 Restored • ${state.localFiles.length} file(s)`;
+    }
+    renderFiles();
+  };
+}
 
 function setupAppAuth() {
   const savedSession = localStorage.getItem("khActiveUser");
@@ -410,12 +469,14 @@ function setupUIEventListeners() {
     $("localFilesInput").click();
   };
 
-  $("localFilesInput").onchange = (e) => {
+  $("localFilesInput").onchange = async (e) => {
     if (!isAdminMode) return;
-    state.localFiles = Array.from(e.target.files);
-    $("localStatus").textContent = `📁 Loaded • ${state.localFiles.length} file(s)`;
-    renderFiles();
-    toast(`Loaded ${state.localFiles.length} local files.`);
+    const files = Array.from(e.target.files);
+    for (let file of files) {
+      await saveFileToIndexedDB(file);
+    }
+    loadStoredLocalFiles();
+    toast(`Successfully uploaded & saved ${files.length} file(s).`);
   };
 
   $("search").oninput = () => renderFiles();
