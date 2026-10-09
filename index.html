@@ -566,16 +566,30 @@
         container.appendChild(div);
       });
     }
-
+    window.addEventListener('load', () => {
+      const splash = document.getElementById('pwaSplash');
+      if (splash) { 
+        splash.style.opacity = '0'; 
+        setTimeout(() => splash.remove(), 500); 
+      }
+      
       if (supabaseClient) {
         supabaseClient.from('songs').select('*').then(({ data, error }) => {
-          if (!error && data && data.length > 0) { appState.songLibrary = data; }
+          if (!error && data && data.length > 0) { 
+            appState.songLibrary = data; 
+          }
+          populateMediaLibrary();
+        }).catch(err => {
+          console.warn("Supabase load fallback triggered:", err);
           populateMediaLibrary();
         });
-        
+
         supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'songs' }, () => {
           supabaseClient.from('songs').select('*').then(({ data }) => {
-            if (data) { appState.songLibrary = data; populateMediaLibrary(); }
+            if (data && data.length > 0) { 
+              appState.songLibrary = data; 
+              populateMediaLibrary(); 
+            }
           });
         }).subscribe();
       } else {
