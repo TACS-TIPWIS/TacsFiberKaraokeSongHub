@@ -317,7 +317,6 @@
 
   <script>
     // --- 1. SUPABASE REAL-TIME CONNECTION ENGINE ---
-    // Safely reads variables with a dynamic client initialization architecture layout
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indub2V6b2l5am52ZnR2cGJvc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc2Mzk4MTcsImV4cCI6MjA0MzIxNTgxN30.Z0E3RHRfNlJvNXF2bXhf"; 
     
@@ -564,7 +563,8 @@
           supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
         
-        supabaseClient.from('songs').select('*').then(({ data, error }) => {
+        // Connects precisely with the capitalized server table parameters
+        supabaseClient.from('Songs').select('*').then(({ data, error }) => {
           if (!error && data && data.length > 0) { 
             appState.songLibrary = data; 
           }
@@ -574,7 +574,7 @@
           populateMediaLibrary();
         });
 
-        supabaseClient.channel('public-Songs').on('postgres_changes', { event: '*', schema: 'public', table: 'Songs' }, () => {
+        supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'Songs' }, () => {
           supabaseClient.from('Songs').select('*').then(({ data }) => {
             if (data && data.length > 0) { 
               appState.songLibrary = data; 
