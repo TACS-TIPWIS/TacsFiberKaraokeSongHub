@@ -432,7 +432,35 @@
       togglePlaybackEngine();
     }
 
-    function togglePlaybackEngine() {
+        function togglePlaybackEngine() {
+      initAudioEngine();
+      
+      // CRITICAL PWA FIX: Instantly forces the browser sound card to unlock on touch/click
+      if (Tone.context.state !== 'running') {
+        Tone.context.resume();
+      }
+
+      const playBtn = document.getElementById("playBtn");
+      
+      if (appState.isPlaying) {
+        appState.isPlaying = false;
+        playBtn.innerText = "▶";
+        clearInterval(appState.timerLoop);
+      } else {
+        if (!appState.currentSong) {
+          loadSelectedTrackImmediately(1);
+          return;
+        }
+        appState.isPlaying = true;
+        playBtn.innerText = "⏸";
+        
+        appState.timerLoop = setInterval(() => {
+          appState.playbackTime += 0.1 * (appState.tempoScale / 100);
+          renderLyricsFrame();
+        }, 100);
+      }
+    }
+
       initAudioEngine();
       const playBtn = document.getElementById("playBtn");
       if (appState.isPlaying) {
