@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -501,6 +501,96 @@
         stopPlaybackEngine();
         alert("The Singer Queue is empty!");
       }
+    }
+
+    function renderLyricsFrame() {
+      const container = document.getElementById("lyricContainer");
+      if (!appState.currentSong || appState.activeLyrics.length === 0) {
+        container.innerHTML = `<div class="lyric-line active">READY TO SING</div>`;
+        return;
+      }
+      container.innerHTML = "";
+      let activeIndex = appState.activeLyrics.findIndex((lyric, i) => {
+        const next = appState.activeLyrics[i + 1];
+        return appState.playbackTime >= lyric.time && (!next || appState.playbackTime < next.time);
+      });
+
+      appState.activeLyrics.forEach((line, idx) => {
+        let status = "pending";
+        if (idx < activeIndex) status = "passed";
+        if (idx === activeIndex) status = "active";
+        const div = document.createElement("div");
+        div.className = `lyric-line ${status}`;
+        div.innerText = line.text;
+        container.appendChild(div);
+      });
+    }
+
+    window.addEventListener('load', () => {
+      const splash = document.getElementById('pwaSplash');
+      if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 500); }
+      
+      if (supabaseClient) {
+        supabaseClient.from('songs').select('*').then(({ data, error }) => {
+          if (!error && data && data.length > 0) { appState.songLibrary = data; }
+          populateMediaLibrary();
+        });
+        supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'songs' }, () => {
+          supabaseClient.from('songs').select('*').then(({ data }) => {
+            if (data) { appState.songLibrary = data; populateMediaLibrary(); }
+          });
+        }).subscribe();
+      } else {
+        populateMediaLibrary();
+      }
+    });
+
+    function toggleAuthMock() {
+      const btn = document.getElementById("loginBtn");
+      if (btn.innerText.indexOf("Log in") !== -1) {
+        btn.innerText = "Logout (Admin)";
+        btn.style.backgroundColor = "var(--green)";
+      } else {
+        btn.innerText = "Log in with Google";
+        btn.style.backgroundColor = "var(--accent)";
+      }
+    }
+     // --- 4. DATA PRESENTATION UTILS AND TIMELINES SYNCHRONIZATIONS ---
+    
+    // Updated rendering function to support BOTH local files and Supabase cloud streaming rows!
+    function updateSidebarTracks() {
+      const container = document.getElementById("trackList");
+      if (!container) return;
+      
+      // If local files are loaded via folder upload, use them. Otherwise, read from your Supabase library array!
+      const tracksToRender = (window.appState && appState.localFolderFiles && appState.localFolderFiles.length > 0)
+        ? appState.localFolderFiles 
+        : appState.songLibrary;
+
+      if (!tracksToRender || tracksToRender.length === 0) {
+        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted)">No files found in this category.</p>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      
+      tracksToRender.forEach(track => {
+        const row = document.createElement("div");
+        row.className = "track-row";
+        row.innerHTML = `
+          <div class="track-info" onclick="loadSelectedTrackImmediately(${track.id})">
+            <span class="track-title">${track.title}</span>
+            <span class="track-artist">${track.artist || 'Unknown Artist'}</span>
+          </div>
+          <button class="btn-reserve" onclick="reserveSongTrack(${track.id})">+ Queue</button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // Keep a reference to the old function name so your initial loading listeners don't throw errors!
+    function populateMediaLibrary() {
+      updateSidebarTracks();
     }
 
     function renderLyricsFrame() {
