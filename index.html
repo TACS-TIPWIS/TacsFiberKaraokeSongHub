@@ -121,7 +121,7 @@
     }
     .sidebar-panel h3 { margin-top: 0; font-size: 1rem; letter-spacing: 0.5px; border-bottom: 1px solid #27272a; padding-bottom: 8px;}
     
-    /* New upload button configuration metrics */
+    /* Upload button display container adjustments */
     .upload-container {
       margin-bottom: 12px;
     }
@@ -130,12 +130,13 @@
       color: white;
       border: 1px dashed #4b5563;
       padding: 10px;
-      width: 100%;
+      display: block;
+      width: calc(100% - 22px);
+      text-align: center;
       border-radius: 4px;
       font-weight: 600;
       font-size: 0.8rem;
       cursor: pointer;
-      text-align: center;
       transition: background-color 0.2s;
     }
     .btn-upload:hover {
@@ -278,7 +279,7 @@
     <!-- Central Interactive Workspace splits -->
     <main class="main-workspace">
       
-      <!-- Left Column: Media Library featuring our new Custom Folder Upload element -->
+      <!-- Left Column: Media Library Featuring the Custom Folder Upload Element -->
       <section class="sidebar-panel">
         <h3>LOCAL SONG LIBRARY</h3>
         <div class="upload-container">
@@ -306,8 +307,6 @@
         </div>
         <div class="queue-triggers">
           <button class="btn-start-queue" onclick="advancePlaybackQueue()">▶ START QUEUE</button>
-          <button class="btn-clear-queue" onclick="clearPlaybackQueue()">⏹ CLEAR QUEUE</button>
-        </div>
         <div class="slider-box">
           <label id="pitchLabel">KEY / PITCH: <span>0 semitones</span></label>
           <input type="range" min="-6" max="6" step="1" value="0" id="pitchSlider" oninput="adjustHardwarePitch(this.value)">
@@ -389,20 +388,24 @@
       }
     }
 
-    // --- 3. REVOLUTIONARY LOCAL DISK FILE SYSTEM DIRECTORY UPLOAD HANDLER ---
+    // --- 3. UNBLOCKED LOCAL DISK FILE SYSTEM DIRECTORY UPLOAD HANDLER ---
     function handleFolderUpload(files) {
+      if (!files || files.length === 0) return;
+      
       appState.localFolderFiles = [];
       let uniqueId = 1000;
 
+      console.log(`Processing folder batch list: ${files.length} items discovered.`);
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const name = file.name.toUpperCase();
+        const rawName = file.name ? file.name : "";
+        const lowerName = rawName.toLowerCase();
         
-        // Scan cleanly for raw karaoke assets (.mid, .midi, or video layers .mp4)
-        if (name.endsWith('.MID') || name.endsWith('.MIDI') || name.endsWith('.MP4')) {
-          // Parse clean titles and artists from standard hyphen formatting configurations
-          let title = file.name.replace(/\.[^/.]+$/, ""); // Strip out file extensions cleanly
-          let artist = "Local Storage Track";
+        // Case-insensitive verification validation parameters checks
+        if (lowerName.endsWith('.mid') || lowerName.endsWith('.midi') || lowerName.endsWith('.mp4') || lowerName.endsWith('.mp3')) {
+          let title = rawName.replace(/\.[^/.]+$/, ""); // Strip extensions out
+          let artist = "Local Directory Track";
           
           if (title.includes("-")) {
             const parts = title.split("-");
@@ -414,12 +417,13 @@
             id: uniqueId++,
             title: title,
             artist: artist,
-            fileRef: file, // Keeps pointer references alive inside local system sandbox storage loops
-            format: name.endsWith('.MP4') ? 'VIDEO' : 'MIDI'
+            fileRef: file, 
+            format: lowerName.endsWith('.mp4') ? 'VIDEO' : 'MIDI'
           });
         }
       }
       
+      console.log(`Successfully mapped ${appState.localFolderFiles.length} karaoke tracks into runtime state layers.`);
       updateSidebarTracks();
     }
 
@@ -428,7 +432,7 @@
       const container = document.getElementById("trackList");
       if (!container) return;
       
-      // Prioritize checking your local drive uploads first, then fall back cleanly to your database arrays
+      // Checking local disc folder cache layers first before checking database response lists
       const tracksToRender = (appState.localFolderFiles && appState.localFolderFiles.length > 0)
         ? appState.localFolderFiles 
         : appState.songLibrary;
@@ -441,7 +445,7 @@
           row.innerHTML = `
             <div class="track-info" onclick="loadSelectedTrackImmediately(${track.id})">
               <span class="track-title">${track.title}</span>
-              <span class="track-artist">${track.artist}</span>
+              <span class="track-artist">${track.artist} (PREVIEW)</span>
             </div>
             <button class="btn-reserve" onclick="reserveSongTrack(${track.id})">+ Queue</button>
           `;
@@ -561,14 +565,6 @@
               osc.start(audioCtx.currentTime);
               osc.stop(audioCtx.currentTime + 0.1);
             } catch(e) {
-              console.error("Native sound card channel blocked:", e);
-            }
-          }
-        }, 100);
-      }
-    }
-
-    function stopPlaybackEngine() {
     window.addEventListener('load', () => {
       const splash = document.getElementById('pwaSplash');
       if (splash) { 
