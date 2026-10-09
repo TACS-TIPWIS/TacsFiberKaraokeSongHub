@@ -10,9 +10,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="./manifest.json">
 
-  <!-- Production Dependencies Pre-Cached by Service Worker -->
-  <script src="https://unpkg.com"></script>
-  <script src="https://cloudflare.com"></script>
+  <!-- Production Dependencies Sourced Locally to Bypass Network Block Filters -->
+  <script src="./lib/supabase.js"></script>
+  <script src="./lib/tone.js"></script>
   <script src="https://unpkg.com"></script>
 
   <!-- Complete Component Dashboard UI Stylesheet -->
@@ -330,7 +330,7 @@
     ];
 
     try {
-      if (SUPABASE_URL.indexOf("your-project-id") === -1) {
+      if (typeof supabase !== 'undefined' && SUPABASE_URL.indexOf("your-project-id") === -1) {
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
     } catch(err) {
@@ -354,7 +354,7 @@
     let pitchShiftNode = null;
 
     function initAudioEngine() {
-      if (!pitchShiftNode) {
+      if (typeof Tone !== 'undefined' && !pitchShiftNode) {
         pitchShiftNode = new Tone.PitchShift({ pitch: 0 }).toDestination();
       }
     }
@@ -395,7 +395,7 @@
         : appState.songLibrary;
 
       if (!tracksToRender || tracksToRender.length === 0) {
-        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted)">Using baseline local offline sandbox data engine arrays.</p>`;
+        container.innerHTML = "";
         fallbackSongData.forEach(track => {
           const row = document.createElement("div");
           row.className = "track-row";
@@ -482,7 +482,7 @@
     function togglePlaybackEngine() {
       initAudioEngine();
       
-      if (Tone.context.state !== 'running') {
+      if (typeof Tone !== 'undefined' && Tone.context.state !== 'running') {
         Tone.context.resume();
       }
 
@@ -499,7 +499,7 @@
         }
         appState.isPlaying = true;
         playBtn.innerText = "⏸";
-        Tone.start();
+        if (typeof Tone !== 'undefined') Tone.start();
         
         appState.timerLoop = setInterval(() => {
           appState.playbackTime += 0.1 * (appState.tempoScale / 100);
@@ -565,24 +565,31 @@
           populateMediaLibrary();
         });
         supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'songs' }, () => {
-*', schema: 'public', table: 'songs' }, () => {
-            supabaseClient.from('songs').select('*').then(({ data }) => {
-              if (data) { appState.songLibrary = data; populateMediaLibrary(); }
-            });
+            if (supabaseClient) {
+              supabaseClient.from('songs').select('*').then(({ data }) => {
+                if (data) { appState.songLibrary = data; populateMediaLibrary(); }
+              });
+            }
           }).subscribe();
       } else {
         populateMediaLibrary();
       }
     });
 
-    function toggleAuthMock() {
-      const btn = document.getElementById("loginBtn");
-      if (btn.innerText.indexOf("Log in") !== -1) {
-        btn.innerText = "Logout (Admin)";
-        btn.style.backgroundColor = "var(--green)";
-      } else {
-        btn.innerText = "Log in with Google";
-        btn.style.backgroundColor = "var(--accent)";
+    async function toggleAuthMock() {
+      if (!supabaseClient) {
+        alert("Supabase client script asset missing from local directory. Ensure files are saved in public/lib/ path!");
+        return;
+      }
+      try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin }
+        });
+        if (error) throw error;
+      } catch (err) {
+        console.error("Auth process error:", err.message);
+        alert("Authentication failed: " + err.message);
       }
     }
   </script>
