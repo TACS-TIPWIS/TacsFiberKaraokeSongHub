@@ -574,8 +574,8 @@
           populateMediaLibrary();
         });
 
-        supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'songs' }, () => {
-          supabaseClient.from('songs').select('*').then(({ data }) => {
+        supabaseClient.channel('public-Songs').on('postgres_changes', { event: '*', schema: 'public', table: 'Songs' }, () => {
+          supabaseClient.from('Songs').select('*').then(({ data }) => {
             if (data && data.length > 0) { 
               appState.songLibrary = data; 
               populateMediaLibrary(); 
