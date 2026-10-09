@@ -353,10 +353,10 @@
             <section class="sidebar-panel">
                 <h3>LOCAL SONG LIBRARY</h3>
                 <div class="track-scroller" id="trackList">
-    <!-- Insert this right after the closing </footer> of Part 1 -->
+    <!-- Insert this block directly at the base of your markup layer to handle application execution -->
     <script>
         // =========================================================================
-        // 1. ACTIVE MOCK DATABASES & APPLICATION GLOBAL STATES
+        // 1. CONFIGURATION, SCHEMAS & DYNAMIC APPLICATION STATE
         // =========================================================================
         const APP_CONFIG = {
             STORAGE_KEYS: {
@@ -412,12 +412,12 @@
         let isPlaying = false;
         let isAuthenticated = false;
 
-        // Sub-millisecond Hardware Clock Alignment Parameters
+        // High-Precision Core Clock Anchors
         let animationFrameId = null;
         let playbackStartTime = 0;
         let accumulatedTime = 0;
 
-        // Dynamic Configuration Settings Parameters Object
+        // Initial Audio Hardware Calibration Matrix
         const hardwareMatrix = {
             masterVolume: 80,
             microphoneVolume: 75,
@@ -425,7 +425,7 @@
             vocalRemover: 0
         };
 
-        // Web Audio Topology Context Stubs
+        // Web Audio Node Graph Interface Layout Mapping
         let audioContextInstance = null;
         let microphoneSourceNode = null;
         let masterGainNode = null;
@@ -435,7 +435,7 @@
         let vocalFilterNode = null;
 
         // =========================================================================
-        // 2. DOM INITIALIZATION ROUTINE & COMPONENT RENDERING
+        // 2. DOM RENDERING PIPELINES & HARDWARE INITIALIZATION
         // =========================================================================
         window.addEventListener('DOMContentLoaded', () => {
             const splash = document.getElementById('pwaSplash');
@@ -525,12 +525,12 @@
                     }
                 }
             } catch (err) {
-                console.error("Failure during persistence layout hydration cycle:", err);
+                console.error("Storage rehydration failure:", err);
             }
         }
 
         // =========================================================================
-        // 3. HIGH-PRECISION LYRIC TIMELINE PLAYBACK ENGINE
+        // 3. HIGH-PRECISION RUNTIME PLAYBACK MOTOR
         // =========================================================================
         function loadTrackDirectly(trackId) {
             const track = MOCK_SONG_LIBRARY.find(t => t.id === trackId);
@@ -562,22 +562,19 @@
                 }
 
                 isPlaying = true;
-                playBtn.innerHTML = '⏸';
+                if (playBtn) playBtn.innerHTML = '⏸';
                 
-                // Pin performance clock precisely to this exact millisecond anchor
                 playbackStartTime = performance.now() - (accumulatedTime * 1000);
                 renderPlaybackLoop();
             } else {
                 isPlaying = false;
-                playBtn.innerHTML = '▶';
+                if (playBtn) playBtn.innerHTML = '▶';
                 
                 if (playbackStartTime > 0) {
                     accumulatedTime = (performance.now() - playbackStartTime) / 1000;
                 }
                 
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
             }
         }
 
@@ -587,7 +584,6 @@
             const currentTimeMs = performance.now() - playbackStartTime;
             const preciseSeconds = currentTimeMs / 1000;
 
-            // Only redraw visual nodes if the math calculation shifts over a full integer mark
             if (Math.floor(preciseSeconds) !== currentTimelineSecond) {
                 currentTimelineSecond = Math.floor(preciseSeconds);
                 updateTheaterLyrics();
@@ -601,14 +597,18 @@
             const playBtn = document.getElementById('playBtn');
             if (playBtn) playBtn.innerHTML = '▶';
             
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
 
-    <!-- Insert this block directly after your Part 2 script block to complete the application ecosystem -->
-    <script>
+            currentTimelineSecond = 0;
+            accumulatedTime = 0;
+            playbackStartTime = 0;
+            updateTheaterLyrics();
+        }
+
+        function rewindActiveTrack() {
+            if (isPlaying) {
         // =========================================================================
-        // 1. EXTENDED LOCAL DATABASE PERSISTENCE ENGINES
+        // 6. STORAGE LIFECYCLE INTERCEPTORS & VALIDATION HOOKS
         // =========================================================================
         function saveQueueToDisk() {
             try {
@@ -626,7 +626,7 @@
             }
         }
 
-        // Hooking application mutations securely to guarantee silent state persistence updates
+        // Overwrite core logic with silent persistence state pipelines
         const systemReserveTrack = reserveTrack;
         reserveTrack = function(event, trackId) {
             systemReserveTrack(event, trackId);
@@ -651,36 +651,13 @@
             saveHardwareMatrixToDisk();
         };
 
-        // =========================================================================
-        // 2. PRODUCTION OAUTH2 COMPLIANCE INTERFACE SKELETON
-        // =========================================================================
         function initiateOAuth2Flow() {
-            // Live production systems will override the mock login toggles to handle target redirects
-            const oauthEndpoint = "https://google.com";
-            const runtimeParams = {
-                client_id: "REPLACE_WITH_YOUR_DEDICATED_GOOGLE_CLIENT_://googleusercontent.com",
-                redirect_uri: window.location.origin + window.location.pathname,
-                response_type: "token",
-                scope: "https://googleapis.com email"
-            };
-
-            console.log("Redirecting system authentication layout node state to identity provider pipeline...", oauthEndpoint);
-            
-            // For interface simulation parity, we delegate down to the standard UI switch
             toggleAuthMock();
         }
 
-        // =========================================================================
-        // 3. APPLICATION SYSTEM VERIFICATION & LOGGING RUNTIME
-        // =========================================================================
         window.addEventListener('load', () => {
             console.log("KaraokeHub PRO State Framework Engine V3 initialized smoothly.");
-            
-            // Check if hardware acceleration frameworks are active inside user agent sandbox layers
-            if (!window.AudioContext && !window.webkitAudioContext) {
-                console.error("Web Audio API is not supported in this browser version. Voice processing loops will be bypassed.");
-            } else {
-                console.log("Sub-millisecond audio hardware processing loop profiles mapped successfully.");
-            }
         });
     </script>
+</body>
+</html>
