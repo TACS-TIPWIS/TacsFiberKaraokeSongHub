@@ -11,9 +11,9 @@
   <link rel="manifest" href="./manifest.json">
 
   <!-- Production Dependencies Pre-Cached by Service Worker -->
-  <script src="https://jsdelivr.net"></script>
+  <script src="https://unpkg.com"></script>
   <script src="https://cloudflare.com"></script>
-  <script src="https://jsdelivr.net"></script>
+  <script src="https://unpkg.com"></script>
 
   <!-- Complete Component Dashboard UI Stylesheet -->
   <style>
@@ -258,7 +258,7 @@
     <!-- Central Interactive Workspace splits -->
     <main class="main-workspace">
       
-      <!-- Left Column Column: Supabase Dynamic Track Local Media Library -->
+      <!-- Left Column: Supabase Dynamic Track Local Media Library -->
       <section class="sidebar-panel">
         <h3>LOCAL SONG LIBRARY</h3>
         <div class="track-scroller" id="trackList">
@@ -395,7 +395,19 @@
         : appState.songLibrary;
 
       if (!tracksToRender || tracksToRender.length === 0) {
-        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted)">No files found in this category.</p>`;
+        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted)">Using baseline local offline sandbox data engine arrays.</p>`;
+        fallbackSongData.forEach(track => {
+          const row = document.createElement("div");
+          row.className = "track-row";
+          row.innerHTML = `
+            <div class="track-info" onclick="loadSelectedTrackImmediately(${track.id})">
+              <span class="track-title">${track.title}</span>
+              <span class="track-artist">${track.artist}</span>
+            </div>
+            <button class="btn-reserve" onclick="reserveSongTrack(${track.id})">+ Queue</button>
+          `;
+          container.appendChild(row);
+        });
         return;
       }
 
@@ -553,10 +565,11 @@
           populateMediaLibrary();
         });
         supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'songs' }, () => {
-          supabaseClient.from('songs').select('*').then(({ data }) => {
-            if (data) { appState.songLibrary = data; populateMediaLibrary(); }
-          });
-        }).subscribe();
+*', schema: 'public', table: 'songs' }, () => {
+            supabaseClient.from('songs').select('*').then(({ data }) => {
+              if (data) { appState.songLibrary = data; populateMediaLibrary(); }
+            });
+          }).subscribe();
       } else {
         populateMediaLibrary();
       }
