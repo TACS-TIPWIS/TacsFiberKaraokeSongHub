@@ -1,0 +1,25 @@
+{
+  "name": "karaokehub-pro",
+  "version": "3.0.0",
+  "description": "Widescreen interactive theater style PWA Karaoke player platform integration.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx local-server public",
+    "icons": "node generate-icons.js",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "keywords": [
+    "pwa",
+    "karaoke",
+    "supabase",
+    "tonejs"
+  ],
+  "author": "TACS I.T SERVICES",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "midiconvert": "^0.4.4",
+    "sharp": "^0.33.5",
+    "tone": "^14.8.39"
+  }
+}
