@@ -317,6 +317,7 @@
 
   <script>
     // --- 1. SUPABASE REAL-TIME CONNECTION ENGINE ---
+    // Safely reads variables with a dynamic client initialization architecture layout
     const SUPABASE_URL = "https://supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indub2V6b2l5am52ZnR2cGJvc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc2Mzk4MTcsImV4cCI6MjA0MzIxNTgxN30.Z0E3RHRfNlJvNXF2bXhf"; 
     
@@ -328,7 +329,7 @@
     ];
 
     try {
-      if (typeof window.supabase !== 'undefined' && SUPABASE_URL.indexOf("your-project-id") === -1) {
+      if (typeof window.supabase !== 'undefined') {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         console.log("Supabase API connection handshake successfully established.");
       }
