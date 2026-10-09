@@ -10,8 +10,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="./manifest.json">
 
-  <!-- Production Dependencies Sourced Locally to Bypass Network Block Filters -->
-  <script src="./lib/supabase.js"></script>
+  <!-- Production Dependencies Sourced over Unblocked Public CDN Gateways -->
+  <script src="https://jsdelivr.net"></script>
   <script src="https://unpkg.com"></script>
 
   <!-- Complete Component Dashboard UI Stylesheet -->
@@ -120,28 +120,6 @@
       padding: 15px;
     }
     .sidebar-panel h3 { margin-top: 0; font-size: 1rem; letter-spacing: 0.5px; border-bottom: 1px solid #27272a; padding-bottom: 8px;}
-    
-    /* Upload button container layout specs */
-    .upload-container {
-      margin-bottom: 12px;
-    }
-    .btn-upload {
-      background-color: #27272a;
-      color: white;
-      border: 1px dashed #4b5563;
-      padding: 10px;
-      display: block;
-      width: calc(100% - 22px);
-      text-align: center;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .btn-upload:hover {
-      background-color: #3f3f46;
-    }
 
     .track-scroller {
       flex: 1;
@@ -279,15 +257,11 @@
     <!-- Central Interactive Workspace splits -->
     <main class="main-workspace">
       
-      <!-- Left Column: Media Library featuring our custom case-insensitive Folder Upload button -->
+      <!-- Left Column: Live Cloud Song Library Sidebar -->
       <section class="sidebar-panel">
         <h3>LOCAL SONG LIBRARY</h3>
-        <div class="upload-container">
-          <label for="folderPicker" class="btn-upload">📁 SELECT LOCAL KARAOKE FOLDER</label>
-          <input type="file" id="folderPicker" webkitdirectory directory multiple style="display: none;" onchange="handleFolderUpload(this.files)">
-        </div>
         <div class="track-scroller" id="trackList">
-          <p style="font-size:0.85rem; color:var(--text-muted)">Please upload a local karaoke folder to list songs.</p>
+          <p style="font-size:0.85rem; color:var(--text-muted)">Syncing with active database schema configuration...</p>
         </div>
       </section>
 
@@ -307,7 +281,21 @@
         </div>
         <div class="queue-triggers">
           <button class="btn-start-queue" onclick="advancePlaybackQueue()">▶ START QUEUE</button>
-        <div class="slider-box">
+          <button class="btn-clear-queue" onclick="clearPlaybackQueue()">⏹ CLEAR QUEUE</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottom-dashboard">
+      <div class="transport-cluster">
+        <button class="btn-transport" onclick="rewindActiveTrack()">⏮</button>
+        <button class="btn-transport play-accent" id="playBtn" onclick="togglePlaybackEngine()">▶</button>
+        <button class="btn-transport" onclick="stopPlaybackEngine()">⏹</button>
+        <button class="btn-transport" onclick="advancePlaybackQueue()">⏭</button>
+      </div>
+
+      <div class="sliders-cluster">
+  <div class="slider-box">
           <label id="pitchLabel">KEY / PITCH: <span>0 semitones</span></label>
           <input type="range" min="-6" max="6" step="1" value="0" id="pitchSlider" oninput="adjustHardwarePitch(this.value)">
         </div>
@@ -388,74 +376,14 @@
       }
     }
 
-    // --- 3. UNBLOCKED LOCAL DISK FILE SYSTEM DIRECTORY UPLOAD HANDLER ---
-    function handleFolderUpload(files) {
-      if (!files || files.length === 0) return;
-      
-      appState.localFolderFiles = [];
-      let uniqueId = 1000;
-
-      console.log(`Processing folder batch list: ${files.length} items discovered.`);
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const rawName = file.name ? file.name : "";
-        const lowerName = rawName.toLowerCase();
-        
-        // Safe validation parsing across standard media asset extensions
-        if (lowerName.endsWith('.mid') || lowerName.endsWith('.midi') || lowerName.endsWith('.mp4') || lowerName.endsWith('.mp3')) {
-          let title = rawName.replace(/\.[^/.]+$/, ""); // Strip extension parameters cleanly
-          let artist = "Local Directory Track";
-          
-          // CRITICAL ACCURACY PATCH: Reads string index splits natively to completely eliminate array exception errors
-          if (title.includes("-")) {
-            const parts = title.split("-");
-            if (parts.length >= 2) {
-              artist = parts[0].trim();
-              title = parts[1].trim();
-            }
-          }
-
-          appState.localFolderFiles.push({
-            id: uniqueId++,
-            title: title,
-            artist: artist,
-            fileRef: file, 
-            format: lowerName.endsWith('.mp4') ? 'VIDEO' : 'MIDI'
-          });
-        }
-      }
-      
-      console.log(`Successfully mapped ${appState.localFolderFiles.length} karaoke tracks into runtime state layers.`);
-      updateSidebarTracks();
-    }
-
     // --- 4. DATA PRESENTATION UTILS AND TIMELINES SYNCHRONIZATIONS ---
     function updateSidebarTracks() {
       const container = document.getElementById("trackList");
       if (!container) return;
       
-      // Checking local disc folder assets memory structures before fallback lists
-      const tracksToRender = (appState.localFolderFiles && appState.localFolderFiles.length > 0)
-        ? appState.localFolderFiles 
-        : appState.songLibrary;
-
-      if (!tracksToRender || tracksToRender.length === 0) {
-        container.innerHTML = "";
-        fallbackSongData.forEach(track => {
-          const row = document.createElement("div");
-          row.className = "track-row";
-          row.innerHTML = `
-            <div class="track-info" onclick="loadSelectedTrackImmediately(${track.id})">
-              <span class="track-title">${track.title}</span>
-              <span class="track-artist">${track.artist} (PREVIEW)</span>
-            </div>
-            <button class="btn-reserve" onclick="reserveSongTrack(${track.id})">+ Queue</button>
-          `;
-          container.appendChild(row);
-        });
-        return;
-      }
+      const tracksToRender = (appState.songLibrary && appState.songLibrary.length > 0)
+        ? appState.songLibrary 
+        : fallbackSongData;
 
       container.innerHTML = "";
       
@@ -478,7 +406,7 @@
     }
 
     function reserveSongTrack(id) {
-      const tracks = appState.localFolderFiles.length > 0 ? appState.localFolderFiles : (appState.songLibrary.length > 0 ? appState.songLibrary : fallbackSongData);
+      const tracks = appState.songLibrary.length > 0 ? appState.songLibrary : fallbackSongData;
       const song = tracks.find(t => t.id === id);
       const singer = prompt("Enter Singer Name:") || "Guest";
       appState.singerQueue.push({ ...song, queueId: Date.now(), singer });
@@ -506,7 +434,7 @@
     }
 
     function loadSelectedTrackImmediately(id) {
-      const tracks = appState.localFolderFiles.length > 0 ? appState.localFolderFiles : (appState.songLibrary.length > 0 ? appState.songLibrary : fallbackSongData);
+      const tracks = appState.songLibrary.length > 0 ? appState.songLibrary : fallbackSongData;
       const song = tracks.find(t => t.id === id);
       stopPlaybackEngine();
       
@@ -563,6 +491,64 @@
               osc.frequency.value = isEven ? 440 : 554;
               
               gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+              gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+              
+              osc.start(audioCtx.currentTime);
+              osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {
+              console.error("Native sound card channel blocked:", e);
+            }
+          }
+        }, 100);
+      }
+    }
+
+    function stopPlaybackEngine() {
+      appState.isPlaying = false;
+      document.getElementById("playBtn").innerText = "▶";
+      clearInterval(appState.timerLoop);
+      appState.playbackTime = 0;
+      renderLyricsFrame();
+    }
+
+    function rewindActiveTrack() {
+      appState.playbackTime = 0;
+      renderLyricsFrame();
+    }
+
+    function advancePlaybackQueue() {
+      if (appState.singerQueue.length > 0) {
+        const next = appState.singerQueue.shift();
+        renderQueueUI();
+        loadSelectedTrackImmediately(next.id);
+      } else {
+        stopPlaybackEngine();
+        alert("The Singer Queue is empty!");
+      }
+    }
+
+    function renderLyricsFrame() {
+      const container = document.getElementById("lyricContainer");
+      if (!appState.currentSong || appState.activeLyrics.length === 0) {
+        container.innerHTML = `<div class="lyric-line active">READY TO SING</div>`;
+        return;
+      }
+      container.innerHTML = "";
+      let activeIndex = appState.activeLyrics.findIndex((lyric, i) => {
+        const next = appState.activeLyrics[i + 1];
+        return appState.playbackTime >= lyric.time && (!next || appState.playbackTime < next.time);
+      });
+
+      appState.activeLyrics.forEach((line, idx) => {
+        let status = "pending";
+        if (idx < activeIndex) status = "passed";
+        if (idx === activeIndex) status = "active";
+        const div = document.createElement("div");
+        div.className = `lyric-line ${status}`;
+        div.innerText = line.text;
+        container.appendChild(div);
+      });
+    }
     window.addEventListener('load', () => {
       const splash = document.getElementById('pwaSplash');
       if (splash) { 
@@ -577,7 +563,7 @@
           }
           populateMediaLibrary();
         }).catch(err => {
-          console.warn("Supabase load fallback triggered:", err);
+          console.warn("Supabase database load fallback triggered:", err);
           populateMediaLibrary();
         });
 
@@ -596,7 +582,7 @@
 
     async function toggleAuthMock() {
       if (typeof supabaseClient === 'undefined' || !supabaseClient) {
-        alert("Supabase client script asset missing from local directory. Ensure files are saved in public/lib/ path!");
+        alert("Supabase client parameters are uninitialized. Check connection keys!");
         return;
       }
       try {
