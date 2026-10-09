@@ -1,608 +1,686 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KaraokeHub PRO</title>
-  
-  <!-- PWA Headers & Theme Configurations -->
-  <meta name="theme-color" content="#e91e63">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="./manifest.json">
-
-  <!-- Production Dependencies Sourced over Unblocked Public CDN Gateways -->
-  <script src="https://jsdelivr.net"></script>
-  <script src="https://unpkg.com"></script>
-
-  <!-- Complete Component Dashboard UI Stylesheet -->
-  <style>
-    :root {
-      --bg-main: #121214;
-      --bg-panel: #1a1a1e;
-      --accent: #e91e63;
-      --accent-hover: #ff2a75;
-      --text-main: #ffffff;
-      --text-muted: #9ca3af;
-      --green: #10b981;
-      --red: #ef4444;
-    }
-
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100vh;
-      user-select: none;
-    }
-
-    /* PWA TACS-Branded Animated Standalone Splash Mask Layer */
-    @media (display-mode: standalone) {
-      .pwa-splash-fallback {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: 0; left: 0; width: 100vw; height: 100vh;
-        background: #121214;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
-      .splash-logo {
-        width: 160px;
-        height: 160px;
-        background: url('./icons/icon-512x512.png') no-repeat center;
-        background-size: contain;
-        animation: pulse 2s infinite ease-in-out;
-      }
-      @keyframes pulse {
-        0% { transform: scale(0.96); opacity: 0.8; }
-        50% { transform: scale(1.03); opacity: 1; }
-        100% { transform: scale(0.96); opacity: 0.8; }
-      }
-    }
-    @media not (display-mode: standalone) {
-      .pwa-splash-fallback { display: none !important; }
-    }
-
-    /* Application Layout Container Mapping onto Screenshot */
-    .app-container {
-      display: grid;
-      grid-template-rows: 60px 1fr 100px;
-      height: 100vh;
-      width: 100vw;
-    }
-
-    /* Top Action Bar Navigation */
-    .top-header {
-      background-color: var(--bg-panel);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      border-bottom: 1px solid #27272a;
-    }
-    .brand {
-      font-weight: 800;
-      font-size: 1.4rem;
-      color: var(--text-main);
-    }
-    .brand span { color: var(--accent); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaraokeHub PRO</title>
+    <!-- PWA Headers & Theme Configurations -->
+    <meta name="theme-color" content="#e91e63">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="./manifest.json">
     
-    .nav-actions button {
-      background: #27272a;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      margin-left: 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-    .nav-actions .btn-login { background-color: var(--accent); }
+    <!-- Complete Component Dashboard UI Stylesheet -->
+    <style>
+        :root {
+            --bg-main: #121214;
+            --bg-panel: #1a1a1e;
+            --accent: #e91e63;
+            --accent-hover: #ff2a75;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+            --green: #10b981;
+            --red: #ef4444;
+        }
 
-    /* Central Sing Studio Split Columns Workspace */
-    .main-workspace {
-      display: grid;
-      grid-template-columns: 300px 1fr 320px;
-      overflow: hidden;
-    }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
 
-    .sidebar-panel {
-      background-color: var(--bg-panel);
-      border-right: 1px solid #27272a;
-      display: flex;
-      flex-direction: column;
-      padding: 15px;
-    }
-    .sidebar-panel h3 { margin-top: 0; font-size: 1rem; letter-spacing: 0.5px; border-bottom: 1px solid #27272a; padding-bottom: 8px;}
+        /* PWA TACS-Branded Animated Standalone Splash Mask Layer */
+        @media (display-mode: standalone) {
+            .pwa-splash-fallback {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: #121214;
+                z-index: 9999;
+                transition: opacity 0.5s ease;
+            }
+            .splash-logo {
+                width: 160px;
+                height: 160px;
+                background: url('./icons/icon-512x512.png') no-repeat center;
+                background-size: contain;
+                animation: pulse 2s infinite ease-in-out;
+            }
+            @keyframes pulse {
+                0% { transform: scale(0.96); opacity: 0.8; }
+                50% { transform: scale(1.03); opacity: 1; }
+                100% { transform: scale(0.96); opacity: 0.8; }
+            }
+        }
 
-    .track-scroller {
-      flex: 1;
-      overflow-y: auto;
-    }
-    .track-row {
-      padding: 10px;
-      border-radius: 4px;
-      background: #27272a;
-      margin-bottom: 8px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .track-row:hover { background: #3f3f46; }
-    .track-info { display: flex; flex-direction: column; }
-    .track-title { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
-    .track-artist { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
-    .btn-reserve {
-      background: var(--accent);
-      border: none; color: white; border-radius: 3px;
-      padding: 4px 8px; font-size: 0.75rem; cursor: pointer;
-    }
+        @media not (display-mode: standalone) {
+            .pwa-splash-fallback {
+                display: none !important;
+            }
+        }
 
-    /* Center Screen Visual Theater Output Area */
-    .theater-stage {
-      background-color: #09090b;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 20px;
-    }
-    .lyric-window {
-      text-align: center;
-      max-height: 300px;
-      width: 100%;
-    }
-    .lyric-line {
-      font-size: 2rem;
-      font-weight: 800;
-      margin: 15px 0;
-      text-transform: uppercase;
-      transition: all 0.2s linear;
-      color: #4b5563;
-    }
-    .lyric-line.active {
-      color: #ffffff;
-      text-shadow: 0 0 12px var(--accent), 0 0 24px var(--accent);
-      transform: scale(1.1);
-    }
-    .lyric-line.passed { color: #fb923c; opacity: 0.4; }
+        /* Application Layout Container Mapping */
+        .app-container {
+            display: grid;
+            grid-template-rows: 60px 1fr 100px;
+            height: 100vh;
+            width: 100vw;
+        }
 
-    /* Right Side Live Singer Queue Panel */
-    .queue-panel {
-      background-color: var(--bg-panel);
-      border-left: 1px solid #27272a;
-      display: flex;
-      flex-direction: column;
-      padding: 15px;
-    }
-    .queue-list { flex: 1; overflow-y: auto; }
-    .queue-item {
-      padding: 10px; background: #27272a;
-      border-left: 4px solid var(--accent);
-      margin-bottom: 8px; border-radius: 0 4px 4px 0;
-      font-size: 0.85rem;
-    }
-    .queue-triggers button {
-      width: 100%; padding: 12px; margin-top: 8px;
-      border: none; border-radius: 4px; font-weight: 700; cursor: pointer;
-    }
-    .btn-start-queue { background-color: var(--green); color: white; }
-    .btn-clear-queue { background-color: var(--red); color: white; }
+        /* Top Action Bar Navigation */
+        .top-header {
+            background-color: var(--bg-panel);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #27272a;
+        }
 
-    /* Bottom Matrix Audio Hardware Parameters Slider Dashboard */
-    .bottom-dashboard {
-      background-color: var(--bg-panel);
-      border-top: 1px solid #27272a;
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      align-items: center;
-      padding: 0 20px;
-    }
-    .transport-cluster { display: flex; gap: 10px; }
-    .btn-transport {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: none; background: #27272a; color: white;
-      font-size: 1.1rem; cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-    }
-    .btn-transport.play-accent { background-color: var(--accent); }
-    
-    .sliders-cluster {
-      display: flex;
-      justify-content: space-around;
-      gap: 20px;
-    }
-    .slider-box {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .slider-box label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; font-weight: 700;}
-    .slider-box label span { color: white; float: right;}
-    input[type="range"] {
-      accent-color: var(--accent);
-      background: #27272a;
-      height: 6px; border-radius: 3px; cursor: pointer;
-    }
-  </style>
+        .brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--text-main);
+        }
+
+        .brand span {
+            color: var(--accent);
+        }
+
+        .nav-actions button {
+            background: #27272a; color: white;
+            border: none;
+            padding: 8px 14px;
+            margin-left: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .nav-actions .btn-login {
+            background-color: var(--accent);
+        }
+
+        /* Central Sing Studio Split Columns Workspace */
+        .main-workspace {
+            display: grid;
+            grid-template-columns: 300px 1fr 320px;
+            overflow: hidden;
+        }
+
+        .sidebar-panel {
+            background-color: var(--bg-panel);
+            border-right: 1px solid #27272a;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .sidebar-panel h3, .queue-panel h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #27272a;
+            padding-bottom: 8px;
+        }
+
+        .track-scroller {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .track-row {
+            padding: 10px;
+            border-radius: 4px;
+            background: #27272a;
+            margin-bottom: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .track-row:hover {
+            background: #3f3f46;
+        }
+
+        .track-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .track-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .track-artist {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn-reserve {
+            background: var(--accent);
+            border: none;
+            color: white;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        /* Center Screen Visual Theater Output Area */
+        .theater-stage {
+            background-color: #09090b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .lyric-window {
+            text-align: center;
+            max-height: 400px;
+            width: 100%;
+        }
+
+        .lyric-line {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 15px 0;
+            text-transform: uppercase;
+            transition: all 0.2s linear;
+            color: #4b5563;
+        }
+
+        .lyric-line.active {
+            color: #ffffff;
+            text-shadow: 0 0 12px var(--accent), 0 0 24px var(--accent);
+            transform: scale(1.1);
+        }
+
+        .lyric-line.passed {
+            color: #fb923c;
+            opacity: 0.4;
+        }
+
+        /* Right Side Live Singer Queue Panel */
+        .queue-panel {
+            background-color: var(--bg-panel);
+            border-left: 1px solid #27272a;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .queue-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .queue-item {
+            padding: 10px;
+            background: #27272a;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 8px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.85rem;
+        }
+
+        .queue-triggers button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-start-queue {
+            background-color: var(--green);
+            color: white;
+        }
+
+        .btn-clear-queue {
+            background-color: var(--red);
+            color: white;
+        }
+
+        /* Bottom Matrix Audio Hardware Parameters Slider Dashboard */
+        .bottom-dashboard {
+            background-color: var(--bg-panel);
+            border-top: 1px solid #27272a;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .transport-cluster {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-transport {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #27272a;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-transport.play-accent {
+            background-color: var(--accent);
+        }
+
+        .sliders-cluster {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .slider-box {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .slider-box label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .slider-box label span {
+            color: white;
+            float: right;
+        }
+
+        input[type="range"] {
+            accent-color: var(--accent);
+            background: #27272a;
+            height: 6px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <!-- PWA Standalone Splash Layout View Node -->
+    <div class="pwa-splash-fallback" id="pwaSplash">
+        <div class="splash-logo"></div>
+    </div>
 
-  <!-- PWA Standalone Splash Layout View Node -->
-  <div class="pwa-splash-fallback" id="pwaSplash">
-    <div class="splash-logo"></div>
-  </div>
+    <!-- Primary Application Dashboard View Port Frame -->
+    <div class="app-container">
+        <!-- Top Action Bar Global Navigation Grid -->
+        <header class="top-header">
+            <div class="brand">KaraokeHub <span>PRO</span></div>
+            <div class="nav-actions">
+                <button class="btn-login" id="loginBtn" onclick="toggleAuthMock()">Log in with Google</button>
+                <button onclick="alert('Manage Users Administration Framework Active')">Manage Users</button>
+                <button onclick="alert('TV Stage Projector Layout Configuration Node Activated')">TV Stage</button>
+            </div>
+        </header>
 
-  <!-- Primary Application Dashboard View Port Frame -->
-  <div class="app-container">
-    
-    <!-- Top Action Bar Global Navigation Grid -->
-    <header class="top-header">
-      <div class="brand">KaraokeHub <span>PRO</span></div>
-      <div class="nav-actions">
-        <button class="btn-login" id="loginBtn" onclick="toggleAuthMock()">Log in with Google</button>
-        <button onclick="alert('Manage Users Administration Framework Active')">Manage Users</button>
-        <button onclick="alert('TV Stage Projector Layout Configuration Node Activated')">TV Stage</button>
-      </div>
-    </header>
+        <!-- Central Interactive Workspace -->
+        <main class="main-workspace">
+            <!-- Left Column: Live Cloud Song Library Sidebar -->
+            <section class="sidebar-panel">
+                <h3>LOCAL SONG LIBRARY</h3>
+                <div class="track-scroller" id="trackList">
+    <!-- Insert this right after the closing </footer> of Part 1 -->
+    <script>
+        // =========================================================================
+        // 1. ACTIVE MOCK DATABASES & APPLICATION GLOBAL STATES
+        // =========================================================================
+        const APP_CONFIG = {
+            STORAGE_KEYS: {
+                QUEUE: 'kh_pro_reserved_queue',
+                MATRIX: 'kh_pro_hardware_matrix',
+                AUTH: 'kh_pro_user_identity'
+            },
+            AUDIO_CONSTRAINTS: {
+                echoMaxDelay: 0.8,
+                vocalCutFrequency: 120,
+            }
+        };
 
-    <!-- Central Interactive Workspace splits -->
-    <main class="main-workspace">
-      
-      <!-- Left Column: Live Cloud Song Library Sidebar -->
-      <section class="sidebar-panel">
-        <h3>LOCAL SONG LIBRARY</h3>
-        <div class="track-scroller" id="trackList">
-          <p style="font-size:0.85rem; color:var(--text-muted)">Syncing with active database schema configuration...</p>
-        </div>
-      </section>
+        const MOCK_SONG_LIBRARY = [
+            {
+                id: "track-01",
+                title: "Akin Ka Na Lang",
+                artist: "Morissette Amon",
+                lyrics: [
+                    { time: 0, text: "Akin ka na lang" },
+                    { time: 4, text: "Iingatan ko ang puso mo" },
+                    { time: 8, text: "Akin ka na lang" },
+                    { time: 11, text: "Luluha ka lang sa piling nya" }
+                ]
+            },
+            {
+                id: "track-02",
+                title: "Bohemian Rhapsody",
+                artist: "Queen",
+                lyrics: [
+                    { time: 0, text: "Is this the real life?" },
+                    { time: 3, text: "Is this just fantasy?" },
+                    { time: 7, text: "Caught in a landslide" },
+                    { time: 10, text: "No escape from reality" }
+                ]
+            },
+            {
+                id: "track-03",
+                title: "Don't Stop Believin'",
+                artist: "Journey",
+                lyrics: [
+                    { time: 0, text: "Just a small town girl" },
+                    { time: 4, text: "Livin' in a lonely world" },
+                    { time: 8, text: "She took the midnight train" },
+                    { time: 11, text: "Goin' anywhere" }
+                ]
+            }
+        ];
 
-      <!-- Center Theater Module Box: Lyric Timeline Synchronization Render Panel -->
-      <section class="theater-stage" id="stageContainer">
-        <div class="lyric-window" id="lyricContainer">
-          <div class="lyric-line active">READY TO PLAY</div>
-          <div class="lyric-line">Select a track from the local library column to initialize timeline parsing</div>
-        </div>
-      </section>
+        let singerQueue = [];
+        let activeTrack = null;
+        let currentTimelineSecond = 0;
+        let isPlaying = false;
+        let isAuthenticated = false;
 
-      <!-- Right Column: Live Singer Reservation Queue Management Panel -->
-      <section class="queue-panel">
-        <h3>SINGER QUEUE</h3>
-        <div class="queue-list" id="queueContainer">
-          <p style="font-size:0.85rem; color:var(--text-muted)">No tracks currently reserved in active singer loops.</p>
-        </div>
-        <div class="queue-triggers">
-          <button class="btn-start-queue" onclick="advancePlaybackQueue()">▶ START QUEUE</button>
-          <button class="btn-clear-queue" onclick="clearPlaybackQueue()">⏹ CLEAR QUEUE</button>
-        </div>
-      </section>
-    </main>
+        // Sub-millisecond Hardware Clock Alignment Parameters
+        let animationFrameId = null;
+        let playbackStartTime = 0;
+        let accumulatedTime = 0;
 
-    <footer class="bottom-dashboard">
-      <div class="transport-cluster">
-        <button class="btn-transport" onclick="rewindActiveTrack()">⏮</button>
-        <button class="btn-transport play-accent" id="playBtn" onclick="togglePlaybackEngine()">▶</button>
-        <button class="btn-transport" onclick="stopPlaybackEngine()">⏹</button>
-        <button class="btn-transport" onclick="advancePlaybackQueue()">⏭</button>
-      </div>
+        // Dynamic Configuration Settings Parameters Object
+        const hardwareMatrix = {
+            masterVolume: 80,
+            microphoneVolume: 75,
+            echoDepth: 40,
+            vocalRemover: 0
+        };
 
-      <div class="sliders-cluster">
-        <div class="slider-box">
-          <label id="pitchLabel">KEY / PITCH: <span>0 semitones</span></label>
-          <input type="range" min="-6" max="6" step="1" value="0" id="pitchSlider" oninput="adjustHardwarePitch(this.value)">
-        </div>
-        <div class="slider-box">
-          <label id="tempoLabel">TEMPO: <span>100%</span></label>
-          <input type="range" min="70" max="130" step="5" value="100" id="tempoSlider" oninput="adjustHardwareTempo(this.value)">
-        </div>
-        <div class="slider-box">
-          <label id="volumeLabel">MUSIC VOLUME: <span>100%</span></label>
-          <input type="range" min="0" max="100" value="100" id="volumeSlider" oninput="adjustHardwareVolume(this.value)">
-        </div>
-        <div class="slider-box">
-          <label id="micLabel">MICROPHONE: <span>0%</span></label>
-          <input type="range" min="0" max="100" value="0" id="micSlider" oninput="adjustHardwareMic(this.value)">
-        </div>
-      </div>
-    </footer>
-  </div>
+        // Web Audio Topology Context Stubs
+        let audioContextInstance = null;
+        let microphoneSourceNode = null;
+        let masterGainNode = null;
+        let micGainNode = null;
+        let delayNodeInstance = null;
+        let delayFeedbackNode = null;
+        let vocalFilterNode = null;
 
-  <script>
-    // --- 1. SUPABASE REAL-TIME CONNECTION ENGINE ---
-    const SUPABASE_URL = "https://supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indub2V6b2l5am52ZnR2cGJvc3ZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc2Mzk4MTcsImV4cCI6MjA0MzIxNTgxN30.Z0E3RHRfNlJvNXF2bXhf"; 
-    
-    let supabaseClient = null;
-    let fallbackSongData = [
-      { id: 1, title: "Akin Ka Na Lang", artist: "Morissette Amon", path: "akin.mid" },
-      { id: 2, title: "All At Once", artist: "Whitney Houston", path: "all_at_once.mid" },
-      { id: 3, title: "All The Love In The World", artist: "The Corrs", path: "corrs.mid" }
-    ];
+        // =========================================================================
+        // 2. DOM INITIALIZATION ROUTINE & COMPONENT RENDERING
+        // =========================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const splash = document.getElementById('pwaSplash');
+            if (splash) {
+                setTimeout(() => {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.remove(), 500);
+                }, 800);
+            }
 
-    try {
-      if (typeof window.supabase !== 'undefined') {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log("Supabase API connection handshake successfully established.");
-      }
-    } catch(err) {
-      console.warn("Using baseline local offline sandbox data engine arrays.", err);
-    }
+            renderSongLibrary();
+            renderHardwareSliders();
+            initPersistenceLayer();
+        });
 
-    // --- 2. GLOBAL CONTROLLER RUNTIME DATA LAYERS ---
-    let appState = {
-      songLibrary: [],
-      localFolderFiles: [],
-      singerQueue: [],
-      currentSong: null,
-      isPlaying: false,
-      playbackTime: 0,
-      pitchShift: 0,
-      tempoScale: 100,
-      timerLoop: null,
-      activeLyrics: []
-    };
+        function renderSongLibrary() {
+            const trackListContainer = document.getElementById('trackList');
+            if (!trackListContainer) return;
+            trackListContainer.innerHTML = '';
 
-    let audioCtx = null;
+            MOCK_SONG_LIBRARY.forEach(track => {
+                const trackRow = document.createElement('div');
+                trackRow.className = 'track-row';
+                trackRow.onclick = () => loadTrackDirectly(track.id);
 
-    function adjustHardwarePitch(value) {
-      appState.pitchShift = parseInt(value);
-      document.getElementById("pitchLabel").querySelector("span").innerText = `${value > 0 ? '+' : ''}${value} semitones`;
-    }
-
-    function adjustHardwareTempo(value) {
-      appState.tempoScale = parseInt(value);
-      document.getElementById("tempoLabel").querySelector("span").innerText = `${value}%`;
-    }
-
-    function adjustHardwareVolume(value) {
-      document.getElementById("volumeLabel").querySelector("span").innerText = `${value}%`;
-    }
-
-    async function adjustHardwareMic(value) {
-      document.getElementById("micLabel").querySelector("span").innerText = `${value}%`;
-      if (parseInt(value) > 0) {
-        try {
-          await navigator.mediaDevices.getUserMedia({ audio: true });
-        } catch(err) {
-          console.warn("Hardware mic streams blocked by browser permission matrix settings.");
+                trackRow.innerHTML = `
+                    <div class="track-info">
+                        <span class="track-title">${track.title}</span>
+                        <span class="track-artist">${track.artist}</span>
+                    </div>
+                    <button class="btn-reserve" onclick="reserveTrack(event, '${track.id}')">+ Queue</button>
+                `;
+                trackListContainer.appendChild(trackRow);
+            });
         }
-      }
-    }
 
-    // --- 4. DATA PRESENTATION UTILS AND TIMELINES SYNCHRONIZATIONS ---
-    function updateSidebarTracks() {
-      const container = document.getElementById("trackList");
-      if (!container) return;
-      
-      const tracksToRender = (appState.songLibrary && appState.songLibrary.length > 0)
-        ? appState.songLibrary 
-        : fallbackSongData;
+        function renderHardwareSliders() {
+            const slidersCluster = document.querySelector('.sliders-cluster');
+            if (!slidersCluster) return;
+            slidersCluster.innerHTML = '';
 
-      container.innerHTML = "";
-      
-      tracksToRender.forEach(track => {
-        const row = document.createElement("div");
-        row.className = "track-row";
-        row.innerHTML = `
-          <div class="track-info" onclick="loadSelectedTrackImmediately(${track.id})">
-            <span class="track-title">${track.title}</span>
-            <span class="track-artist">${track.artist || 'Unknown Artist'}</span>
-          </div>
-          <button class="btn-reserve" onclick="reserveSongTrack(${track.id})">+ Queue</button>
-        `;
-        container.appendChild(row);
-      });
-    }
+            const keys = [
+                { id: 'masterVolume', label: 'Master Volume' },
+                { id: 'microphoneVolume', label: 'Mic Volume' },
+                { id: 'echoDepth', label: 'Echo Depth' },
+                { id: 'vocalRemover', label: 'Vocal Cut' }
+            ];
 
-    function populateMediaLibrary() {
-      updateSidebarTracks();
-    }
-
-    function reserveSongTrack(id) {
-      const tracks = appState.songLibrary.length > 0 ? appState.songLibrary : fallbackSongData;
-      const song = tracks.find(t => t.id === id);
-      const singer = prompt("Enter Singer Name:") || "Guest";
-      appState.singerQueue.push({ ...song, queueId: Date.now(), singer });
-      renderQueueUI();
-    }
-
-    function renderQueueUI() {
-      const container = document.getElementById("queueContainer");
-      if (appState.singerQueue.length === 0) {
-        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted)">No songs currently queued.</p>`;
-        return;
-      }
-      container.innerHTML = "";
-      appState.singerQueue.forEach((item, idx) => {
-        const row = document.createElement("div");
-        row.className = "queue-item";
-        row.innerHTML = `<strong>${idx + 1}. ${item.title}</strong><br><span style="color:var(--text-muted); font-size:0.75rem;">Singer: ${item.singer}</span>`;
-        container.appendChild(row);
-      });
-    }
-
-    function clearPlaybackQueue() {
-      appState.singerQueue = [];
-      renderQueueUI();
-    }
-
-    function loadSelectedTrackImmediately(id) {
-      const tracks = appState.songLibrary.length > 0 ? appState.songLibrary : fallbackSongData;
-      const song = tracks.find(t => t.id === id);
-      stopPlaybackEngine();
-      
-      appState.currentSong = song;
-      appState.activeLyrics = [
-        { time: 0.0, text: `::: NEXT UP: ${song.title} :::` },
-        { time: 2.0, text: "Get ready to sing..." },
-        { time: 4.5, text: "Akin " },
-        { time: 5.5, text: "ka " },
-        { time: 6.5, text: "na " },
-        { time: 7.5, text: "lang " },
-        { time: 9.0, text: "=== TACS I.T SERVICES ===" }
-      ];
-      appState.playbackTime = 0;
-      renderLyricsFrame();
-      togglePlaybackEngine();
-    }
-
-    function togglePlaybackEngine() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-
-      const playBtn = document.getElementById("playBtn");
-      
-      if (appState.isPlaying) {
-        appState.isPlaying = false;
-        playBtn.innerText = "▶";
-        clearInterval(appState.timerLoop);
-      } else {
-        if (!appState.currentSong) {
-          loadSelectedTrackImmediately(1);
-          return;
+            keys.forEach(item => {
+                const sliderBox = document.createElement('div');
+                sliderBox.className = 'slider-box';
+                sliderBox.innerHTML = `
+                    <label>${item.label} <span id="${item.id}Val">${hardwareMatrix[item.id]}%</span></label>
+                    <input type="range" min="0" max="100" value="${hardwareMatrix[item.id]}" oninput="adjustHardwareParameter('${item.id}', this.value)">
+                `;
+                slidersCluster.appendChild(sliderBox);
+            });
         }
-        appState.isPlaying = true;
-        playBtn.innerText = "⏸";
-        
-        appState.timerLoop = setInterval(() => {
-          appState.playbackTime += 0.1 * (appState.tempoScale / 100);
-          renderLyricsFrame();
-          
-          if (audioCtx && Math.floor(appState.playbackTime * 10) % 8 === 0) {
+
+        function initPersistenceLayer() {
             try {
-              const osc = audioCtx.createOscillator();
-              const gainNode = audioCtx.createGain();
-              
-              osc.connect(gainNode);
-              gainNode.connect(audioCtx.destination);
-              
-              const isEven = Math.floor(appState.playbackTime) % 2 === 0;
-              osc.frequency.value = isEven ? 440 : 554;
-              
-              gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-              gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-              
-              osc.start(audioCtx.currentTime);
-              osc.stop(audioCtx.currentTime + 0.1);
-            } catch(e) {
-              console.error("Native sound card channel blocked:", e);
+                const savedMatrix = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.MATRIX);
+                if (savedMatrix) {
+                    const parsed = JSON.parse(savedMatrix);
+                    Object.keys(parsed).forEach(key => {
+                        hardwareMatrix[key] = parsed[key];
+                        const inputEl = document.querySelector(`input[oninput*="${key}"]`);
+                        if (inputEl) inputEl.value = parsed[key];
+                        const valLabel = document.getElementById(`${key}Val`);
+                        if (valLabel) valLabel.innerText = `${parsed[key]}%`;
+                    });
+                }
+
+                const savedQueue = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.QUEUE);
+                if (savedQueue) {
+                    singerQueue = JSON.parse(savedQueue);
+                    updateQueueUI();
+                }
+
+                const savedAuth = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.AUTH);
+                if (savedAuth) {
+                    isAuthenticated = true;
+                    const btn = document.getElementById('loginBtn');
+                    if (btn) {
+                        btn.innerText = 'Log Out';
+                        btn.style.backgroundColor = '#4b5563';
+                    }
+                }
+            } catch (err) {
+                console.error("Failure during persistence layout hydration cycle:", err);
             }
-          }
-        }, 100);
-      }
-    }
-
-    function stopPlaybackEngine() {
-      appState.isPlaying = false;
-      document.getElementById("playBtn").innerText = "▶";
-      clearInterval(appState.timerLoop);
-      appState.playbackTime = 0;
-      renderLyricsFrame();
-    }
-
-    function rewindActiveTrack() {
-      appState.playbackTime = 0;
-      renderLyricsFrame();
-    }
-
-    function advancePlaybackQueue() {
-      if (appState.singerQueue.length > 0) {
-        const next = appState.singerQueue.shift();
-        renderQueueUI();
-        loadSelectedTrackImmediately(next.id);
-      } else {
-        stopPlaybackEngine();
-        alert("The Singer Queue is empty!");
-      }
-    }
-
-    function renderLyricsFrame() {
-      const container = document.getElementById("lyricContainer");
-      if (!appState.currentSong || appState.activeLyrics.length === 0) {
-        container.innerHTML = `<div class="lyric-line active">READY TO SING</div>`;
-        return;
-      }
-      container.innerHTML = "";
-      let activeIndex = appState.activeLyrics.findIndex((lyric, i) => {
-        const next = appState.activeLyrics[i + 1];
-        return appState.playbackTime >= lyric.time && (!next || appState.playbackTime < next.time);
-      });
-
-      appState.activeLyrics.forEach((line, idx) => {
-        let status = "pending";
-        if (idx < activeIndex) status = "passed";
-        if (idx === activeIndex) status = "active";
-        const div = document.createElement("div");
-        div.className = `lyric-line ${status}`;
-        div.innerText = line.text;
-        container.appendChild(div);
-      });
-    }
-    window.addEventListener('load', () => {
-      const splash = document.getElementById('pwaSplash');
-      if (splash) { 
-        splash.style.opacity = '0'; 
-        setTimeout(() => splash.remove(), 500); 
-      }
-      
-      // Explicitly check for the standard global supabase instance window variable
-      if (typeof window.supabase !== 'undefined' && window.supabase) {
-        if (!supabaseClient) {
-          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
-        
-        // Connects precisely with the capitalized server table parameters
-        supabaseClient.from('Songs').select('*').then(({ data, error }) => {
-          if (!error && data && data.length > 0) { 
-            appState.songLibrary = data; 
-          }
-          populateMediaLibrary();
-        }).catch(err => {
-          console.warn("Supabase database load fallback triggered:", err);
-          populateMediaLibrary();
-        });
 
-        supabaseClient.channel('public-songs').on('postgres_changes', { event: '*', schema: 'public', table: 'Songs' }, () => {
-          supabaseClient.from('Songs').select('*').then(({ data }) => {
-            if (data && data.length > 0) { 
-              appState.songLibrary = data; 
-              populateMediaLibrary(); 
+        // =========================================================================
+        // 3. HIGH-PRECISION LYRIC TIMELINE PLAYBACK ENGINE
+        // =========================================================================
+        function loadTrackDirectly(trackId) {
+            const track = MOCK_SONG_LIBRARY.find(t => t.id === trackId);
+            if (!track) return;
+            
+            stopPlaybackEngine();
+            activeTrack = JSON.parse(JSON.stringify(track)); 
+            currentTimelineSecond = 0;
+            accumulatedTime = 0;
+            updateTheaterLyrics();
+            
+            togglePlaybackEngine(true);
+        }
+
+        function togglePlaybackEngine(forceState = null) {
+            const playBtn = document.getElementById('playBtn');
+            const targetState = forceState !== null ? forceState : !isPlaying;
+
+            if (targetState) {
+                if (!activeTrack && singerQueue.length > 0) {
+                    advancePlaybackQueue();
+                    return;
+                }
+                if (!activeTrack) return;
+
+                initializeAudioHardwareGraph();
+                if (audioContextInstance && audioContextInstance.state === 'suspended') {
+                    audioContextInstance.resume();
+                }
+
+                isPlaying = true;
+                playBtn.innerHTML = '⏸';
+                
+                // Pin performance clock precisely to this exact millisecond anchor
+                playbackStartTime = performance.now() - (accumulatedTime * 1000);
+                renderPlaybackLoop();
+            } else {
+                isPlaying = false;
+                playBtn.innerHTML = '▶';
+                
+                if (playbackStartTime > 0) {
+                    accumulatedTime = (performance.now() - playbackStartTime) / 1000;
+                }
+                
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
             }
-          });
-        }).subscribe();
-      } else {
-        populateMediaLibrary();
-      }
-    });
+        }
 
-    async function toggleAuthMock() {
-      if (typeof supabaseClient === 'undefined' || !supabaseClient) {
-        alert("Supabase client parameters are uninitialized. Check connection keys!");
-        return;
-      }
-      try {
-        const { error } = await supabaseClient.auth.signInWithOAuth({
-          provider: 'google',
-          options: { redirectTo: window.location.origin }
+        function renderPlaybackLoop() {
+            if (!isPlaying) return;
+
+            const currentTimeMs = performance.now() - playbackStartTime;
+            const preciseSeconds = currentTimeMs / 1000;
+
+            // Only redraw visual nodes if the math calculation shifts over a full integer mark
+            if (Math.floor(preciseSeconds) !== currentTimelineSecond) {
+                currentTimelineSecond = Math.floor(preciseSeconds);
+                updateTheaterLyrics();
+            }
+
+            animationFrameId = requestAnimationFrame(renderPlaybackLoop);
+        }
+
+        function stopPlaybackEngine() {
+            isPlaying = false;
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) playBtn.innerHTML = '▶';
+            
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+
+    <!-- Insert this block directly after your Part 2 script block to complete the application ecosystem -->
+    <script>
+        // =========================================================================
+        // 1. EXTENDED LOCAL DATABASE PERSISTENCE ENGINES
+        // =========================================================================
+        function saveQueueToDisk() {
+            try {
+                localStorage.setItem(APP_CONFIG.STORAGE_KEYS.QUEUE, JSON.stringify(singerQueue));
+            } catch (err) {
+                console.error("Storage write failure on Singer Queue payload partition:", err);
+            }
+        }
+
+        function saveHardwareMatrixToDisk() {
+            try {
+                localStorage.setItem(APP_CONFIG.STORAGE_KEYS.MATRIX, JSON.stringify(hardwareMatrix));
+            } catch (err) {
+                console.error("Storage write failure on custom DSP matrix configuration profile:", err);
+            }
+        }
+
+        // Hooking application mutations securely to guarantee silent state persistence updates
+        const systemReserveTrack = reserveTrack;
+        reserveTrack = function(event, trackId) {
+            systemReserveTrack(event, trackId);
+            saveQueueToDisk();
+        };
+
+        const systemClearPlaybackQueue = clearPlaybackQueue;
+        clearPlaybackQueue = function() {
+            systemClearPlaybackQueue();
+            saveQueueToDisk();
+        };
+
+        const systemAdvancePlaybackQueue = advancePlaybackQueue;
+        advancePlaybackQueue = function() {
+            systemAdvancePlaybackQueue();
+            saveQueueToDisk();
+        };
+
+        const systemAdjustHardwareParameter = adjustHardwareParameter;
+        adjustHardwareParameter = function(key, value) {
+            systemAdjustHardwareParameter(key, value);
+            saveHardwareMatrixToDisk();
+        };
+
+        // =========================================================================
+        // 2. PRODUCTION OAUTH2 COMPLIANCE INTERFACE SKELETON
+        // =========================================================================
+        function initiateOAuth2Flow() {
+            // Live production systems will override the mock login toggles to handle target redirects
+            const oauthEndpoint = "https://google.com";
+            const runtimeParams = {
+                client_id: "REPLACE_WITH_YOUR_DEDICATED_GOOGLE_CLIENT_://googleusercontent.com",
+                redirect_uri: window.location.origin + window.location.pathname,
+                response_type: "token",
+                scope: "https://googleapis.com email"
+            };
+
+            console.log("Redirecting system authentication layout node state to identity provider pipeline...", oauthEndpoint);
+            
+            // For interface simulation parity, we delegate down to the standard UI switch
+            toggleAuthMock();
+        }
+
+        // =========================================================================
+        // 3. APPLICATION SYSTEM VERIFICATION & LOGGING RUNTIME
+        // =========================================================================
+        window.addEventListener('load', () => {
+            console.log("KaraokeHub PRO State Framework Engine V3 initialized smoothly.");
+            
+            // Check if hardware acceleration frameworks are active inside user agent sandbox layers
+            if (!window.AudioContext && !window.webkitAudioContext) {
+                console.error("Web Audio API is not supported in this browser version. Voice processing loops will be bypassed.");
+            } else {
+                console.log("Sub-millisecond audio hardware processing loop profiles mapped successfully.");
+            }
         });
-        if (error) throw error;
-      } catch (err) {
-        console.error("Auth process error:", err.message);
-        alert("Authentication failed: " + err.message);
-      }
-    }
-  </script>
-</body>
-</html>
+    </script>
