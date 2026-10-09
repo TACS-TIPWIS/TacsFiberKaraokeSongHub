@@ -12,7 +12,6 @@
 
   <!-- Production Dependencies Sourced Locally to Bypass Network Block Filters -->
   <script src="./lib/supabase.js"></script>
-  <script src="./lib/tone.js"></script>
   <script src="https://unpkg.com"></script>
 
   <!-- Complete Component Dashboard UI Stylesheet -->
@@ -351,19 +350,11 @@
       activeLyrics: []
     };
 
-    let pitchShiftNode = null;
-    let synth = null; // High-precision local waveform synth node mapping
-
-    function initAudioEngine() {
-      if (typeof Tone !== 'undefined' && !pitchShiftNode) {
-        pitchShiftNode = new Tone.PitchShift({ pitch: 0 }).toDestination();
-      }
-    }
+    let audioCtx = null;
 
     function adjustHardwarePitch(value) {
       appState.pitchShift = parseInt(value);
       document.getElementById("pitchLabel").querySelector("span").innerText = `${value > 0 ? '+' : ''}${value} semitones`;
-      if (pitchShiftNode) pitchShiftNode.pitch = appState.pitchShift;
     }
 
     function adjustHardwareTempo(value) {
@@ -481,15 +472,11 @@
     }
 
     function togglePlaybackEngine() {
-      initAudioEngine();
-      
-      if (typeof Tone !== 'undefined') {
-        if (Tone.context.state !== 'running') {
-          Tone.context.resume();
-        }
-        if (!synth) {
-          synth = new Tone.Synth().toDestination();
-        }
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
       }
 
       const playBtn = document.getElementById("playBtn");
@@ -505,16 +492,30 @@
         }
         appState.isPlaying = true;
         playBtn.innerText = "⏸";
-        if (typeof Tone !== 'undefined') Tone.start();
         
         appState.timerLoop = setInterval(() => {
           appState.playbackTime += 0.1 * (appState.tempoScale / 100);
           renderLyricsFrame();
           
-          // AUDIBLE TEST PATTERN ENGINE: Synthesizes real note guidance indicators
-          if (typeof Tone !== 'undefined' && synth && Math.floor(appState.playbackTime * 10) % 8 === 0) {
-            const alternateNote = Math.floor(appState.playbackTime) % 2 === 0 ? "C4" : "E4";
-            synth.triggerAttackRelease(alternateNote, "16n", undefined, 0.2);
+          if (audioCtx && Math.floor(appState.playbackTime * 10) % 8 === 0) {
+            try {
+              const osc = audioCtx.createOscillator();
+              const gainNode = audioCtx.createGain();
+              
+              osc.connect(gainNode);
+              gainNode.connect(audioCtx.destination);
+              
+              const isEven = Math.floor(appState.playbackTime) % 2 === 0;
+              osc.frequency.value = isEven ? 440 : 554;
+              
+              gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+              gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+              
+              osc.start(audioCtx.currentTime);
+              osc.stop(audioCtx.currentTime + 0.1);
+            } catch(e) {
+              console.error("Native sound card channel blocked:", e);
+            }
           }
         }, 100);
       }
@@ -564,8 +565,6 @@
         div.className = `lyric-line ${status}`;
         div.innerText = line.text;
         container.appendChild(div);
-      });
-    }
     window.addEventListener('load', () => {
       const splash = document.getElementById('pwaSplash');
       if (splash) { 
