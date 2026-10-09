@@ -409,8 +409,10 @@
           
           if (title.includes("-")) {
             const parts = title.split("-");
-            artist = parts[0].trim();
-            title = parts[1].trim();
+            if (parts.length >= 2) {
+              artist = parts[0].trim();
+              title = parts[1].trim();
+            }
           }
 
           appState.localFolderFiles.push({
@@ -563,8 +565,6 @@
               gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
               
               osc.start(audioCtx.currentTime);
-              osc.stop(audioCtx.currentTime + 0.1);
-            } catch(e) {
     window.addEventListener('load', () => {
       const splash = document.getElementById('pwaSplash');
       if (splash) { 
